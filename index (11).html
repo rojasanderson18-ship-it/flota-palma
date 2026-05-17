@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1B4332"/>
+<title>Flota Palma Grande</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#1B4332;--gm:#2D6A4F;--gl:#D8F3DC;--o:#E05A00;--ol:#FFF0E6;--red:#B91C1C;--redl:#FEE2E2;--ok:#166534;--okl:#DCFCE7;--am:#92400E;--aml:#FEF3C7;--border:#E5E7EB;--muted:#6B7280;--bg:#F0F2F5}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1A1A1A;min-height:100vh}
+.wrap{max-width:480px;margin:0 auto;padding:0 0 40px}
+.hdr{background:var(--g);padding:28px 20px 24px;border-radius:0 0 24px 24px;color:#fff;margin-bottom:20px}
+.hdr h1{font-size:22px;font-weight:800}
+.hdr p{font-size:13px;opacity:.7;margin-top:4px}
+.page{display:none;padding:0 14px}
+.page.active{display:block}
+.card{background:#fff;border-radius:16px;padding:18px;border:1px solid var(--border);margin-bottom:14px}
+.card h2{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:2px solid var(--border);border-radius:10px;padding:12px 14px;font-size:16px;font-family:'Inter',sans-serif;color:#1A1A1A;background:#fff;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gm)}
+.field input[type=number]{font-size:18px;font-weight:700}
+.field textarea{min-height:80px;resize:vertical}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-opt{flex:1;min-width:80px}
+.radio-opt input{display:none}
+.radio-opt label{display:block;text-align:center;padding:10px 8px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;background:#fff;color:var(--muted)}
+.radio-opt input:checked + label{border-color:var(--gm);background:var(--gl);color:var(--g)}
+.radio-opt input:checked + label.bad{border-color:var(--red);background:var(--redl);color:var(--red)}
+.preop-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);gap:10px}
+.preop-item:last-child{border-bottom:none}
+.preop-lbl{font-size:14px;font-weight:500;flex:1}
+.preop-bts{display:flex;gap:8px;flex-shrink:0}
+.preop-bts input{display:none}
+.preop-bts label{padding:8px 14px;border:2px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff;color:var(--muted)}
+.preop-bts input:checked + label{background:var(--okl);border-color:var(--gm);color:var(--ok)}
+.preop-bts input.bad:checked + label{background:var(--redl);border-color:var(--red);color:var(--red)}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-size:17px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;margin-bottom:8px}
+.btn-menu{background:#fff;color:var(--g);border:2px solid var(--g);border-radius:14px;padding:18px;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-bottom:10px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:12px;transition:all .15s}
+.btn-menu:active{background:var(--gl)}
+.btn-menu .ico{font-size:28px}
+.btn-menu .info{text-align:left}
+.btn-menu .info strong{display:block;font-size:15px;color:var(--g)}
+.btn-menu .info span{font-size:12px;color:var(--muted)}
+.rend{border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;display:none}
+.alert-box{background:var(--redl);border:2px solid var(--red);border-radius:10px;padding:14px;margin-bottom:14px;display:none}
+.alert-box h3{font-size:13px;font-weight:800;color:var(--red);margin-bottom:6px}
+.alert-box p{font-size:12px;color:var(--red);font-weight:600}
+.success{background:var(--okl);border:2px solid var(--gm);border-radius:16px;padding:24px;text-align:center}
+.success .ico{font-size:48px;margin-bottom:12px}
+.success h2{font-size:20px;font-weight:800;color:var(--g)}
+.success p{font-size:14px;color:var(--muted);margin-top:6px}
+.badge-row{display:flex;gap:8px;margin-bottom:14px}
+.badge{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
+select option{font-size:16px}
+.req{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <h1>🚛 Flota Palma Grande</h1>
+  <p>EXX568 Rusbel Algarra &nbsp;|&nbsp; SXY206 Edgar Tinjacá</p>
+</div>
+
+<!-- MENU PRINCIPAL -->
+<div id="pg-menu" class="page active" style="padding:0 14px">
+  <button class="btn-menu" onclick="showPage('pg-preop')">
+    <span class="ico">✅</span>
+    <div class="info"><strong>Preoperativo diario</strong><span>Antes de salir — 10 puntos de revisión</span></div>
+  </button>
+  <button class="btn-menu" onclick="showPage('pg-comb')">
+    <span class="ico">⛽</span>
+    <div class="info"><strong>Combustible</strong><span>Registro de tanqueo — galones y km</span></div>
+  </button>
+  <button class="btn-menu" onclick="showPage('pg-mtto')">
+    <span class="ico">🔧</span>
+    <div class="info"><strong>Mantenimiento</strong><span>Servicio realizado al vehículo</span></div>
+  </button>
+  <button class="btn-menu" onclick="showPage('pg-nov')">
+    <span class="ico">⚠️</span>
+    <div class="info"><strong>Novedad</strong><span>Accidente, avería, multa u otro</span></div>
+  </button>
+  <button class="btn-menu" onclick="showPage('pg-ruta')">
+    <span class="ico">🗺️</span>
+    <div class="info"><strong>Ruta / Viaje</strong><span>Registro de origen y destino</span></div>
+  </button>
+</div>
+
+<!-- ═══ PREOPERATIVO ═══ -->
+<div id="pg-preop" class="page">
+  <div class="card">
+    <h2>✅ Preoperativo diario</h2>
+
+    <div class="field">
+      <label>Placa <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-exx" value="EXX568" required><label for="pre-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-sxy" value="SXY206"><label for="pre-sxy">👥 SXY206</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Conductor <span class="req">*</span></label>
+      <select id="pre-conductor" required>
+        <option value="">Seleccione...</option>
+        <option value="Rusbel Algarra">Rusbel Algarra</option>
+        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Km odómetro actual <span class="req">*</span></label>
+      <input type="number" id="pre-km" inputmode="numeric" placeholder="ej: 480857" required/>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge" id="pre-ok-badge" style="background:var(--okl);color:var(--ok)">✅ OK: 0</span>
+      <span class="badge" id="pre-fail-badge" style="background:var(--redl);color:var(--red)">❌ Falla: 0</span>
+    </div>
+
+    <div class="alert-box" id="pre-alert">
+      <h3>⚠️ FALLAS DETECTADAS</h3>
+      <p id="pre-alert-txt"></p>
+      <p style="margin-top:6px;font-size:11px">Al enviar, el conductor asume responsabilidad sobre estas fallas.</p>
+    </div>
+
+    <!-- Puntos preoperativo -->
+    <div id="preop-items"></div>
+
+    <div class="field" style="margin-top:14px">
+      <label>Observaciones (opcional)</label>
+      <textarea id="pre-obs" placeholder="Anote cualquier observación adicional..."></textarea>
+    </div>
+
+    <button class="btn" style="background:var(--gm)" onclick="enviarPreop()">✅ Enviar preoperativo</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ COMBUSTIBLE ═══ -->
+<div id="pg-comb" class="page">
+  <div class="card">
+    <h2>⛽ Registro de combustible</h2>
+
+    <div class="field">
+      <label>Placa <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-exx" value="EXX568" required><label for="comb-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-sxy" value="SXY206"><label for="comb-sxy">👥 SXY206</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Conductor <span class="req">*</span></label>
+      <select id="comb-conductor" required>
+        <option value="">Seleccione...</option>
+        <option value="Rusbel Algarra">Rusbel Algarra</option>
+        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Km odómetro anterior <span class="req">*</span></label>
+      <input type="number" id="comb-km-ini" inputmode="numeric" placeholder="ej: 480500" oninput="calcRend()" required/>
+    </div>
+
+    <div class="field">
+      <label>Km odómetro actual <span class="req">*</span></label>
+      <input type="number" id="comb-km-fin" inputmode="numeric" placeholder="ej: 480857" oninput="calcRend()" required/>
+    </div>
+
+    <div class="field">
+      <label>Galones cargados <span class="req">*</span></label>
+      <input type="number" id="comb-gal" inputmode="decimal" placeholder="ej: 50" oninput="calcRend()" required/>
+    </div>
+
+    <!-- Rendimiento automático -->
+    <div class="rend" id="rend-box">
+      <div style="font-size:11px;font-weight:700;color:var(--muted)">RENDIMIENTO CALCULADO</div>
+      <div id="rend-num" style="font-size:26px;font-weight:800;margin:4px 0"></div>
+      <div id="rend-msg" style="font-size:12px;font-weight:600"></div>
+    </div>
+
+    <div class="field">
+      <label>No. tanqueo</label>
+      <input type="number" id="comb-tanq" inputmode="numeric" placeholder="ej: 1"/>
+    </div>
+
+    <div class="field">
+      <label>Valor total ($)</label>
+      <input type="number" id="comb-valor" inputmode="numeric" placeholder="ej: 585000"/>
+    </div>
+
+    <div class="field">
+      <label>Ruta / Labor <span class="req">*</span></label>
+      <input type="text" id="comb-ruta" placeholder="ej: Transporte de fruta" required/>
+    </div>
+
+    <div class="field">
+      <label>Observaciones (opcional)</label>
+      <textarea id="comb-obs" placeholder="Estación, precio/galón, etc..."></textarea>
+    </div>
+
+    <button class="btn" style="background:var(--gm)" onclick="enviarComb()">✅ Enviar registro</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ MANTENIMIENTO ═══ -->
+<div id="pg-mtto" class="page">
+  <div class="card">
+    <h2>🔧 Registro de mantenimiento</h2>
+
+    <div class="field">
+      <label>Placa <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-exx" value="EXX568" required><label for="mtto-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-sxy" value="SXY206"><label for="mtto-sxy">👥 SXY206</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Conductor <span class="req">*</span></label>
+      <select id="mtto-conductor" required>
+        <option value="">Seleccione...</option>
+        <option value="Rusbel Algarra">Rusbel Algarra</option>
+        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Km odómetro actual <span class="req">*</span></label>
+      <input type="number" id="mtto-km" inputmode="numeric" placeholder="ej: 480857" required/>
+    </div>
+
+    <div class="field">
+      <label>Servicio realizado <span class="req">*</span></label>
+      <select id="mtto-servicio" required>
+        <option value="">Seleccione...</option>
+        <option>Aceite motor</option>
+        <option>Filtro aceite</option>
+        <option>Filtro combustible</option>
+        <option>Filtro aire</option>
+        <option>Frenos</option>
+        <option>Llantas</option>
+        <option>Batería</option>
+        <option>Refrigeración</option>
+        <option>Correas</option>
+        <option>Suspensión</option>
+        <option>Alineación y balanceo</option>
+        <option>Lavada general</option>
+        <option>Engrase general</option>
+        <option>Eléctrico</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Taller / Proveedor</label>
+      <input type="text" id="mtto-taller" placeholder="Nombre del taller"/>
+    </div>
+
+    <div class="field">
+      <label>Costo ($)</label>
+      <input type="number" id="mtto-costo" inputmode="numeric" placeholder="ej: 150000"/>
+    </div>
+
+    <div class="field">
+      <label>Observaciones (opcional)</label>
+      <textarea id="mtto-obs" placeholder="Detalles del servicio..."></textarea>
+    </div>
+
+    <button class="btn" style="background:var(--gm)" onclick="enviarMtto()">✅ Enviar registro</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ NOVEDAD ═══ -->
+<div id="pg-nov" class="page">
+  <div class="card">
+    <h2>⚠️ Registro de novedad</h2>
+
+    <div class="field">
+      <label>Placa <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="nov-placa" id="nov-exx" value="EXX568" required><label for="nov-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="nov-placa" id="nov-sxy" value="SXY206"><label for="nov-sxy">👥 SXY206</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Conductor <span class="req">*</span></label>
+      <select id="nov-conductor" required>
+        <option value="">Seleccione...</option>
+        <option value="Rusbel Algarra">Rusbel Algarra</option>
+        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Km odómetro</label>
+      <input type="number" id="nov-km" inputmode="numeric" placeholder="ej: 480857"/>
+    </div>
+
+    <div class="field">
+      <label>Tipo de novedad <span class="req">*</span></label>
+      <select id="nov-tipo" required>
+        <option value="">Seleccione...</option>
+        <option>Accidente</option>
+        <option>Avería mecánica</option>
+        <option>Multa</option>
+        <option>Retraso</option>
+        <option>Robo</option>
+        <option>Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Descripción <span class="req">*</span></label>
+      <textarea id="nov-desc" placeholder="Describa detalladamente la novedad..." required></textarea>
+    </div>
+
+    <button class="btn" style="background:#B45309" onclick="enviarNov()">⚠️ Enviar novedad</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ RUTA ═══ -->
+<div id="pg-ruta" class="page">
+  <div class="card">
+    <h2>🗺️ Registro de ruta</h2>
+
+    <div class="field">
+      <label>Placa <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-exx" value="EXX568" required><label for="rut-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-sxy" value="SXY206"><label for="rut-sxy">👥 SXY206</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Conductor <span class="req">*</span></label>
+      <select id="rut-conductor" required>
+        <option value="">Seleccione...</option>
+        <option value="Rusbel Algarra">Rusbel Algarra</option>
+        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Km salida <span class="req">*</span></label>
+      <input type="number" id="rut-km-ini" inputmode="numeric" placeholder="ej: 480500" required/>
+    </div>
+
+    <div class="field">
+      <label>Km llegada</label>
+      <input type="number" id="rut-km-fin" inputmode="numeric" placeholder="ej: 480857"/>
+    </div>
+
+    <div class="field">
+      <label>Origen <span class="req">*</span></label>
+      <input type="text" id="rut-origen" placeholder="ej: Finca Palma Grande" required/>
+    </div>
+
+    <div class="field">
+      <label>Destino <span class="req">*</span></label>
+      <input type="text" id="rut-destino" placeholder="ej: Planta extractora" required/>
+    </div>
+
+    <div class="field">
+      <label>Carga / Labor</label>
+      <input type="text" id="rut-carga" placeholder="ej: Fruta de palma — 8 toneladas"/>
+    </div>
+
+    <div class="field">
+      <label>Observaciones (opcional)</label>
+      <textarea id="rut-obs" placeholder="Novedades de la ruta..."></textarea>
+    </div>
+
+    <button class="btn" style="background:var(--gm)" onclick="enviarRuta()">✅ Enviar registro</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ ÉXITO ═══ -->
+<div id="pg-ok" class="page">
+  <div style="padding:20px">
+    <div class="success">
+      <div class="ico" id="ok-ico">✅</div>
+      <h2 id="ok-titulo">¡Registro enviado!</h2>
+      <p id="ok-msg">El registro fue guardado correctamente.</p>
+    </div>
+    <button class="btn" style="background:var(--gm);margin-top:16px" onclick="showPage('pg-menu')">← Nuevo registro</button>
+  </div>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+const STORE='flotaPG_v4';
+const API='https://script.google.com/macros/s/AKfycbzEIPiZXz_sR_ppt-Sp0_7btzB0TvIzCptkIdoj1gkpUqmMxoCsriXO6iOdN30owsCB9A/exec';
+const PREOP_ITEMS=[
+  {id:'aceite',    lbl:'🛢️ Aceite motor'},
+  {id:'refrig',    lbl:'💧 Refrigerante / Agua'},
+  {id:'luces',     lbl:'💡 Luces (delantera/trasera)'},
+  {id:'frenos',    lbl:'🛑 Frenos'},
+  {id:'llantas',   lbl:'⭕ Llantas'},
+  {id:'fugas',     lbl:'⚠️ Fugas (aceite/agua/aire)'},
+  {id:'docs',      lbl:'📄 Documentos del vehículo'},
+  {id:'direccion', lbl:'🔄 Dirección'},
+  {id:'bateria',   lbl:'🔋 Batería'},
+  {id:'grasa',     lbl:'⚙️ Grasa / Puntos críticos'},
+];
+
+// Build preop items HTML
+const container=document.getElementById('preop-items');
+PREOP_ITEMS.forEach(p=>{
+  container.innerHTML+=`<div class="preop-item" id="row-${p.id}">
+    <div class="preop-lbl">${p.lbl}</div>
+    <div class="preop-bts">
+      <input type="radio" name="pre-${p.id}" id="pre-${p.id}-ok" value="OK" onchange="updatePreop()">
+      <label for="pre-${p.id}-ok">✅ OK</label>
+      <input type="radio" name="pre-${p.id}" id="pre-${p.id}-no" value="NO OK" class="bad" onchange="updatePreop()">
+      <label for="pre-${p.id}-no">❌ Falla</label>
+    </div>
+  </div>`;
+});
+
+// ── Storage ──────────────────────────────────────────────────────
+let _db=null;
+function openDB(){
+  return new Promise(res=>{
+    if(_db) return res(_db);
+    const r=indexedDB.open('flotaPG',2);
+    r.onupgradeneeded=e=>{ try{e.target.result.createObjectStore('data');}catch{} };
+    r.onsuccess=e=>{_db=e.target.result;res(_db)};
+    r.onerror=()=>res(null);
+  });
+}
+async function dbGet(k){
+  try{const db=await openDB();if(!db)throw 0;return new Promise(res=>{const tx=db.transaction('data','readonly');const r=tx.objectStore('data').get(k);r.onsuccess=()=>res(r.result||[]);r.onerror=()=>res([]);});}
+  catch{try{const d=localStorage.getItem(k);return d?JSON.parse(d):[];}catch{return[];}}
+}
+async function dbSet(k,v){
+  try{const db=await openDB();if(!db)throw 0;await new Promise(res=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').put(v,k);tx.oncomplete=res;tx.onerror=res;});}catch{}
+  try{localStorage.setItem(k,JSON.stringify(v.slice?v.slice(0,200):v));}catch{}
+}
+
+// ── Helpers ──────────────────────────────────────────────────────
+const today=()=>new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
+const nowt=()=>new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function val(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function radio(name){const el=document.querySelector(`input[name="${name}"]:checked`);return el?el.value:'';}
+
+function showOk(ico,titulo,msg){
+  document.getElementById('ok-ico').textContent=ico;
+  document.getElementById('ok-titulo').textContent=titulo;
+  document.getElementById('ok-msg').textContent=msg;
+  showPage('pg-ok');
+}
+
+async function guardar(registro){
+  // 1. Guardar local primero
+  try{
+    const registros=await dbGet(STORE);
+    registros.unshift(registro);
+    await dbSet(STORE,registros);
+  }catch(e){}
+
+  // 2. Enviar a Google Sheets
+  try{
+    await fetch(API,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(registro)
+    });
+  }catch(e){
+    // Si no hay internet, queda guardado local
+    console.log('Sin conexion, guardado local');
+  }
+}
+
+// ── Preoperativo ─────────────────────────────────────────────────
+function updatePreop(){
+  let ok=0,fail=0,fallas=[];
+  PREOP_ITEMS.forEach(p=>{
+    const v=radio('pre-'+p.id);
+    const row=document.getElementById('row-'+p.id);
+    if(v==='OK'){ok++;row.style.background='';}
+    else if(v==='NO OK'){fail++;fallas.push(p.lbl.replace(/^[^ ]+ /,''));row.style.cssText='background:var(--redl);border-radius:8px;padding:6px 8px;margin-bottom:4px';}
+    else{row.style.background='';}
+  });
+  document.getElementById('pre-ok-badge').textContent='✅ OK: '+ok;
+  document.getElementById('pre-fail-badge').textContent='❌ Falla: '+fail;
+  const alertBox=document.getElementById('pre-alert');
+  if(fallas.length){
+    alertBox.style.display='block';
+    document.getElementById('pre-alert-txt').textContent=fallas.join(', ');
+  } else { alertBox.style.display='none'; }
+}
+
+async function enviarPreop(){
+  const placa=radio('pre-placa');
+  const km=val('pre-km');
+  const conductor=val('pre-conductor');
+  if(!placa){alert('Seleccione la placa del camión');return;}
+  if(!conductor){alert('Seleccione el conductor');return;}
+  if(!km){alert('Ingrese el km del odómetro');return;}
+  // Check all items marked
+  const sinMarcar=PREOP_ITEMS.filter(p=>!radio('pre-'+p.id));
+  if(sinMarcar.length){alert('Faltan '+sinMarcar.length+' puntos por revisar');return;}
+  const fallas=PREOP_ITEMS.filter(p=>radio('pre-'+p.id)==='NO OK').map(p=>p.lbl.replace(/^[^ ]+ /,''));
+  const oks=PREOP_ITEMS.filter(p=>radio('pre-'+p.id)==='OK').length;
+  const rec={tipo:'preop',fecha:today(),hora:nowt(),placa,conductor,km,oks,fallas,obs:val('pre-obs'),operoConFallas:fallas.length>0};
+  await guardar(rec);
+  if(fallas.length){showOk('⚠️','Registrado con fallas','Conductor: '+conductor+' — asume responsabilidad sobre: '+fallas.join(', '));}
+  else{showOk('✅','Preoperativo OK','Camión '+placa+' autorizado para operar. '+oks+'/10 puntos OK.');}
+  // Reset
+  document.querySelectorAll('#pg-preop input[type=radio]').forEach(r=>r.checked=false);
+  document.getElementById('pre-km').value='';
+  document.getElementById('pre-obs').value='';
+  document.getElementById('pre-conductor').value='';
+  updatePreop();
+}
+
+// ── Combustible ──────────────────────────────────────────────────
+function calcRend(){
+  const a=parseFloat(document.getElementById('comb-km-ini').value||0);
+  const b=parseFloat(document.getElementById('comb-km-fin').value||0);
+  const g=parseFloat(document.getElementById('comb-gal').value||0);
+  const box=document.getElementById('rend-box');
+  if(!a||!b||!g||b<=a){box.style.display='none';return;}
+  const rend=(b-a)/g;
+  const color=rend<5?'var(--red)':rend<5.5?'var(--am)':'var(--ok)';
+  const bg=rend<5?'var(--redl)':rend<5.5?'var(--aml)':'var(--okl)';
+  const msg=rend<5?'⚠️ BAJO — posible falla mecánica':rend<5.5?'Rendimiento bajo, monitorear':'✅ Normal';
+  box.style.cssText=`display:block;background:${bg};border-radius:10px;padding:12px;text-align:center;margin-bottom:14px;border:1.5px solid ${color}30`;
+  document.getElementById('rend-num').style.color=color;
+  document.getElementById('rend-num').textContent=rend.toFixed(2)+' km/gal';
+  document.getElementById('rend-msg').style.color=color;
+  document.getElementById('rend-msg').textContent=msg;
+}
+
+async function enviarComb(){
+  const placa=radio('comb-placa');
+  const conductor=val('comb-conductor');
+  const kmIni=val('comb-km-ini');
+  const kmFin=val('comb-km-fin');
+  const gal=val('comb-gal');
+  const ruta=val('comb-ruta');
+  if(!placa){alert('Seleccione la placa');return;}
+  if(!conductor){alert('Seleccione el conductor');return;}
+  if(!kmIni||!kmFin){alert('Ingrese los km de odómetro anterior y actual');return;}
+  if(!gal){alert('Ingrese los galones cargados');return;}
+  if(!ruta){alert('Ingrese la ruta o labor');return;}
+  const rend=parseFloat(gal)>0?((parseFloat(kmFin)-parseFloat(kmIni))/parseFloat(gal)):null;
+  const alerta=rend?rend<5?'ROJO':rend<5.5?'AMARILLO':'OK':'—';
+  const rec={tipo:'comb',fecha:today(),hora:nowt(),placa,conductor,kmIni,kmFin,km:kmFin,gal,rend:rend?rend.toFixed(2):null,alerta,valor:val('comb-valor'),tanq:val('comb-tanq'),ruta,obs:val('comb-obs')};
+  await guardar(rec);
+  const msg=alerta==='ROJO'?'⚠️ Rendimiento BAJO ('+rend.toFixed(2)+' km/gal) — revisar mecánico':'Rendimiento: '+(rend?rend.toFixed(2)+' km/gal':'—');
+  showOk(alerta==='ROJO'?'🔴':'✅','Combustible registrado',msg);
+  document.querySelectorAll('#pg-comb input,#pg-comb select,#pg-comb textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+  document.getElementById('rend-box').style.display='none';
+}
+
+// ── Mantenimiento ────────────────────────────────────────────────
+async function enviarMtto(){
+  const placa=radio('mtto-placa');
+  const conductor=val('mtto-conductor');
+  const km=val('mtto-km');
+  const servicio=val('mtto-servicio');
+  if(!placa){alert('Seleccione la placa');return;}
+  if(!conductor){alert('Seleccione el conductor');return;}
+  if(!km){alert('Ingrese el km actual');return;}
+  if(!servicio){alert('Seleccione el servicio realizado');return;}
+  const rec={tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor,km,servicio,taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
+  await guardar(rec);
+  showOk('🔧','Mantenimiento registrado',servicio+' — '+placa+' · '+km+' km');
+  document.querySelectorAll('#pg-mtto input,#pg-mtto select,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+}
+
+// ── Novedad ──────────────────────────────────────────────────────
+async function enviarNov(){
+  const placa=radio('nov-placa');
+  const conductor=val('nov-conductor');
+  const tipo=val('nov-tipo');
+  const desc=val('nov-desc');
+  if(!placa){alert('Seleccione la placa');return;}
+  if(!conductor){alert('Seleccione el conductor');return;}
+  if(!tipo){alert('Seleccione el tipo de novedad');return;}
+  if(!desc){alert('Describa la novedad');return;}
+  const rec={tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor,km:val('nov-km'),tipoNov:tipo,desc,};
+  await guardar(rec);
+  showOk('⚠️','Novedad registrada',tipo+' — '+placa);
+  document.querySelectorAll('#pg-nov input,#pg-nov select,#pg-nov textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+}
+
+// ── Ruta ─────────────────────────────────────────────────────────
+async function enviarRuta(){
+  const placa=radio('rut-placa');
+  const conductor=val('rut-conductor');
+  const origen=val('rut-origen');
+  const destino=val('rut-destino');
+  const kmIni=val('rut-km-ini');
+  if(!placa){alert('Seleccione la placa');return;}
+  if(!conductor){alert('Seleccione el conductor');return;}
+  if(!kmIni){alert('Ingrese el km de salida');return;}
+  if(!origen){alert('Ingrese el origen');return;}
+  if(!destino){alert('Ingrese el destino');return;}
+  const kmFin=val('rut-km-fin');
+  const kmRec=kmIni&&kmFin?parseFloat(kmFin)-parseFloat(kmIni):null;
+  const rec={tipo:'ruta',fecha:today(),hora:nowt(),placa,conductor,kmIni,kmFin,kmRec,origen,destino,carga:val('rut-carga'),obs:val('rut-obs')};
+  await guardar(rec);
+  showOk('🗺️','Ruta registrada',origen+' → '+destino+(kmRec?' · '+kmRec+' km':''));
+  document.querySelectorAll('#pg-ruta input,#pg-ruta select,#pg-ruta textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+}
+</script>
+</body>
+</html>
