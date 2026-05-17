@@ -477,15 +477,31 @@ function showOk(ico,titulo,msg){
   showPage('pg-ok');
 }
 
+const COLA_KEY='flotaPG_cola';
+
 async function guardar(registro){
-  // 1. Guardar local primero
+  // 1. Guardar local siempre
   try{
     const registros=await dbGet(STORE);
     registros.unshift(registro);
     await dbSet(STORE,registros);
   }catch(e){}
 
-  // 2. Enviar a Google Sheets
+  // 2. Intentar enviar a Google Sheets
+  const enviado = await enviarASheets(registro);
+
+  // 3. Si no hay internet, agregar a cola pendiente
+  if(!enviado){
+    try{
+      const cola=await dbGet(COLA_KEY)||[];
+      cola.push(registro);
+      await dbSet(COLA_KEY,cola);
+      mostrarOfflineBadge(true);
+    }catch(e){}
+  }
+}
+
+async function enviarASheets(registro){
   try{
     await fetch(API,{
       method:'POST',
@@ -493,11 +509,55 @@ async function guardar(registro){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(registro)
     });
+    return true;
   }catch(e){
-    // Si no hay internet, queda guardado local
-    console.log('Sin conexion, guardado local');
+    return false;
   }
 }
+
+async function sincronizarCola(){
+  try{
+    const cola=await dbGet(COLA_KEY)||[];
+    if(!cola.length) return;
+    const pendientes=[...cola];
+    const exitosos=[];
+    for(const reg of pendientes){
+      const ok=await enviarASheets(reg);
+      if(ok) exitosos.push(reg);
+    }
+    if(exitosos.length){
+      const nuevaCola=cola.filter(r=>!exitosos.find(e=>e.id===r.id));
+      await dbSet(COLA_KEY,nuevaCola);
+      if(exitosos.length>0) toast('✅ '+exitosos.length+' registro(s) sincronizados');
+      mostrarOfflineBadge(nuevaCola.length>0);
+    }
+  }catch(e){}
+}
+
+function mostrarOfflineBadge(hay){
+  let badge=document.getElementById('offline-badge');
+  if(!badge) return;
+  badge.style.display=hay?'block':'none';
+  badge.textContent=hay?'📵 Datos pendientes de enviar':'';
+}
+
+// ── Service Worker (funciona sin internet) ──────────────────────
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// Sincronizar cuando vuelve internet
+window.addEventListener('online', ()=>{
+  sincronizarCola();
+});
+
+// Revisar cola al cargar
+window.addEventListener('load', async()=>{
+  const cola=await dbGet(COLA_KEY)||[];
+  if(cola.length>0){
+    sincronizarCola();
+  }
+});
 
 // ── Preoperativo ─────────────────────────────────────────────────
 function updatePreop(){
