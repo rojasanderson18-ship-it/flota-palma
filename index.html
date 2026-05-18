@@ -100,8 +100,8 @@ select option{font-size:16px}
     <div class="field">
       <label>Placa <span class="req">*</span></label>
       <div class="radio-group">
-        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-exx" value="EXX568" required><label for="pre-exx">🌴 EXX568</label></div>
-        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-sxy" value="SXY206"><label for="pre-sxy">👥 SXY206</label></div>
+        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-exx" value="EXX568" required onchange="mostrarUltimoKm('pre-km',this.value)"><label for="pre-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="pre-placa" id="pre-sxy" value="SXY206" onchange="mostrarUltimoKm('pre-km',this.value)"><label for="pre-sxy">👥 SXY206</label></div>
       </div>
     </div>
 
@@ -117,7 +117,7 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Km odómetro actual <span class="req">*</span></label>
-      <input type="number" id="pre-km" inputmode="numeric" placeholder="ej: 480857" required/>
+      <div class="km-auto" id="km-hint-pre-km"></div><input type="number" id="pre-km" inputmode="numeric" placeholder="ej: 480857" required/>
     </div>
 
     <div class="badge-row">
@@ -152,8 +152,8 @@ select option{font-size:16px}
     <div class="field">
       <label>Placa <span class="req">*</span></label>
       <div class="radio-group">
-        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-exx" value="EXX568" required><label for="comb-exx">🌴 EXX568</label></div>
-        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-sxy" value="SXY206"><label for="comb-sxy">👥 SXY206</label></div>
+        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-exx" value="EXX568" required onchange="mostrarUltimoKm('comb-km-ini',this.value)"><label for="comb-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="comb-placa" id="comb-sxy" value="SXY206" onchange="mostrarUltimoKm('comb-km-ini',this.value)"><label for="comb-sxy">👥 SXY206</label></div>
       </div>
     </div>
 
@@ -169,7 +169,7 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Km odómetro anterior <span class="req">*</span></label>
-      <input type="number" id="comb-km-ini" inputmode="numeric" placeholder="ej: 480500" oninput="calcRend()" required/>
+      <div class="km-auto" id="km-hint-comb-km-ini"></div><input type="number" id="comb-km-ini" inputmode="numeric" placeholder="ej: 480500" oninput="calcRend()" required/>
     </div>
 
     <div class="field">
@@ -222,8 +222,8 @@ select option{font-size:16px}
     <div class="field">
       <label>Placa <span class="req">*</span></label>
       <div class="radio-group">
-        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-exx" value="EXX568" required><label for="mtto-exx">🌴 EXX568</label></div>
-        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-sxy" value="SXY206"><label for="mtto-sxy">👥 SXY206</label></div>
+        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-exx" value="EXX568" required onchange="mostrarUltimoKm('mtto-km',this.value)"><label for="mtto-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="mtto-placa" id="mtto-sxy" value="SXY206" onchange="mostrarUltimoKm('mtto-km',this.value)"><label for="mtto-sxy">👥 SXY206</label></div>
       </div>
     </div>
 
@@ -239,29 +239,28 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Km odómetro actual <span class="req">*</span></label>
-      <input type="number" id="mtto-km" inputmode="numeric" placeholder="ej: 480857" required/>
+      <div class="km-auto" id="km-hint-mtto-km"></div><input type="number" id="mtto-km" inputmode="numeric" placeholder="ej: 480857" required/>
     </div>
 
     <div class="field">
-      <label>Servicio realizado <span class="req">*</span></label>
-      <select id="mtto-servicio" required>
-        <option value="">Seleccione...</option>
-        <option>Aceite motor</option>
-        <option>Filtro aceite</option>
-        <option>Filtro combustible</option>
-        <option>Filtro aire</option>
-        <option>Frenos</option>
-        <option>Llantas</option>
-        <option>Batería</option>
-        <option>Refrigeración</option>
-        <option>Correas</option>
-        <option>Suspensión</option>
-        <option>Alineación y balanceo</option>
-        <option>Lavada general</option>
-        <option>Engrase general</option>
-        <option>Eléctrico</option>
-        <option>Otro</option>
-      </select>
+      <label>Servicio realizado <span class="req">*</span> <span style="font-size:10px;color:var(--muted)">(puede seleccionar varios)</span></label>
+      <div id="mtto-servicios" style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+        <label class="chk-item"><input type="checkbox" value="Aceite motor"> Aceite motor</label>
+        <label class="chk-item"><input type="checkbox" value="Filtro aceite"> Filtro aceite</label>
+        <label class="chk-item"><input type="checkbox" value="Filtro combustible"> Filtro combustible</label>
+        <label class="chk-item"><input type="checkbox" value="Filtro aire"> Filtro aire</label>
+        <label class="chk-item"><input type="checkbox" value="Frenos"> Frenos</label>
+        <label class="chk-item"><input type="checkbox" value="Llantas"> Llantas</label>
+        <label class="chk-item"><input type="checkbox" value="Batería"> Batería</label>
+        <label class="chk-item"><input type="checkbox" value="Refrigeración"> Refrigeración</label>
+        <label class="chk-item"><input type="checkbox" value="Correas"> Correas</label>
+        <label class="chk-item"><input type="checkbox" value="Suspensión"> Suspensión</label>
+        <label class="chk-item"><input type="checkbox" value="Alineación y balanceo"> Alineación y balanceo</label>
+        <label class="chk-item"><input type="checkbox" value="Lavada general"> Lavada general</label>
+        <label class="chk-item"><input type="checkbox" value="Engrase general"> Engrase general</label>
+        <label class="chk-item"><input type="checkbox" value="Eléctrico"> Eléctrico</label>
+        <label class="chk-item"><input type="checkbox" value="Otro"> Otro</label>
+      </div>
     </div>
 
     <div class="field">
@@ -343,8 +342,8 @@ select option{font-size:16px}
     <div class="field">
       <label>Placa <span class="req">*</span></label>
       <div class="radio-group">
-        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-exx" value="EXX568" required><label for="rut-exx">🌴 EXX568</label></div>
-        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-sxy" value="SXY206"><label for="rut-sxy">👥 SXY206</label></div>
+        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-exx" value="EXX568" required onchange="mostrarUltimoKm('rut-km-ini',this.value)"><label for="rut-exx">🌴 EXX568</label></div>
+        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-sxy" value="SXY206" onchange="mostrarUltimoKm('rut-km-ini',this.value)"><label for="rut-sxy">👥 SXY206</label></div>
       </div>
     </div>
 
@@ -360,7 +359,7 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Km salida <span class="req">*</span></label>
-      <input type="number" id="rut-km-ini" inputmode="numeric" placeholder="ej: 480500" required/>
+      <div class="km-auto" id="km-hint-rut-km-ini"></div><input type="number" id="rut-km-ini" inputmode="numeric" placeholder="ej: 480500" required/>
     </div>
 
     <div class="field">
@@ -478,6 +477,28 @@ function showOk(ico,titulo,msg){
 }
 
 const COLA_KEY='flotaPG_cola';
+const MTTO_ITEMS_LIST=['Aceite motor','Filtro aceite','Filtro combustible','Filtro aire','Frenos','Llantas','Batería','Refrigeración','Correas','Suspensión','Alineación y balanceo','Lavada general','Engrase general','Eléctrico','Otro'];
+
+async function getUltimoKm(placa){
+  try{
+    const registros=await dbGet(STORE);
+    const conKm=registros.filter(r=>r.placa===placa&&(r.km||r.kmIni));
+    if(!conKm.length) return null;
+    return conKm[0].km||conKm[0].kmIni;
+  }catch{return null;}
+}
+
+async function mostrarUltimoKm(inputId, placa){
+  if(!placa) return;
+  const km=await getUltimoKm(placa);
+  const hint=document.getElementById('km-hint-'+inputId);
+  const input=document.getElementById(inputId);
+  if(km&&hint){
+    hint.style.display='block';
+    hint.textContent='📍 Último km registrado: '+km+' — toque para usar';
+    hint.onclick=()=>{if(input){input.value=km;input.dispatchEvent(new Event('input'));}};
+  }
+}
 
 async function guardar(registro){
   // 1. Guardar local siempre
@@ -647,15 +668,20 @@ async function enviarMtto(){
   const placa=radio('mtto-placa');
   const conductor=val('mtto-conductor');
   const km=val('mtto-km');
-  const servicio=val('mtto-servicio');
+  // Get all checked services
+  const checks=document.querySelectorAll('#mtto-servicios input:checked');
+  const servicios=Array.from(checks).map(c=>c.value);
   if(!placa){alert('Seleccione la placa');return;}
   if(!conductor){alert('Seleccione el conductor');return;}
   if(!km){alert('Ingrese el km actual');return;}
-  if(!servicio){alert('Seleccione el servicio realizado');return;}
-  const rec={tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor,km,servicio,taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
+  if(!servicios.length){alert('Seleccione al menos un servicio');return;}
+  const rec={tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor,km,
+    servicios,  // array para sheets separados
+    servicio:servicios.join(', '), // texto resumido
+    taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
   await guardar(rec);
-  showOk('🔧','Mantenimiento registrado',servicio+' — '+placa+' · '+km+' km');
-  document.querySelectorAll('#pg-mtto input,#pg-mtto select,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+  showOk('🔧','Mantenimiento registrado',servicios.join(', ')+' — '+placa+' · '+km+' km');
+  document.querySelectorAll('#pg-mtto input,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio'&&el.type!=='checkbox')el.value='';else el.checked=false;});
 }
 
 // ── Novedad ──────────────────────────────────────────────────────
