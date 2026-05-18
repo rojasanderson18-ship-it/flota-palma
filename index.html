@@ -57,6 +57,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#1A1A1A;min-heigh
 .badge{padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
 select option{font-size:16px}
 .req{color:var(--red)}
+
+.srv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.srv-btn{display:flex;align-items:center;gap:8px;padding:12px 10px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;background:#fff;color:#444;transition:all .12s;text-align:left;width:100%;font-family:'Inter',sans-serif}
+.srv-btn.sel{background:var(--gl);border-color:var(--gm);color:var(--g);font-weight:700}
+.srv-btn .ico{font-size:18px;flex-shrink:0}
+.srv-btn .txt{flex:1;line-height:1.2}
 </style>
 </head>
 <body>
@@ -244,22 +250,23 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Servicio realizado <span class="req">*</span> <span style="font-size:10px;color:var(--muted)">(puede seleccionar varios)</span></label>
-      <div id="mtto-servicios" style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
-        <label class="chk-item"><input type="checkbox" value="Aceite motor"> Aceite motor</label>
-        <label class="chk-item"><input type="checkbox" value="Filtro aceite"> Filtro aceite</label>
-        <label class="chk-item"><input type="checkbox" value="Filtro combustible"> Filtro combustible</label>
-        <label class="chk-item"><input type="checkbox" value="Filtro aire"> Filtro aire</label>
-        <label class="chk-item"><input type="checkbox" value="Frenos"> Frenos</label>
-        <label class="chk-item"><input type="checkbox" value="Llantas"> Llantas</label>
-        <label class="chk-item"><input type="checkbox" value="Batería"> Batería</label>
-        <label class="chk-item"><input type="checkbox" value="Refrigeración"> Refrigeración</label>
-        <label class="chk-item"><input type="checkbox" value="Correas"> Correas</label>
-        <label class="chk-item"><input type="checkbox" value="Suspensión"> Suspensión</label>
-        <label class="chk-item"><input type="checkbox" value="Alineación y balanceo"> Alineación y balanceo</label>
-        <label class="chk-item"><input type="checkbox" value="Lavada general"> Lavada general</label>
-        <label class="chk-item"><input type="checkbox" value="Engrase general"> Engrase general</label>
-        <label class="chk-item"><input type="checkbox" value="Eléctrico"> Eléctrico</label>
-        <label class="chk-item"><input type="checkbox" value="Otro"> Otro</label>
+
+                  <div id="mtto-servicios" class="srv-grid">
+        <button type="button" class="srv-btn" data-srv="Aceite motor" onclick="toggleSrv(this)"><span class="ico">🛢️</span><span class="txt">Aceite motor</span></button>
+        <button type="button" class="srv-btn" data-srv="Filtro aceite" onclick="toggleSrv(this)"><span class="ico">🔩</span><span class="txt">Filtro aceite</span></button>
+        <button type="button" class="srv-btn" data-srv="Filtro combustible" onclick="toggleSrv(this)"><span class="ico">⛽</span><span class="txt">Filtro combustible</span></button>
+        <button type="button" class="srv-btn" data-srv="Filtro aire" onclick="toggleSrv(this)"><span class="ico">💨</span><span class="txt">Filtro aire</span></button>
+        <button type="button" class="srv-btn" data-srv="Frenos" onclick="toggleSrv(this)"><span class="ico">🛑</span><span class="txt">Frenos</span></button>
+        <button type="button" class="srv-btn" data-srv="Llantas" onclick="toggleSrv(this)"><span class="ico">⭕</span><span class="txt">Llantas</span></button>
+        <button type="button" class="srv-btn" data-srv="Batería" onclick="toggleSrv(this)"><span class="ico">🔋</span><span class="txt">Batería</span></button>
+        <button type="button" class="srv-btn" data-srv="Refrigeración" onclick="toggleSrv(this)"><span class="ico">💧</span><span class="txt">Refrigeración</span></button>
+        <button type="button" class="srv-btn" data-srv="Correas" onclick="toggleSrv(this)"><span class="ico">🔗</span><span class="txt">Correas</span></button>
+        <button type="button" class="srv-btn" data-srv="Suspensión" onclick="toggleSrv(this)"><span class="ico">🔧</span><span class="txt">Suspensión</span></button>
+        <button type="button" class="srv-btn" data-srv="Alineación" onclick="toggleSrv(this)"><span class="ico">⚖️</span><span class="txt">Alineación</span></button>
+        <button type="button" class="srv-btn" data-srv="Lavada general" onclick="toggleSrv(this)"><span class="ico">🚿</span><span class="txt">Lavada general</span></button>
+        <button type="button" class="srv-btn" data-srv="Engrase general" onclick="toggleSrv(this)"><span class="ico">⚙️</span><span class="txt">Engrase general</span></button>
+        <button type="button" class="srv-btn" data-srv="Eléctrico" onclick="toggleSrv(this)"><span class="ico">⚡</span><span class="txt">Eléctrico</span></button>
+        <button type="button" class="srv-btn" data-srv="Otro" onclick="toggleSrv(this)"><span class="ico">📝</span><span class="txt">Otro</span></button>
       </div>
     </div>
 
@@ -664,13 +671,17 @@ async function enviarComb(){
 }
 
 // ── Mantenimiento ────────────────────────────────────────────────
+function toggleSrv(btn){
+  btn.classList.toggle('sel');
+}
+
 async function enviarMtto(){
   const placa=radio('mtto-placa');
   const conductor=val('mtto-conductor');
   const km=val('mtto-km');
   // Get all checked services
-  const checks=document.querySelectorAll('#mtto-servicios input:checked');
-  const servicios=Array.from(checks).map(c=>c.value);
+  const btns=document.querySelectorAll('#mtto-servicios .srv-btn.sel');
+  const servicios=Array.from(btns).map(b=>b.dataset.srv);
   if(!placa){alert('Seleccione la placa');return;}
   if(!conductor){alert('Seleccione el conductor');return;}
   if(!km){alert('Ingrese el km actual');return;}
@@ -681,7 +692,8 @@ async function enviarMtto(){
     taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
   await guardar(rec);
   showOk('🔧','Mantenimiento registrado',servicios.join(', ')+' — '+placa+' · '+km+' km');
-  document.querySelectorAll('#pg-mtto input,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio'&&el.type!=='checkbox')el.value='';else el.checked=false;});
+  document.querySelectorAll('#pg-mtto input,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+  document.querySelectorAll('#mtto-servicios .srv-btn').forEach(b=>b.classList.remove('sel'));
 }
 
 // ── Novedad ──────────────────────────────────────────────────────
