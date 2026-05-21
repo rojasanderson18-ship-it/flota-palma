@@ -201,15 +201,23 @@ select option{font-size:16px}
       <div id="rend-msg" style="font-size:12px;font-weight:600"></div>
     </div>
 
-    <div class="field">
-      <label>No. tanqueo</label>
-      <input type="number" id="comb-tanq" inputmode="numeric" placeholder="ej: 1"/>
+    <div style="background:var(--gl);border:1.5px solid var(--gm);border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.5px">Precio galón ACPM</div>
+        <button onclick="editarPrecio()" id="btn-edit-precio" style="background:none;border:none;cursor:pointer;font-size:18px;padding:2px 6px" title="Editar precio">✏️</button>
+      </div>
+      <div id="precio-display" style="font-size:22px;font-weight:800;color:var(--g)" onclick="editarPrecio()">$11,700</div>
+      <div id="precio-edit" style="display:none;margin-top:6px">
+        <input type="number" id="precio-input" inputmode="numeric" value="11700"
+          style="font-size:20px;font-weight:700;color:var(--g);border:2px solid var(--gm);border-radius:8px;padding:8px 12px;width:100%;outline:none"/>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button onclick="guardarPrecio()" style="flex:1;padding:8px;background:var(--gm);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">✅ Guardar</button>
+          <button onclick="cancelarPrecio()" style="flex:1;padding:8px;background:#fff;color:var(--muted);border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Cancelar</button>
+        </div>
+      </div>
     </div>
-
-    <div class="field">
-      <label>Precio por galón ($) <span class="req">*</span></label>
-      <input type="number" id="comb-precio" inputmode="numeric" placeholder="ej: 11700" oninput="calcTotal()"/>
-    </div>
+    <input type="hidden" id="comb-precio" value="11700"/>
+    <input type="hidden" id="comb-tanq" value=""/>
 
     <div class="field">
       <label>Valor total ($)</label>
@@ -222,7 +230,17 @@ select option{font-size:16px}
 
     <div class="field">
       <label>Ruta / Labor <span class="req">*</span></label>
-      <input type="text" id="comb-ruta" placeholder="ej: Transporte de fruta" required/>
+      <select id="comb-ruta-sel" onchange="toggleRutaOtra()" required>
+        <option value="">Seleccione...</option>
+        <option value="Transporte de fruta de palma">Transporte de fruta de palma</option>
+        <option value="Transporte de personal">Transporte de personal</option>
+        <option value="Recogida de encomiendas">Recogida de encomiendas</option>
+        <option value="Mantenimiento / Taller">Mantenimiento / Taller</option>
+        <option value="Diligencias administrativas">Diligencias administrativas</option>
+        <option value="Otra">Otra...</option>
+      </select>
+      <input type="text" id="comb-ruta-otra" placeholder="Escriba la ruta o labor" style="display:none;margin-top:8px"/>
+      <input type="hidden" id="comb-ruta"/>
     </div>
 
     <div class="field">
@@ -811,6 +829,7 @@ async function enviarAlta() {
 // Cargar alertas al abrir la página
 window.addEventListener('load', () => {
   setTimeout(cargarAlertas, 500);
+  setTimeout(cargarPrecio, 300);
 });
 
 // ── Service Worker (funciona sin internet) ──────────────────────
@@ -851,6 +870,9 @@ function updatePreop(){
 }
 
 async function enviarPreop(){
+  const _btn=document.querySelector('[onclick="enviarPreop()"]');
+  if(_btn&&_btn.classList.contains('enviando')) return;
+  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
   const placa=radio('pre-placa');
   const km=val('pre-km');
   const conductor=val('pre-conductor');
@@ -893,40 +915,47 @@ function calcRend(){
 }
 
 function calcTotal(){
-  const gal=parseFloat(document.getElementById('comb-gal')?document.getElementById('comb-gal').value||0:0);
-  const precio=parseFloat(document.getElementById('comb-precio')?document.getElementById('comb-precio').value||0:0);
+  const galEl=document.getElementById('comb-gal');
+  const precioEl=document.getElementById('comb-precio');
   const box=document.getElementById('comb-total-box');
   const num=document.getElementById('comb-total-num');
   const inputValor=document.getElementById('comb-valor');
-  if(!gal||!precio||gal===0||precio===0){
-    if(box) box.style.display='none';
-    return;
-  }
-  const total=gal*precio;
-  if(box) box.style.display='block';
-  if(num) num.textContent='$'+total.toLocaleString('es-CO');
-  if(inputValor) inputValor.value=total;
+  const gal=parseFloat((galEl&&galEl.value)?galEl.value:0);
+  const precioRaw=(precioEl&&precioEl.value&&precioEl.value!=='')?precioEl.value:11700;
+  const precio=parseFloat(precioRaw);
+  if(isNaN(gal)||gal===0){if(box)box.style.display='none';return;}
+  if(isNaN(precio)||precio===0){if(box)box.style.display='none';return;}
+  const total=Math.round(gal*precio);
+  if(box)box.style.display='block';
+  if(num)num.textContent='$'+total.toLocaleString('es-CO');
+  if(inputValor)inputValor.value=total;
 }
 
 async function enviarComb(){
+  const _btn=document.querySelector('[onclick="enviarComb()"]');
+  if(_btn&&_btn.classList.contains('enviando')) return;
+  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
   const placa=radio('comb-placa');
   const conductor=val('comb-conductor');
   const kmIni=val('comb-km-ini');
   const kmFin=val('comb-km-fin');
   const gal=val('comb-gal');
-  const ruta=val('comb-ruta');
+  const rutaSel=document.getElementById('comb-ruta-sel');
+  const rutaOtra=document.getElementById('comb-ruta-otra');
+  const ruta=rutaSel&&rutaSel.value==='Otra'?(rutaOtra?rutaOtra.value.trim():''):(rutaSel?rutaSel.value:'');
   if(!placa){alert('Seleccione la placa');return;}
   if(!conductor){alert('Seleccione el conductor');return;}
   if(!kmIni||!kmFin){alert('Ingrese los km de odómetro anterior y actual');return;}
   if(!gal){alert('Ingrese los galones cargados');return;}
-  if(!ruta){alert('Ingrese la ruta o labor');return;}
+  if(!ruta){alert('Seleccione o escriba la ruta / labor');return;}
   const rend=parseFloat(gal)>0?((parseFloat(kmFin)-parseFloat(kmIni))/parseFloat(gal)):null;
   const alerta=rend?rend<5?'ROJO':rend<5.5?'AMARILLO':'OK':'—';
   const rec={tipo:'comb',fecha:today(),hora:nowt(),placa,conductor,kmIni,kmFin,km:kmFin,gal,rend:rend?rend.toFixed(2):null,alerta,valor:val('comb-valor'),tanq:val('comb-tanq'),ruta,obs:val('comb-obs')};
   await guardar(rec);
   const msg=alerta==='ROJO'?'⚠️ Rendimiento BAJO ('+rend.toFixed(2)+' km/gal) — revisar mecánico':'Rendimiento: '+(rend?rend.toFixed(2)+' km/gal':'—');
   showOk(alerta==='ROJO'?'🔴':'✅','Combustible registrado',msg);
-  document.querySelectorAll('#pg-comb input,#pg-comb select,#pg-comb textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
+  document.querySelectorAll('#pg-comb input,#pg-comb select,#pg-comb textarea').forEach(el=>{if(el.type!=='radio'&&el.type!=='hidden')el.value='';else if(el.type==='radio')el.checked=false;});
+  const rotra=document.getElementById('comb-ruta-otra');if(rotra)rotra.style.display='none';
   document.getElementById('rend-box').style.display='none';
   const tb=document.getElementById('comb-total-box');if(tb)tb.style.display='none';
 }
@@ -936,7 +965,72 @@ function toggleSrv(btn){
   btn.classList.toggle('sel');
 }
 
+// ── Precio galón editable ────────────────────────────────────────
+const PRECIO_KEY='flotaPG_precio_galon';
+
+async function cargarPrecio(){
+  try{
+    const p=await dbGet(PRECIO_KEY);
+    const precio=parseFloat(p)||11700;
+    const el=document.getElementById('comb-precio');
+    if(el) el.value=precio;
+    const disp=document.getElementById('precio-display');
+    if(disp) disp.textContent='$'+precio.toLocaleString('es-CO');
+    const inp=document.getElementById('precio-input');
+    if(inp) inp.value=precio;
+    calcTotal();
+  }catch{
+    const el=document.getElementById('comb-precio');
+    if(el) el.value=11700;
+    calcTotal();
+  }
+}
+
+function editarPrecio(){
+  document.getElementById('precio-display').style.display='none';
+  document.getElementById('btn-edit-precio').style.display='none';
+  document.getElementById('precio-edit').style.display='block';
+  document.getElementById('precio-input').focus();
+  document.getElementById('precio-input').select();
+}
+
+async function guardarPrecio(){
+  const nuevo=parseFloat(document.getElementById('precio-input').value||11700);
+  if(!nuevo||nuevo<1000){alert('Ingrese un precio válido');return;}
+  await dbSet(PRECIO_KEY, nuevo);
+  document.getElementById('comb-precio').value=nuevo;
+  document.getElementById('precio-display').textContent='$'+nuevo.toLocaleString('es-CO');
+  document.getElementById('precio-display').style.display='block';
+  document.getElementById('btn-edit-precio').style.display='block';
+  document.getElementById('precio-edit').style.display='none';
+  calcTotal();
+}
+
+function cancelarPrecio(){
+  document.getElementById('precio-display').style.display='block';
+  document.getElementById('btn-edit-precio').style.display='block';
+  document.getElementById('precio-edit').style.display='none';
+}
+
+function toggleRutaOtra(){
+  const sel=document.getElementById('comb-ruta-sel');
+  const otra=document.getElementById('comb-ruta-otra');
+  const hidden=document.getElementById('comb-ruta');
+  if(!sel||!otra||!hidden) return;
+  if(sel.value==='Otra'){
+    otra.style.display='block';
+    otra.focus();
+    hidden.value='';
+  } else {
+    otra.style.display='none';
+    hidden.value=sel.value;
+  }
+}
+
 async function enviarMtto(){
+  const _btn=document.querySelector('[onclick="enviarMtto()"]');
+  if(_btn&&_btn.classList.contains('enviando')) return;
+  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
   const placa=radio('mtto-placa');
   const conductor=val('mtto-conductor');
   const km=val('mtto-km');
@@ -959,6 +1053,9 @@ async function enviarMtto(){
 
 // ── Novedad ──────────────────────────────────────────────────────
 async function enviarNov(){
+  const _btn=document.querySelector('[onclick="enviarNov()"]');
+  if(_btn&&_btn.classList.contains('enviando')) return;
+  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
   const placa=radio('nov-placa');
   const conductor=val('nov-conductor');
   const tipo=val('nov-tipo');
@@ -975,6 +1072,9 @@ async function enviarNov(){
 
 // ── Ruta ─────────────────────────────────────────────────────────
 async function enviarRuta(){
+  const _btn=document.querySelector('[onclick="enviarRuta()"]');
+  if(_btn&&_btn.classList.contains('enviando')) return;
+  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
   const placa=radio('rut-placa');
   const conductor=val('rut-conductor');
   const origen=val('rut-origen');
