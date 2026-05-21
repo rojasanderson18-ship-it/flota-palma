@@ -207,8 +207,17 @@ select option{font-size:16px}
     </div>
 
     <div class="field">
+      <label>Precio por galón ($) <span class="req">*</span></label>
+      <input type="number" id="comb-precio" inputmode="numeric" placeholder="ej: 11700" oninput="calcTotal()"/>
+    </div>
+
+    <div class="field">
       <label>Valor total ($)</label>
-      <input type="number" id="comb-valor" inputmode="numeric" placeholder="ej: 585000"/>
+      <div id="comb-total-box" style="display:none;background:var(--gl);border:1.5px solid var(--gm);border-radius:10px;padding:13px 14px">
+        <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">Total calculado automáticamente</span>
+        <div id="comb-total-num" style="font-size:26px;font-weight:800;color:var(--g);margin-top:4px">$0</div>
+      </div>
+      <input type="hidden" id="comb-valor"/>
     </div>
 
     <div class="field">
@@ -883,6 +892,22 @@ function calcRend(){
   document.getElementById('rend-msg').textContent=msg;
 }
 
+function calcTotal(){
+  const gal=parseFloat(document.getElementById('comb-gal')?document.getElementById('comb-gal').value||0:0);
+  const precio=parseFloat(document.getElementById('comb-precio')?document.getElementById('comb-precio').value||0:0);
+  const box=document.getElementById('comb-total-box');
+  const num=document.getElementById('comb-total-num');
+  const inputValor=document.getElementById('comb-valor');
+  if(!gal||!precio||gal===0||precio===0){
+    if(box) box.style.display='none';
+    return;
+  }
+  const total=gal*precio;
+  if(box) box.style.display='block';
+  if(num) num.textContent='$'+total.toLocaleString('es-CO');
+  if(inputValor) inputValor.value=total;
+}
+
 async function enviarComb(){
   const placa=radio('comb-placa');
   const conductor=val('comb-conductor');
@@ -903,6 +928,7 @@ async function enviarComb(){
   showOk(alerta==='ROJO'?'🔴':'✅','Combustible registrado',msg);
   document.querySelectorAll('#pg-comb input,#pg-comb select,#pg-comb textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
   document.getElementById('rend-box').style.display='none';
+  const tb=document.getElementById('comb-total-box');if(tb)tb.style.display='none';
 }
 
 // ── Mantenimiento ────────────────────────────────────────────────
