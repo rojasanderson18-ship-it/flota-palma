@@ -98,6 +98,12 @@ select option{font-size:16px}
   </button>
 </div>
 
+<!-- ALERTAS DE MANTENIMIENTO -->
+<div id="pg-menu" class="page active" style="padding:0 14px;display:none"><!-- placeholder --></div>
+<div id="alertas-section" style="padding:0 14px;margin-top:4px">
+  <div id="alertas-box"></div>
+</div>
+
 <!-- ═══ PREOPERATIVO ═══ -->
 <div id="pg-preop" class="page">
   <div class="card">
@@ -399,6 +405,47 @@ select option{font-size:16px}
   </div>
 </div>
 
+<!-- ═══ DAR DE ALTA ═══ -->
+<div id="pg-alta" class="page">
+  <div class="card">
+    <h2 style="color:var(--o)">⚠️ Dar de alta mantenimiento</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Registre el km en que se realizó este servicio para actualizar el plan.</p>
+
+    <div style="background:var(--redl);border:1.5px solid var(--red);border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:var(--red)" id="alta-item-nombre">Lavada general</div>
+      <div style="font-size:12px;color:var(--red);margin-top:4px" id="alta-item-estado">VENCIDO — hace 107 km</div>
+    </div>
+
+    <!-- Placa y conductor ocultos pero presentes para el envío -->
+    <input type="radio" name="alta-placa" id="alta-exx" value="EXX568" style="display:none">
+    <input type="radio" name="alta-placa" id="alta-sxy" value="SXY206" style="display:none">
+    <select id="alta-conductor" style="display:none">
+      <option value="">Seleccione...</option>
+      <option value="Rusbel Algarra">Rusbel Algarra</option>
+      <option value="Edgar Tinjaca">Edgar Tinjacá</option>
+      <option value="Otro">Otro</option>
+    </select>
+
+    <div id="alta-info-auto" style="background:var(--gl);border:1.5px solid var(--gm);border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.5px">Información automática</div>
+      <div style="margin-top:6px;font-size:13px;font-weight:600;color:var(--g)" id="alta-auto-txt">EXX568 · Rusbel Algarra</div>
+    </div>
+
+    <div class="field">
+      <label>Km en que se realizó <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" id="alta-km" placeholder="ej: 481974" style="font-size:22px;font-weight:800;color:var(--gm)"/>
+    </div>
+
+    <div class="field">
+      <label>Observación (opcional)</label>
+      <input type="text" id="alta-obs" placeholder="Taller, detalles..."/>
+    </div>
+
+    <button class="btn" style="background:var(--gm)" onclick="enviarAlta()">✅ Dar de alta</button>
+    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu');cargarAlertas()">← Volver</button>
+  </div>
+</div>
+
 <!-- ═══ ÉXITO ═══ -->
 <div id="pg-ok" class="page">
   <div style="padding:20px">
@@ -568,6 +615,194 @@ function mostrarOfflineBadge(hay){
   badge.style.display=hay?'block':'none';
   badge.textContent=hay?'📵 Datos pendientes de enviar':'';
 }
+
+// ── Plan de mantenimiento local ──────────────────────────────────
+const PLAN_KEY = 'flotaPG_plan';
+
+const PLAN_BASE = [
+  {item:'Cambio Aceite Motor 15W40 Diesel', frec:12000, kmUltimo:478750},
+  {item:'Cambio Filtro de Aceite', frec:12000, kmUltimo:478750},
+  {item:'Cambio Filtro de Combustible', frec:50000, kmUltimo:478750},
+  {item:'Engrase General EP2', frec:2000, kmUltimo:480044},
+  {item:'Cambio Filtro de Aire', frec:12000, kmUltimo:478750},
+  {item:'Cambio de Llantas', frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite motor', frec:12000, kmUltimo:478750},
+  {item:'Correa Fanclouse', frec:50000, kmUltimo:478750},
+  {item:'Mangueras Refrigeracion', frec:12000, kmUltimo:478750},
+  {item:'Bomba de Agua', frec:12000, kmUltimo:478750},
+  {item:'Correa de accesorios', frec:50000, kmUltimo:478750},
+  {item:'Aceite transmision', frec:12000, kmUltimo:478750},
+  {item:'Fuga aceite transmision', frec:500, kmUltimo:480857},
+  {item:'Aceite diferencial', frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite ejes traseros', frec:500, kmUltimo:480857},
+  {item:'Aceite direccion hidraulica', frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite direccion hidraulica', frec:500, kmUltimo:480857},
+  {item:'Manguera direccion hidraulica', frec:500, kmUltimo:480857},
+  {item:'Potencia de frenos', frec:500, kmUltimo:480857},
+  {item:'Sistema aire pisada', frec:10000, kmUltimo:478750},
+  {item:'Fugas aire manguera frenos', frec:12000, kmUltimo:478750},
+  {item:'Bandas de los frenos', frec:12000, kmUltimo:478750},
+  {item:'Cambio de Baterias', frec:50000, kmUltimo:478750},
+  {item:'Tuercas de las ruedas', frec:500, kmUltimo:480857},
+  {item:'Campanas de ruedas', frec:20000, kmUltimo:478750},
+  {item:'Presion de aire ruedas', frec:500, kmUltimo:480857},
+  {item:'Tornilleria de chasis', frec:12000, kmUltimo:478750},
+  {item:'Ajuste de suspension', frec:12000, kmUltimo:478750},
+  {item:'Alineacion y balanceo', frec:12000, kmUltimo:478750},
+  {item:'Lavada general', frec:2000, kmUltimo:480044},
+  {item:'Engrase crucetas y equipo', frec:500, kmUltimo:480857},
+];
+
+async function getPlan() {
+  const guardado = await dbGet(PLAN_KEY);
+  if (guardado && Array.isArray(guardado) && guardado.length > 0) return guardado;
+  // Primera vez: usar base con km EXX568
+  await dbSet(PLAN_KEY, PLAN_BASE);
+  return PLAN_BASE;
+}
+
+async function cargarAlertas() {
+  const box = document.getElementById('alertas-box');
+  if (!box) return;
+
+  // Obtener ultimo km de registros guardados
+  const registros = await dbGet(STORE);
+  const ultimoKmEXX = registros.filter(r=>r.placa==='EXX568'&&(r.km||r.kmFin))
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 481974;
+  const ultimoKmSXY = registros.filter(r=>r.placa==='SXY206'&&(r.km||r.kmFin))
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 0;
+
+  const plan = await getPlan();
+
+  // Calcular alertas para cada camion
+  function getAlertas(placa, kmActual) {
+    if (!kmActual) return [];
+    return plan.map(p => {
+      const kmProximo = p.kmUltimo + p.frec;
+      const kmVencer = kmProximo - kmActual;
+      return {...p, kmVencer, estado: estadoItem(kmVencer), placa, kmActual};
+    }).filter(p => p.estado !== 'vigente')
+      .sort((a,b) => a.kmVencer - b.kmVencer);
+  }
+
+  const alertasEXX = getAlertas('EXX568', ultimoKmEXX);
+  const alertasSXY = getAlertas('SXY206', ultimoKmSXY);
+  const hayAlertas = alertasEXX.length > 0 || alertasSXY.length > 0;
+
+  if (!hayAlertas) {
+    box.innerHTML = '<div style="background:var(--okl);border:1.5px solid var(--gm);border-radius:12px;padding:14px;text-align:center;color:var(--ok);font-weight:700;font-size:14px;margin-bottom:12px">✅ Todo el mantenimiento al día</div>';
+    return;
+  }
+
+  function renderColumna(alertas, placa, camion, conductor, color, kmActual) {
+    if (!alertas.length) return `<div style="background:var(--okl);border:1.5px solid var(--gm);border-radius:10px;padding:12px;text-align:center"><div style="font-size:12px;font-weight:700;color:${color}">${camion}</div><div style="font-size:11px;color:var(--ok);margin-top:4px">✅ Al día</div></div>`;
+    
+    let col = `<div style="border:1.5px solid ${color};border-radius:12px;overflow:hidden">
+      <div style="background:${color};padding:10px 12px">
+        <div style="font-size:13px;font-weight:700;color:#fff">${camion}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.8)">${conductor} · Km: ${kmActual.toLocaleString()}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.9);margin-top:2px;font-weight:600">${alertas.length} alerta${alertas.length>1?'s':''}</div>
+      </div>`;
+    
+    alertas.slice(0,5).forEach(p => {
+      const isV = p.estado==='vencido';
+      const isP = p.estado==='programar';
+      const bg = isV?'var(--redl)':isP?'#FFF9C4':'#FFE0B2';
+      const fc = isV?'var(--red)':isP?'#B45309':'#C2410C';
+      const lbl = isV?'🔴 VENCIDO':isP?'🟠 PROGRAMAR':'🟡 ESTA SEMANA';
+      const kmTxt = isV?`hace ${Math.abs(p.kmVencer)} km`:`${p.kmVencer} km`;
+      col += `<div style="background:${bg};padding:10px 12px;border-top:1px solid rgba(0,0,0,.06)">
+        <div style="font-size:12px;font-weight:700;color:${fc};margin-bottom:2px">${p.item}</div>
+        <div style="font-size:11px;color:${fc};margin-bottom:6px">${lbl} — ${kmTxt}</div>
+        <button onclick="abrirAlta('${p.item.replace(/'/g,"\'")}','${placa}','${conductor}',${kmActual},'${lbl}','${kmTxt}')"
+          style="background:${fc};color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;width:100%">
+          🔧 Dar de alta
+        </button>
+      </div>`;
+    });
+    col += '</div>';
+    return col;
+  }
+
+  const colEXX = renderColumna(alertasEXX,'EXX568','🌴 EXX568','Rusbel Algarra','#1B4332',ultimoKmEXX);
+  const colSXY = renderColumna(alertasSXY,'SXY206','👥 SXY206','Edgar Tinjacá','#E05A00',ultimoKmSXY||0);
+
+  box.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">⚠️ ALERTAS DE MANTENIMIENTO</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      ${colEXX}${colSXY}
+    </div>`;
+}
+
+function estadoItem(kmVencer) {
+  if (kmVencer < 0) return 'vencido';
+  if (kmVencer <= 500) return 'programar';
+  if (kmVencer <= 3000) return 'semana';
+  return 'vigente';
+}
+
+let _altaItem = '', _altaPlaca = '', _altaConductor = '', _altaKmActual = 0;
+function abrirAlta(item, placa, conductor, kmActual, estado, detalle) {
+  _altaItem = item;
+  _altaPlaca = placa;
+  _altaConductor = conductor;
+  _altaKmActual = kmActual;
+
+  document.getElementById('alta-item-nombre').textContent = item;
+  document.getElementById('alta-item-estado').textContent = estado + ' — ' + detalle;
+
+  // Auto-seleccionar placa
+  document.querySelectorAll('input[name="alta-placa"]').forEach(r => {
+    r.checked = r.value === placa;
+  });
+  // Auto-seleccionar conductor
+  const sel = document.getElementById('alta-conductor');
+  if (sel) sel.value = conductor;
+  // Sugerir km actual
+  const kmInput = document.getElementById('alta-km');
+  if (kmInput) { kmInput.placeholder = 'ej: ' + kmActual; }
+  // Update auto info
+  const autoTxt = document.getElementById('alta-auto-txt');
+  if (autoTxt) autoTxt.textContent = placa + ' · ' + conductor + ' · Km actual: ' + kmActual.toLocaleString();
+  showPage('pg-alta');
+}
+
+async function enviarAlta() {
+  const placa = radio('alta-placa');
+  const conductor = val('alta-conductor');
+  const km = val('alta-km');
+  if (!placa) { alert('Seleccione la placa'); return; }
+  if (!conductor) { alert('Seleccione el conductor'); return; }
+  if (!km) { alert('Ingrese el km en que se realizó'); return; }
+
+  // Actualizar plan local
+  const plan = await getPlan();
+  const idx = plan.findIndex(p => p.item === _altaItem);
+  if (idx >= 0) {
+    plan[idx].kmUltimo = parseFloat(km);
+    await dbSet(PLAN_KEY, plan);
+  }
+
+  // Enviar como mantenimiento a Google Sheets
+  const rec = {
+    tipo: 'mtto', fecha: today(), hora: nowt(),
+    placa, conductor, km,
+    servicios: [_altaItem], servicio: _altaItem,
+    taller: '', costo: '', obs: val('alta-obs') || 'Dado de alta desde alerta'
+  };
+  await guardar(rec);
+
+  showOk('✅', 'Mantenimiento dado de alta', _altaItem + ' — ' + placa + ' · ' + km + ' km');
+  document.getElementById('alta-km').value = '';
+  document.getElementById('alta-obs').value = '';
+  document.getElementById('alta-conductor').value = '';
+  document.querySelectorAll('input[name="alta-placa"]').forEach(r => r.checked = false);
+}
+
+// Cargar alertas al abrir la página
+window.addEventListener('load', () => {
+  setTimeout(cargarAlertas, 500);
+});
 
 // ── Service Worker (funciona sin internet) ──────────────────────
 if('serviceWorker' in navigator){
