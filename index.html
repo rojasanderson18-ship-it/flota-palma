@@ -96,6 +96,11 @@ select option{font-size:16px}
     <span class="ico">⚠️</span>
     <div class="info"><strong>Novedad</strong><span>Accidente, avería, multa u otro</span></div>
   </button>
+  <button class="btn-menu" onclick="showPage('pg-plan');cargarPlanCompleto()" style="border-color:#37474F">
+    <span class="ico">📋</span>
+    <div class="info"><strong>Plan de mantenimiento</strong><span>Km restantes por servicio</span></div>
+  </button>
+  
 
 </div>
 
@@ -416,6 +421,41 @@ select option{font-size:16px}
   </div>
 </div>
 
+<!-- ═══ PLAN MANTENIMIENTO ═══ -->
+<div id="pg-plan" class="page">
+  <div class="hdr" style="background:#37474F;border-radius:0 0 24px 24px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600" onclick="showPage('pg-menu')">← Inicio</button>
+      <div><div style="font-size:16px;font-weight:700;color:#fff">Plan de Mantenimiento</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7)">EXX568 — Km actual: <span id="plan-km-actual">481,974</span></div></div>
+    </div>
+  </div>
+  <div style="padding:14px;padding-bottom:80px">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap" id="plan-filtros">
+      <button onclick="filtrarPlan('todos')" class="plan-filtro on" data-f="todos" style="padding:7px 14px;border-radius:8px;border:1.5px solid #37474F;background:#37474F;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">Todos</button>
+      <button onclick="filtrarPlan('vencido')" class="plan-filtro" data-f="vencido" style="padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🔴 Vencidos</button>
+      <button onclick="filtrarPlan('programar')" class="plan-filtro" data-f="programar" style="padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:#B45309;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🟠 Programar</button>
+      <button onclick="filtrarPlan('vigente')" class="plan-filtro" data-f="vigente" style="padding:7px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--ok);font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🟢 Vigente</button>
+    </div>
+    <div id="plan-lista"></div>
+  </div>
+</div>
+
+<!-- ═══ PLAN MANTENIMIENTO ═══ -->
+<div id="pg-plan" class="page">
+  <div style="background:#37474F;padding:calc(env(safe-area-inset-top,0px)+18px) 18px 16px;border-radius:0 0 24px 24px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onclick="showPage('pg-menu')" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">← Inicio</button>
+      <div style="font-size:16px;font-weight:700;color:#fff">📋 Plan de Mantenimiento</div>
+    </div>
+  </div>
+  <div style="padding:14px;padding-bottom:90px">
+    <div id="plan-content">
+      <div style="text-align:center;padding:30px;color:var(--muted)">Cargando...</div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ ÉXITO ═══ -->
 <div id="pg-ok" class="page">
   <div style="padding:20px">
@@ -466,18 +506,28 @@ function openDB(){
   return new Promise(res=>{
     if(_db) return res(_db);
     const r=indexedDB.open('flotaPG',2);
-    r.onupgradeneeded=e=>{ try{e.target.result.createObjectStore('data');}catch{} };
+    r.onupgradeneeded=e=>{ try{e.target.result.createObjectStore('data');}catch(e){} };
     r.onsuccess=e=>{_db=e.target.result;res(_db)};
     r.onerror=()=>res(null);
   });
 }
 async function dbGet(k){
-  try{const db=await openDB();if(!db)throw 0;return new Promise(res=>{const tx=db.transaction('data','readonly');const r=tx.objectStore('data').get(k);r.onsuccess=()=>res(r.result||[]);r.onerror=()=>res([]);});}
-  catch{try{const d=localStorage.getItem(k);return d?JSON.parse(d):[];}catch{return[];}}
+  try{
+    const db=await openDB();
+    if(!db) throw 0;
+    return new Promise(res=>{
+      const tx=db.transaction('data','readonly');
+      const r=tx.objectStore('data').get(k);
+      r.onsuccess=()=>res(r.result||[]);
+      r.onerror=()=>res([]);
+    });
+  }catch(e){
+    try{const d=localStorage.getItem(k);return d?JSON.parse(d):[];}catch(e2){return[];}
+  }
 }
 async function dbSet(k,v){
-  try{const db=await openDB();if(!db)throw 0;await new Promise(res=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').put(v,k);tx.oncomplete=res;tx.onerror=res;});}catch{}
-  try{localStorage.setItem(k,JSON.stringify(v.slice?v.slice(0,200):v));}catch{}
+  try{const db=await openDB();if(!db)throw 0;await new Promise(res=>{const tx=db.transaction('data','readwrite');tx.objectStore('data').put(v,k);tx.oncomplete=res;tx.onerror=res;});}catch(e){}
+  try{localStorage.setItem(k,JSON.stringify(v.slice?v.slice(0,200):v));}catch(e){}
 }
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -509,7 +559,7 @@ async function getUltimoKm(placa){
     const conKm=registros.filter(r=>r.placa===placa&&(r.km||r.kmIni));
     if(!conKm.length) return null;
     return conKm[0].km||conKm[0].kmIni;
-  }catch{return null;}
+  }catch(e){return null;}
 }
 
 async function mostrarUltimoKm(inputId, placa){
@@ -591,45 +641,65 @@ const PLAN_KEY = 'flotaPG_plan';
 
 const KM_EXX568 = 481974;
 const PLAN_BASE = [
-  {item:'Cambio Aceite Motor 15W40 Diesel', frec:12000, kmUltimo:478750},
-  {item:'Cambio Filtro de Aceite', frec:12000, kmUltimo:478750},
-  {item:'Cambio Filtro de Combustible', frec:50000, kmUltimo:478750},
-  {item:'Engrase General EP2', frec:2000, kmUltimo:480044},
-  {item:'Cambio Filtro de Aire', frec:12000, kmUltimo:478750},
-  {item:'Cambio de Llantas', frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite motor', frec:12000, kmUltimo:478750},
-  {item:'Correa Fanclouse', frec:50000, kmUltimo:478750},
-  {item:'Mangueras Refrigeracion', frec:12000, kmUltimo:478750},
-  {item:'Bomba de Agua', frec:12000, kmUltimo:478750},
-  {item:'Correa de accesorios', frec:50000, kmUltimo:478750},
-  {item:'Aceite transmision', frec:12000, kmUltimo:478750},
-  {item:'Fuga aceite transmision', frec:500, kmUltimo:480857},
-  {item:'Aceite diferencial', frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite ejes traseros', frec:500, kmUltimo:480857},
-  {item:'Aceite direccion hidraulica', frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite direccion hidraulica', frec:500, kmUltimo:480857},
-  {item:'Manguera direccion hidraulica', frec:500, kmUltimo:480857},
-  {item:'Potencia de frenos', frec:500, kmUltimo:480857},
-  {item:'Sistema aire pisada', frec:10000, kmUltimo:478750},
-  {item:'Fugas aire manguera frenos', frec:12000, kmUltimo:478750},
-  {item:'Bandas de los frenos', frec:12000, kmUltimo:478750},
-  {item:'Cambio de Baterias', frec:50000, kmUltimo:478750},
-  {item:'Tuercas de las ruedas', frec:500, kmUltimo:480857},
-  {item:'Campanas de ruedas', frec:20000, kmUltimo:478750},
-  {item:'Presion de aire ruedas', frec:500, kmUltimo:480857},
-  {item:'Tornilleria de chasis', frec:12000, kmUltimo:478750},
-  {item:'Ajuste de suspension', frec:12000, kmUltimo:478750},
-  {item:'Alineacion y balanceo', frec:12000, kmUltimo:478750},
-  {item:'Lavada general', frec:2000, kmUltimo:480044},
-  {item:'Engrase crucetas y equipo', frec:500, kmUltimo:480857},
+  {item:'Cambio Aceite Motor 15W40 Diesel',    frec:12000, kmUltimo:478750},
+  {item:'Cambio Filtro de Aceite',              frec:12000, kmUltimo:478750},
+  {item:'Cambio Filtro de Combustible',         frec:50000, kmUltimo:478750},
+  {item:'Engrase General EP2',                  frec:2000,  kmUltimo:480044},
+  {item:'Cambio Filtro de Aire',                frec:12000, kmUltimo:478750},
+  {item:'Cambio de Llantas',                    frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite motor',                   frec:12000, kmUltimo:478750},
+  {item:'Correa Fanclouse',                     frec:50000, kmUltimo:478750},
+  {item:'Mangueras Refrigeracion',              frec:12000, kmUltimo:478750},
+  {item:'Bomba de Agua',                        frec:12000, kmUltimo:478750},
+  {item:'Lavado deposito combustible',          frec:12000, kmUltimo:478750},
+  {item:'Revisar nivel refrigerante',           frec:12000, kmUltimo:478750},
+  {item:'Fugas agua sistema refrigeracion',     frec:12000, kmUltimo:480857},
+  {item:'Correa de accesorios',                 frec:50000, kmUltimo:478750},
+  {item:'Kit Embrague',                         frec:50000, kmUltimo:478750},
+  {item:'Aceite transmision',                   frec:12000, kmUltimo:478750},
+  {item:'Fuga aceite transmision',              frec:500,   kmUltimo:480857},
+  {item:'Aceite engranada diferencial',         frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite ejes traseros',           frec:500,   kmUltimo:480857},
+  {item:'Mantenimiento de crucetas',            frec:12000, kmUltimo:478750},
+  {item:'Aceite direccion hidraulica',          frec:50000, kmUltimo:478750},
+  {item:'Fugas aceite direccion hidraulica',    frec:500,   kmUltimo:480857},
+  {item:'Manguera direccion hidraulica',        frec:500,   kmUltimo:480857},
+  {item:'Juego volante direccion',              frec:50000, kmUltimo:478750},
+  {item:'Potencia de frenos',                   frec:500,   kmUltimo:480857},
+  {item:'Efectividad freno estacionamiento',    frec:500,   kmUltimo:480857},
+  {item:'Sistema aire pisada',                  frec:10000, kmUltimo:478750},
+  {item:'Fugas aire manguera frenos',           frec:12000, kmUltimo:478750},
+  {item:'Bandas de los frenos',                 frec:12000, kmUltimo:478750},
+  {item:'Electricidad arranque y alternador',   frec:50000, kmUltimo:478750},
+  {item:'Cambio de Baterias',                   frec:50000, kmUltimo:478750},
+  {item:'Tuercas de las ruedas',                frec:500,   kmUltimo:480857},
+  {item:'Campanas de ruedas',                   frec:20000, kmUltimo:478750},
+  {item:'Presion de aire ruedas',               frec:500,   kmUltimo:480857},
+  {item:'Tornilleria de chasis',                frec:12000, kmUltimo:478750},
+  {item:'Amortiguadores',                       frec:50000, kmUltimo:478750},
+  {item:'Ajuste de suspension',                 frec:12000, kmUltimo:478750},
+  {item:'Alineacion y balanceo',                frec:12000, kmUltimo:478750},
+  {item:'Lavada general',                       frec:2000,  kmUltimo:480044},
+  {item:'Engrase crucetas y equipo',            frec:500,   kmUltimo:480857},
 ];
 
+// Forzar recarga del plan con datos actualizados
+const PLAN_VERSION = 'v3';
+
 async function getPlan() {
-  const guardado = await dbGet(PLAN_KEY);
-  if (guardado && Array.isArray(guardado) && guardado.length > 0) return guardado;
-  // Primera vez: usar base con km EXX568
-  await dbSet(PLAN_KEY, PLAN_BASE);
-  return PLAN_BASE;
+  try {
+    const version = await dbGet(PLAN_KEY+'_ver');
+    const guardado = await dbGet(PLAN_KEY);
+    // Si es nueva version o no hay datos, recargar base
+    if (!version || version !== PLAN_VERSION || !guardado || !Array.isArray(guardado) || guardado.length < 30) {
+      await dbSet(PLAN_KEY, PLAN_BASE);
+      await dbSet(PLAN_KEY+'_ver', PLAN_VERSION);
+      return PLAN_BASE;
+    }
+    return guardado;
+  } catch(e) {
+    return PLAN_BASE;
+  }
 }
 
 async function cargarAlertas() {
@@ -807,11 +877,6 @@ async function enviarAlta() {
   };
   await guardar(rec);
 
-  _enviando=false;
-  _enviando=false;
-  _enviando=false;
-  _enviando=false;
-  _enviando=false;
   showOk('✅', 'Dado de alta correctamente', _altaItem + ' — ' + _altaPlaca + ' · ' + km + ' km');
   document.getElementById('alta-km').value = '';
   document.getElementById('alta-obs').value = '';
@@ -871,7 +936,7 @@ function cerrarSesion(){
 
 // Siempre pedir PIN al cargar
 document.addEventListener('DOMContentLoaded', ()=>{
-  try{ sessionStorage.removeItem(SESSION_KEY); }catch{}
+  try{ sessionStorage.removeItem(SESSION_KEY); }catch(e){}
   const login = document.getElementById('pg-login');
   const app = document.getElementById('app');
   if(login) login.style.display='flex';
@@ -881,6 +946,217 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(pin) pin.focus();
   }, 300);
 });
+
+// ── Plan de mantenimiento visual ─────────────────────────────────
+let _planFiltro = 'todos';
+let _planItems = [];
+
+async function cargarPlan(){
+  const registros = await dbGet(STORE);
+  const kmEXX = registros.filter(r=>r.placa==='EXX568'&&(r.km||r.kmFin))
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 481974;
+  
+  document.getElementById('plan-km-actual').textContent = kmEXX.toLocaleString('es-CO');
+  
+  const plan = await getPlan();
+  _planItems = plan.map(p => {
+    const kmProximo = p.kmUltimo + p.frec;
+    const kmVencer = kmProximo - kmEXX;
+    const estado = estadoItem(kmVencer);
+    return {...p, kmProximo, kmVencer, estado, kmActual: kmEXX};
+  }).sort((a,b) => a.kmVencer - b.kmVencer);
+  
+  renderPlan();
+}
+
+function filtrarPlan(f){
+  _planFiltro = f;
+  document.querySelectorAll('.plan-filtro').forEach(b=>{
+    const isOn = b.dataset.f === f;
+    b.style.background = isOn ? '#37474F' : '#fff';
+    b.style.color = isOn ? '#fff' : (b.dataset.f==='vencido'?'var(--red)':b.dataset.f==='programar'?'#B45309':b.dataset.f==='vigente'?'var(--ok)':'#555');
+    b.style.borderColor = isOn ? '#37474F' : 'var(--border)';
+  });
+  renderPlan();
+}
+
+function renderPlan(){
+  const lista = document.getElementById('plan-lista');
+  if(!lista) return;
+  
+  const items = _planFiltro === 'todos' ? _planItems :
+    _planItems.filter(p => p.estado === _planFiltro);
+  
+  if(!items.length){
+    lista.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px;font-size:14px">Sin ítems en esta categoría</div>';
+    return;
+  }
+  
+  lista.innerHTML = items.map(p => {
+    const isV = p.estado==='vencido';
+    const isP = p.estado==='programar';
+    const isS = p.estado==='semana';
+    const bg = isV?'#FEE2E2':isP?'#FFF9C4':isS?'#FFE0B2':'#F0FDF4';
+    const border = isV?'var(--red)':isP?'#F59E0B':isS?'#F97316':'var(--gm)';
+    const color = isV?'var(--red)':isP?'#B45309':isS?'#C2410C':'var(--ok)';
+    const icon = isV?'🔴':isP?'🟠':isS?'🟡':'🟢';
+    const label = isV?'VENCIDO':isP?'PROGRAMAR MTTO':isS?'ESTA SEMANA':'VIGENTE';
+    const kmTxt = isV?`Vencido hace ${Math.abs(p.kmVencer).toLocaleString()} km`:`Faltan ${p.kmVencer.toLocaleString()} km`;
+    const progreso = Math.max(0, Math.min(100, ((p.frec - Math.max(0,p.kmVencer))/p.frec)*100));
+    
+    return `<div style="background:${bg};border:1.5px solid ${border};border-radius:12px;padding:12px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:700;color:${color};flex:1">${icon} ${p.item}</div>
+        <div style="font-size:10px;font-weight:700;color:${color};white-space:nowrap;margin-left:8px;background:${border}22;padding:2px 8px;border-radius:999px">${label}</div>
+      </div>
+      <div style="font-size:12px;color:${color};font-weight:600;margin-bottom:8px">${kmTxt}</div>
+      <div style="background:rgba(0,0,0,.1);border-radius:999px;height:6px;overflow:hidden">
+        <div style="background:${border};height:100%;width:${progreso}%;border-radius:999px;transition:width .3s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <span style="font-size:10px;color:${color}">Cada ${p.frec.toLocaleString()} km</span>
+        <span style="font-size:10px;color:${color}">Próximo: ${p.kmProximo.toLocaleString()} km</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Plan completo de mantenimiento ──────────────────────────────
+async function cargarPlanCompleto(){
+  const box = document.getElementById('plan-content');
+  if(!box) return;
+  box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Calculando...</div>';
+
+  const registros = await dbGet(STORE);
+  const ultimoKmEXX = registros.filter(r=>r.placa==='EXX568'&&(r.km||r.kmFin))
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 481974;
+  const ultimoKmSXY = registros.filter(r=>r.placa==='SXY206'&&(r.km||r.kmFin))
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 0;
+
+  const plan = await getPlan();
+
+  function renderPlan(placa, kmActual, color, icon) {
+    if(!kmActual) return `<div style="background:#F5F5F5;border-radius:12px;padding:12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px">${icon} ${placa} — Sin km registrado</div>`;
+
+    const items = plan.map(p => {
+      const kmProximo = p.kmUltimo + p.frec;
+      const kmVencer = kmProximo - kmActual;
+      return {...p, kmVencer, kmProximo};
+    }).sort((a,b) => a.kmVencer - b.kmVencer);
+
+    const vencidos = items.filter(i=>i.kmVencer<0);
+    const programar = items.filter(i=>i.kmVencer>=0&&i.kmVencer<=500);
+    const semana = items.filter(i=>i.kmVencer>500&&i.kmVencer<=3000);
+    const vigentes = items.filter(i=>i.kmVencer>3000);
+
+    let html = `<div style="border:1.5px solid ${color};border-radius:14px;overflow:hidden;margin-bottom:14px">
+      <div style="background:${color};padding:12px 14px">
+        <div style="font-size:14px;font-weight:700;color:#fff">${icon} ${placa}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">Km actual: ${kmActual.toLocaleString()} · ${vencidos.length} vencidos · ${programar.length} urgentes</div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <tr style="background:#F5F5F5">
+          <th style="padding:8px 10px;text-align:left;font-size:10px;color:var(--muted);font-weight:700">SERVICIO</th>
+          <th style="padding:8px 6px;text-align:center;font-size:10px;color:var(--muted);font-weight:700">KM FALTAN</th>
+          <th style="padding:8px 6px;text-align:center;font-size:10px;color:var(--muted);font-weight:700">ESTADO</th>
+        </tr>`;
+
+    items.forEach(p => {
+      const isV = p.kmVencer<0;
+      const isP = p.kmVencer>=0&&p.kmVencer<=500;
+      const isS = p.kmVencer>500&&p.kmVencer<=3000;
+      const bg = isV?'#FEE2E2':isP?'#FFF9C4':isS?'#FFF7ED':'#fff';
+      const fc = isV?'#B91C1C':isP?'#B45309':isS?'#C2410C':'#1B5E20';
+      const estado = isV?'🔴 VENCIDO':isP?'🟠 URGENTE':isS?'🟡 PRONTO':'🟢 OK';
+      const kmTxt = isV?`-${Math.abs(p.kmVencer).toLocaleString()}`:p.kmVencer.toLocaleString();
+
+      html += `<tr style="background:${bg};border-top:1px solid rgba(0,0,0,.05)">
+        <td style="padding:8px 10px;font-weight:500;color:var(--text)">${p.item}</td>
+        <td style="padding:8px 6px;text-align:center;font-weight:700;color:${fc}">${kmTxt}</td>
+        <td style="padding:8px 6px;text-align:center;font-size:11px;font-weight:700;color:${fc}">${estado}</td>
+      </tr>`;
+    });
+
+    html += '</table></div>';
+    return html;
+  }
+
+  // Store data for filtering
+  window._planDataEXX = {placa:'EXX568', km:ultimoKmEXX, color:'#1B4332', icon:'🌴', plan};
+  window._planDataSXY = {placa:'SXY206', km:ultimoKmSXY, color:'#E05A00', icon:'👥', plan};
+  filtrarPlan('todos');
+}
+
+function filtrarPlan(filtro){
+  const box = document.getElementById('plan-content');
+  if(!box) return;
+  
+  const d = window._planDataEXX;
+  const d2 = window._planDataSXY;
+  if(!d || !d2) return;
+
+  function renderFiltered(data, filtro){
+    if(!data.km) return `<div style="background:#F5F5F5;border-radius:12px;padding:12px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px">${data.icon} ${data.placa} — Sin km registrado</div>`;
+    
+    let items = data.plan.map(p => {
+      const kmProximo = p.kmUltimo + p.frec;
+      const kmVencer = kmProximo - data.km;
+      return {...p, kmVencer, kmProximo};
+    });
+
+    if(filtro === 'vencidos') items = items.filter(i => i.kmVencer < 0);
+    else if(filtro === 'programar') items = items.filter(i => i.kmVencer >= 0 && i.kmVencer <= 3000);
+    else if(filtro === 'vigente') items = items.filter(i => i.kmVencer > 3000);
+    
+    items.sort((a,b) => a.kmVencer - b.kmVencer);
+
+    const vTot = data.plan.filter(p => (p.kmUltimo+p.frec-data.km) < 0).length;
+    const pTot = data.plan.filter(p => { const k=p.kmUltimo+p.frec-data.km; return k>=0&&k<=3000; }).length;
+
+    let h = `<div style="border:1.5px solid ${data.color};border-radius:14px;overflow:hidden;margin-bottom:14px">
+      <div style="background:${data.color};padding:12px 14px">
+        <div style="font-size:14px;font-weight:700;color:#fff">${data.icon} ${data.placa}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">Km: ${data.km.toLocaleString()} · ${vTot} vencidos · ${pTot} por programar · ${data.plan.length-vTot-pTot} vigentes</div>
+      </div>`;
+
+    if(!items.length){
+      h += `<div style="padding:14px;text-align:center;color:var(--muted);font-size:13px">Sin ítems en esta categoría</div>`;
+    } else {
+      h += `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <tr style="background:#F5F5F5">
+          <th style="padding:8px 10px;text-align:left;font-size:10px;color:var(--muted);font-weight:700">SERVICIO</th>
+          <th style="padding:8px 6px;text-align:center;font-size:10px;color:var(--muted);font-weight:700;width:70px">KM FALTAN</th>
+          <th style="padding:8px 6px;text-align:center;font-size:10px;color:var(--muted);font-weight:700;width:80px">ESTADO</th>
+        </tr>`;
+      items.forEach(p => {
+        const isV=p.kmVencer<0, isP=p.kmVencer>=0&&p.kmVencer<=500, isS=p.kmVencer>500&&p.kmVencer<=3000;
+        const bg=isV?'#FEE2E2':isP?'#FFF9C4':isS?'#FFF7ED':'#fff';
+        const fc=isV?'#B91C1C':isP?'#B45309':isS?'#C2410C':'#1B5E20';
+        const estado=isV?'🔴':isP?'🟠':isS?'🟡':'🟢';
+        const kmTxt=isV?`-${Math.abs(p.kmVencer).toLocaleString()}`:p.kmVencer.toLocaleString();
+        h+=`<tr style="background:${bg};border-top:1px solid rgba(0,0,0,.05)">
+          <td style="padding:8px 10px;font-weight:500;color:var(--text);font-size:12px">${p.item}</td>
+          <td style="padding:8px 6px;text-align:center;font-weight:700;color:${fc};font-size:12px">${kmTxt}</td>
+          <td style="padding:8px 6px;text-align:center;font-size:14px">${estado}</td>
+        </tr>`;
+      });
+      h += '</table>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  const tabs = ['todos','vencidos','programar','vigente'];
+  const labels = ['Todos','🔴 Vencidos','🟠 Programar','🟢 Vigente'];
+  let tabsHtml = '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">';
+  tabs.forEach((t,i) => {
+    const active = t === filtro;
+    tabsHtml += `<button onclick="filtrarPlan('${t}')" style="padding:8px 14px;border-radius:999px;border:1.5px solid ${active?'#37474F':'var(--border)'};background:${active?'#37474F':'#fff'};color:${active?'#fff':'var(--muted)'};font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">${labels[i]}</button>`;
+  });
+  tabsHtml += '</div>';
+
+  box.innerHTML = tabsHtml + renderFiltered(d, filtro) + renderFiltered(d2, filtro);
+}
 
 // ── Service Worker (funciona sin internet) ──────────────────────
 if('serviceWorker' in navigator){
@@ -920,16 +1196,13 @@ function updatePreop(){
 }
 
 async function enviarPreop(){
-  if(_enviando) return;
-  _enviando = true;
   const _btn=document.querySelector('[onclick="enviarPreop()"]');
   if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';_btn.disabled=true;}
-  try{
   const placa=radio('pre-placa');
   const km=val('pre-km');
   const conductor=val('pre-conductor');
-  if(!placa){alert('Seleccione la placa del camión');return;}
-  if(!conductor){_enviando=false;alert('Seleccione el conductor');return;}
+  if(!placa){alert('Seleccione la placa del camión');if(_btn)_btn.disabled=false;return;}
+  if(!conductor){alert('Seleccione el conductor');if(_btn)_btn.disabled=false;return;}
   if(!km){alert('Ingrese el km del odómetro');return;}
   // Check all items marked
   const sinMarcar=PREOP_ITEMS.filter(p=>!radio('pre-'+p.id));
@@ -984,11 +1257,8 @@ function calcTotal(){
 }
 
 async function enviarComb(){
-  if(_enviando) return;
-  _enviando = true;
   const _btn=document.querySelector('[onclick="enviarComb()"]');
   if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';_btn.disabled=true;}
-  try{
   const placa=radio('comb-placa');
   const conductor=val('comb-conductor');
   const kmIni=val('comb-km-ini');
@@ -997,11 +1267,11 @@ async function enviarComb(){
   const rutaSel=document.getElementById('comb-ruta-sel');
   const rutaOtra=document.getElementById('comb-ruta-otra');
   const ruta=rutaSel&&rutaSel.value==='Otra'?(rutaOtra?rutaOtra.value.trim():''):(rutaSel?rutaSel.value:'');
-  if(!placa){_enviando=false;alert('Seleccione la placa');return;}
-  if(!conductor){_enviando=false;alert('Seleccione el conductor');return;}
-  if(!kmIni||!kmFin){_enviando=false;alert('Ingrese los km de odómetro anterior y actual');return;}
-  if(!gal){_enviando=false;alert('Ingrese los galones cargados');return;}
-  if(!ruta){alert('Seleccione o escriba la ruta / labor');return;}
+  if(!placa){alert('Seleccione la placa');if(_btn)_btn.disabled=false;return;}
+  if(!conductor){alert('Seleccione el conductor');if(_btn)_btn.disabled=false;return;}
+  if(!kmIni||!kmFin){alert('Ingrese los km de odómetro anterior y actual');if(_btn)_btn.disabled=false;return;}
+  if(!gal){alert('Ingrese los galones cargados');if(_btn)_btn.disabled=false;return;}
+  if(!ruta){alert('Seleccione o escriba la ruta / labor');if(_btn)_btn.disabled=false;return;}
   const rend=parseFloat(gal)>0?((parseFloat(kmFin)-parseFloat(kmIni))/parseFloat(gal)):null;
   const alerta=rend?rend<5?'ROJO':rend<5.5?'AMARILLO':'OK':'—';
   const rec={tipo:'comb',fecha:today(),hora:nowt(),placa,conductor,kmIni,kmFin,km:kmFin,gal,rend:rend?rend.toFixed(2):null,alerta,valor:val('comb-valor'),tanq:val('comb-tanq'),ruta,obs:val('comb-obs')};
@@ -1015,8 +1285,6 @@ async function enviarComb(){
 }
 
 // ── Mantenimiento ────────────────────────────────────────────────
-let _enviando = false;
-
 function toggleSrv(btn){
   btn.classList.toggle('sel');
 }
@@ -1035,7 +1303,7 @@ async function cargarPrecio(){
     const inp=document.getElementById('precio-input');
     if(inp) inp.value=precio;
     calcTotal();
-  }catch{
+  }catch(e){
     const el=document.getElementById('comb-precio');
     if(el) el.value=11700;
     calcTotal();
@@ -1084,21 +1352,18 @@ function toggleRutaOtra(){
 }
 
 async function enviarMtto(){
-  if(_enviando) return;
-  _enviando = true;
   const _btn=document.querySelector('[onclick="enviarMtto()"]');
   if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';_btn.disabled=true;}
-  try{
   const placa=radio('mtto-placa');
   const conductor=val('mtto-conductor');
   const km=val('mtto-km');
   // Get all checked services
   const btns=document.querySelectorAll('#mtto-servicios .srv-btn.sel');
   const servicios=Array.from(btns).map(b=>b.dataset.srv);
-  if(!placa){_enviando=false;alert('Seleccione la placa');return;}
-  if(!conductor){_enviando=false;alert('Seleccione el conductor');return;}
-  if(!km){_enviando=false;alert('Ingrese el km actual');return;}
-  if(!servicios.length){alert('Seleccione al menos un servicio');return;}
+  if(!placa){alert('Seleccione la placa');if(_btn)_btn.disabled=false;return;}
+  if(!conductor){alert('Seleccione el conductor');if(_btn)_btn.disabled=false;return;}
+  if(!km){alert('Ingrese el km actual');if(_btn)_btn.disabled=false;return;}
+  if(!servicios.length){alert('Seleccione al menos un servicio');if(_btn)_btn.disabled=false;return;}
   const rec={tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor,km,
     servicios,  // array para sheets separados
     servicio:servicios.join(', '), // texto resumido
@@ -1111,19 +1376,16 @@ async function enviarMtto(){
 
 // ── Novedad ──────────────────────────────────────────────────────
 async function enviarNov(){
-  if(_enviando) return;
-  _enviando = true;
   const _btn=document.querySelector('[onclick="enviarNov()"]');
   if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';_btn.disabled=true;}
-  try{
   const placa=radio('nov-placa');
   const conductor=val('nov-conductor');
   const tipo=val('nov-tipo');
   const desc=val('nov-desc');
-  if(!placa){_enviando=false;alert('Seleccione la placa');return;}
-  if(!conductor){_enviando=false;alert('Seleccione el conductor');return;}
-  if(!tipo){alert('Seleccione el tipo de novedad');return;}
-  if(!desc){alert('Describa la novedad');return;}
+  if(!placa){alert('Seleccione la placa');if(_btn)_btn.disabled=false;return;}
+  if(!conductor){alert('Seleccione el conductor');if(_btn)_btn.disabled=false;return;}
+  if(!tipo){alert('Seleccione el tipo de novedad');if(_btn)_btn.disabled=false;return;}
+  if(!desc){alert('Describa la novedad');if(_btn)_btn.disabled=false;return;}
   const rec={tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor,km:val('nov-km'),tipoNov:tipo,desc,};
   await guardar(rec);
   showOk('⚠️','Novedad registrada',tipo+' — '+placa);
