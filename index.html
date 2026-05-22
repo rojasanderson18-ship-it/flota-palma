@@ -698,11 +698,55 @@ async function cargarAlertas() {
   const colEXX = renderColumna(alertasEXX,'EXX568','🌴 EXX568','Rusbel Algarra','#1B4332',ultimoKmEXX);
   const colSXY = renderColumna(alertasSXY,'SXY206','👥 SXY206','Edgar Tinjacá','#E05A00',ultimoKmSXY||0);
 
+  // Novedades abiertas
+  const registros2 = await dbGet(STORE);
+  const novsAbiertas = (registros2||[]).filter(r=>r.tipo==='novedad'&&!r.resuelta);
+  let novsHtml = '';
+  if(novsAbiertas.length){
+    novsHtml = `<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px;margin-top:4px">⚠️ NOVEDADES PENDIENTES (${novsAbiertas.length})</div>`;
+    novsAbiertas.slice(0,5).forEach(n=>{
+      novsHtml+=`<div style="background:var(--aml);border:1.5px solid var(--am);border-radius:12px;padding:12px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--am)">${n.tipoNov}</div>
+            <div style="font-size:12px;color:var(--am);margin-top:2px">${n.placa} · ${n.fecha} · ${n.hora}</div>
+            <div style="font-size:12px;color:var(--text);margin-top:4px">${n.desc||''}</div>
+          </div>
+        </div>
+        <button onclick="resolverNovedad(${n.id})" style="margin-top:10px;width:100%;background:var(--am);color:#fff;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">
+          ✅ Marcar como resuelta
+        </button>
+      </div>`;
+    });
+  }
+
   box.innerHTML = `
     <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px">⚠️ ALERTAS DE MANTENIMIENTO</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       ${colEXX}${colSXY}
-    </div>`;
+    </div>
+    ${novsHtml}`;
+}
+
+async function resolverNovedad(id){
+  const registros = await dbGet(STORE);
+  const idx = registros.findIndex(r=>r.id===id);
+  if(idx>=0){
+    registros[idx].resuelta = true;
+    registros[idx].fechaResolucion = today();
+    await dbSet(STORE, registros);
+    // Enviar resolución a Sheets
+    const n = registros[idx];
+    const rec = {
+      tipo:'novedad_resuelta', fecha:today(), hora:nowt(),
+      placa:n.placa, conductor:n.conductor||'',
+      km:'', tipoNov:n.tipoNov,
+      desc:'RESUELTA: '+n.desc, resuelta:true
+    };
+    await guardar(rec);
+  }
+  toast('✅ Novedad marcada como resuelta');
+  cargarAlertas();
 }
 
 function estadoItem(kmVencer) {
@@ -739,14 +783,10 @@ function abrirAlta(item, placa, conductor, kmActual, estado, detalle) {
 }
 
 async function enviarAlta() {
-  const placa = radio('alta-placa');
-  const conductor = val('alta-conductor');
   const km = val('alta-km');
-  if (!placa) { alert('Seleccione la placa'); return; }
-  if (!conductor) { alert('Seleccione el conductor'); return; }
   if (!km) { alert('Ingrese el km en que se realizó'); return; }
 
-  // Actualizar plan local
+  // Actualizar plan local — quitar alerta
   const plan = await getPlan();
   const idx = plan.findIndex(p => p.item === _altaItem);
   if (idx >= 0) {
@@ -754,20 +794,22 @@ async function enviarAlta() {
     await dbSet(PLAN_KEY, plan);
   }
 
-  // Enviar como mantenimiento a Google Sheets
+  // Enviar a Google Sheets con nombre del servicio
   const rec = {
     tipo: 'mtto', fecha: today(), hora: nowt(),
-    placa, conductor, km,
-    servicios: [_altaItem], servicio: _altaItem,
-    taller: '', costo: '', obs: val('alta-obs') || 'Dado de alta desde alerta'
+    placa: _altaPlaca,
+    conductor: _altaConductor,
+    km,
+    servicios: [_altaItem],
+    servicio: _altaItem,
+    taller: '', costo: '',
+    obs: 'Alta desde alerta: ' + _altaItem
   };
   await guardar(rec);
 
-  showOk('✅', 'Mantenimiento dado de alta', _altaItem + ' — ' + placa + ' · ' + km + ' km');
+  showOk('✅', 'Dado de alta correctamente', _altaItem + ' — ' + _altaPlaca + ' · ' + km + ' km');
   document.getElementById('alta-km').value = '';
   document.getElementById('alta-obs').value = '';
-  document.getElementById('alta-conductor').value = '';
-  document.querySelectorAll('input[name="alta-placa"]').forEach(r => r.checked = false);
 }
 
 // Cargar alertas al abrir la página
