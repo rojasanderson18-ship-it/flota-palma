@@ -18,24 +18,24 @@
   --am:#92400E;--aml:#FEF3C7;
   --ok:#166534;--okl:#DCFCE7;
   --bg:#F0F2F5;--card:#fff;--text:#1A1A1A;--muted:#6B7280;--border:#E5E7EB;
-  --r:14px;--rs:10px;
+  --r:16px;--rs:12px;
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overscroll-behavior:none}
 #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px}
 #main-app{display:none;max-width:430px;margin:0 auto;min-height:100vh}
-.card{background:var(--card);border-radius:var(--r);padding:16px;border:1px solid var(--border);margin-bottom:12px}
-.hdr{padding:calc(env(safe-area-inset-top,0px)+18px) 18px 16px;border-radius:0 0 24px 24px;color:#fff}
-.hdr h1{font-size:19px;font-weight:800}
-.hdr p{font-size:12px;opacity:.75;margin-top:3px}
-.scr{padding:14px 14px 90px}
+.card{background:var(--card);border-radius:var(--r);padding:18px;border:1px solid var(--border);margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.hdr{padding:calc(env(safe-area-inset-top,0px)+22px) 20px 20px;color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.hdr h1{font-size:21px;font-weight:900;letter-spacing:-.3px}
+.hdr p{font-size:12px;opacity:.8;margin-top:3px}
+.scr{padding:16px 14px 90px}
 .page{display:none}
 .page.active{display:block}
-.sec{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px}
-.btn-menu{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;width:100%;cursor:pointer;margin-bottom:10px;font-family:'Inter',sans-serif;transition:background .1s}
-.btn-menu:active{background:#F5F5F5}
-.btn-menu .ico{font-size:28px;flex-shrink:0}
+.sec{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+.btn-menu{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:18px 16px;width:100%;cursor:pointer;margin-bottom:10px;font-family:'Inter',sans-serif;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.btn-menu:active{background:#F5F5F5;transform:scale(.99)}
+.btn-menu .ico{font-size:30px;flex-shrink:0}
 .btn-menu strong{display:block;font-size:15px;font-weight:700;color:var(--text);text-align:left}
-.btn-menu span{font-size:12px;color:var(--muted);text-align:left}
+.btn-menu span{font-size:12px;color:var(--muted);text-align:left;margin-top:2px;display:block}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;font-size:16px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;outline:none;transition:border-color .15s}
@@ -418,7 +418,7 @@ const PLAN_KEY = 'flotaPG_plan';
 
 const USUARIOS = [
   {pin:'2105', nombre:'Rusbel Algarra', placa:'EXX568', rol:'conductor'},
-  {pin:'2105', nombre:'Edgar Tinjaca',  placa:'SXY206', rol:'conductor'},
+  {pin:'2026', nombre:'Edgar Tinjaca',  placa:'SXY206', rol:'conductor'},
   {pin:'Palmagrande', nombre:'Dirección', placa:'ADMIN', rol:'admin'},
 ];
 
@@ -841,6 +841,7 @@ async function savePreop() {
   document.getElementById('ok-ico').textContent = fallas.length ? '⚠️' : '✅';
   document.getElementById('ok-title').textContent = fallas.length ? 'Registrado con fallas' : 'Preoperativo OK';
   document.getElementById('ok-msg').textContent = placa + ' · ' + oks + '/10 OK' + (fallas.length ? ' · Fallas: '+fallas.join(', ') : '');
+  const _savePreop_btn=document.getElementById('pre-save-btn');if(_savePreop_btn){_savePreop_btn.disabled=false;_savePreop_btn.style.background='var(--gm)';_savePreop_btn.textContent='✅ Guardar preoperativo';}
   goPage('pg-ok');
 }
 
@@ -911,6 +912,7 @@ async function saveComb() {
   document.getElementById('rend-box').style.display='none';
   document.getElementById('total-box').style.display='none';
   document.getElementById('comb-ruta-otra').style.display='none';
+  const cbtn=document.getElementById('comb-save-btn');if(cbtn){cbtn.disabled=false;cbtn.style.background='#1565C0';cbtn.textContent='✅ Enviar registro';}
   document.getElementById('ok-ico').textContent = alerta==='ROJO'?'🔴':'✅';
   document.getElementById('ok-title').textContent = 'Combustible registrado';
   document.getElementById('ok-msg').textContent = placa+' · '+gal+' gal'+(rend?' · '+rend+' km/gal':'')+(alerta==='ROJO'?' ⚠️ Rendimiento BAJO':'');
@@ -942,6 +944,7 @@ async function saveMtto() {
   document.getElementById('ok-ico').textContent='🔧';
   document.getElementById('ok-title').textContent='Mantenimiento registrado';
   document.getElementById('ok-msg').textContent=servicios.join(', ')+' — '+placa+' · '+km+' km';
+  const _saveMtto_btn=document.getElementById('mtto-save-btn');if(_saveMtto_btn){_saveMtto_btn.disabled=false;_saveMtto_btn.style.background='#E65100';_saveMtto_btn.textContent='✅ Enviar registro';}
   goPage('pg-ok');
 }
 
@@ -970,6 +973,7 @@ async function saveNov() {
   document.getElementById('ok-ico').textContent='⚠️';
   document.getElementById('ok-title').textContent='Novedad registrada';
   document.getElementById('ok-msg').textContent=novTipo||'Novedad'+' — '+placa;
+  const _saveNov_btn=document.getElementById('nov-save-btn');if(_saveNov_btn){_saveNov_btn.disabled=false;_saveNov_btn.style.background='#B45309';_saveNov_btn.textContent='✅ Enviar novedad';}
   goPage('pg-ok');
 }
 
