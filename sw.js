@@ -1,4 +1,4 @@
-const CACHE = 'flotaPG-v1';
+const CACHE = 'flotaPG-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -22,12 +22,10 @@ self.addEventListener('fetch', e => {
     return;
   }
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      return cached || fetch(e.request).then(response => {
-        const clone = response.clone();
-        caches.open(CACHE).then(cache => cache.put(e.request, clone));
-        return response;
-      }).catch(() => cached);
-    })
+    fetch(e.request).then(response => {
+      const clone = response.clone();
+      caches.open(CACHE).then(cache => cache.put(e.request, clone));
+      return response;
+    }).catch(() => caches.match(e.request))
   );
 });
