@@ -63,6 +63,10 @@ select option{font-size:16px}
 .srv-btn.sel{background:var(--gl);border-color:var(--gm);color:var(--g);font-weight:700}
 .srv-btn .ico{font-size:18px;flex-shrink:0}
 .srv-btn .txt{flex:1;line-height:1.2}
+
+#pg-login{display:flex!important}
+#app{display:none!important}
+#app.visible{display:block!important}
 </style>
 </head>
 <body>
@@ -92,10 +96,7 @@ select option{font-size:16px}
     <span class="ico">⚠️</span>
     <div class="info"><strong>Novedad</strong><span>Accidente, avería, multa u otro</span></div>
   </button>
-  <button class="btn-menu" onclick="showPage('pg-ruta')">
-    <span class="ico">🗺️</span>
-    <div class="info"><strong>Ruta / Viaje</strong><span>Registro de origen y destino</span></div>
-  </button>
+
 </div>
 
 <!-- ALERTAS DE MANTENIMIENTO -->
@@ -370,64 +371,6 @@ select option{font-size:16px}
     </div>
 
     <button class="btn" style="background:#B45309" onclick="enviarNov()">⚠️ Enviar novedad</button>
-    <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
-  </div>
-</div>
-
-<!-- ═══ RUTA ═══ -->
-<div id="pg-ruta" class="page">
-  <div class="card">
-    <h2>🗺️ Registro de ruta</h2>
-
-    <div class="field">
-      <label>Placa <span class="req">*</span></label>
-      <div class="radio-group">
-        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-exx" value="EXX568" required onchange="mostrarUltimoKm('rut-km-ini',this.value)"><label for="rut-exx">🌴 EXX568</label></div>
-        <div class="radio-opt"><input type="radio" name="rut-placa" id="rut-sxy" value="SXY206" onchange="mostrarUltimoKm('rut-km-ini',this.value)"><label for="rut-sxy">👥 SXY206</label></div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Conductor <span class="req">*</span></label>
-      <select id="rut-conductor" required>
-        <option value="">Seleccione...</option>
-        <option value="Rusbel Algarra">Rusbel Algarra</option>
-        <option value="Edgar Tinjaca">Edgar Tinjacá</option>
-        <option value="Otro">Otro</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Km salida <span class="req">*</span></label>
-      <div class="km-auto" id="km-hint-rut-km-ini"></div><input type="number" id="rut-km-ini" inputmode="numeric" placeholder="ej: 480500" required/>
-    </div>
-
-    <div class="field">
-      <label>Km llegada</label>
-      <input type="number" id="rut-km-fin" inputmode="numeric" placeholder="ej: 480857"/>
-    </div>
-
-    <div class="field">
-      <label>Origen <span class="req">*</span></label>
-      <input type="text" id="rut-origen" placeholder="ej: Finca Palma Grande" required/>
-    </div>
-
-    <div class="field">
-      <label>Destino <span class="req">*</span></label>
-      <input type="text" id="rut-destino" placeholder="ej: Planta extractora" required/>
-    </div>
-
-    <div class="field">
-      <label>Carga / Labor</label>
-      <input type="text" id="rut-carga" placeholder="ej: Fruta de palma — 8 toneladas"/>
-    </div>
-
-    <div class="field">
-      <label>Observaciones (opcional)</label>
-      <textarea id="rut-obs" placeholder="Novedades de la ruta..."></textarea>
-    </div>
-
-    <button class="btn" style="background:var(--gm)" onclick="enviarRuta()">✅ Enviar registro</button>
     <button class="btn" style="background:#fff;color:var(--muted);border:2px solid var(--border)" onclick="showPage('pg-menu')">← Volver</button>
   </div>
 </div>
@@ -861,28 +804,35 @@ function verificarPin(){
 }
 
 function entrar(){
-  document.getElementById('pg-login').style.display='none';
-  document.getElementById('app').style.display='block';
-  // Mostrar nombre en header
-  const saludo = document.getElementById('hdr-usuario');
-  if(saludo && _usuario) saludo.textContent = 'Hola, ' + _usuario.nombre;
-  try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify(_usuario)); }catch{}
+  const login=document.getElementById('pg-login');
+  const app=document.getElementById('app');
+  if(login) login.style.cssText='display:none!important';
+  if(app){ app.style.cssText='display:block!important'; app.classList.add('visible'); }
+  const saludo=document.getElementById('hdr-usuario');
+  if(saludo&&_usuario) saludo.textContent='Hola, '+_usuario.nombre;
 }
 
 function cerrarSesion(){
   _usuario=null;
-  try{ sessionStorage.removeItem(SESSION_KEY); }catch{}
-  document.getElementById('app').style.display='none';
-  document.getElementById('pg-login').style.display='flex';
-  document.getElementById('login-pin').value='';
+  const login=document.getElementById('pg-login');
+  const app=document.getElementById('app');
+  if(app){ app.style.cssText='display:none!important'; app.classList.remove('visible'); }
+  if(login) login.style.cssText='display:flex!important';
+  const pin=document.getElementById('login-pin');
+  if(pin){ pin.value=''; pin.focus(); }
 }
 
-// Revisar sesión al cargar
-window.addEventListener('load', ()=>{
-  try{
-    const s=sessionStorage.getItem(SESSION_KEY);
-    if(s){ _usuario=JSON.parse(s); entrar(); }
-  }catch{}
+// Siempre pedir PIN al cargar
+document.addEventListener('DOMContentLoaded', ()=>{
+  try{ sessionStorage.removeItem(SESSION_KEY); }catch{}
+  const login = document.getElementById('pg-login');
+  const app = document.getElementById('app');
+  if(login) login.style.display='flex';
+  if(app) app.style.display='none';
+  setTimeout(()=>{
+    const pin = document.getElementById('login-pin');
+    if(pin) pin.focus();
+  }, 300);
 });
 
 // ── Service Worker (funciona sin internet) ──────────────────────
@@ -1124,27 +1074,7 @@ async function enviarNov(){
 }
 
 // ── Ruta ─────────────────────────────────────────────────────────
-async function enviarRuta(){
-  const _btn=document.querySelector('[onclick="enviarRuta()"]');
-  if(_btn&&_btn.classList.contains('enviando')) return;
-  if(_btn){_btn.classList.add('enviando');_btn.textContent='Enviando...';}
-  const placa=radio('rut-placa');
-  const conductor=val('rut-conductor');
-  const origen=val('rut-origen');
-  const destino=val('rut-destino');
-  const kmIni=val('rut-km-ini');
-  if(!placa){alert('Seleccione la placa');return;}
-  if(!conductor){alert('Seleccione el conductor');return;}
-  if(!kmIni){alert('Ingrese el km de salida');return;}
-  if(!origen){alert('Ingrese el origen');return;}
-  if(!destino){alert('Ingrese el destino');return;}
-  const kmFin=val('rut-km-fin');
-  const kmRec=kmIni&&kmFin?parseFloat(kmFin)-parseFloat(kmIni):null;
-  const rec={tipo:'ruta',fecha:today(),hora:nowt(),placa,conductor,kmIni,kmFin,kmRec,origen,destino,carga:val('rut-carga'),obs:val('rut-obs')};
-  await guardar(rec);
-  showOk('🗺️','Ruta registrada',origen+' → '+destino+(kmRec?' · '+kmRec+' km':''));
-  document.querySelectorAll('#pg-ruta input,#pg-ruta select,#pg-ruta textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
-}
+
 </script>
 </div>
 </body>
