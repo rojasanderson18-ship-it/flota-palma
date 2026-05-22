@@ -832,6 +832,58 @@ window.addEventListener('load', () => {
   setTimeout(cargarPrecio, 300);
 });
 
+// ── Sistema de PIN ───────────────────────────────────────────────
+const USUARIOS_PIN = [
+  {pin:'2105',        nombre:'Rusbel Algarra', placa:'EXX568', camion:'c1', rol:'conductor'},
+  {pin:'2105',        nombre:'Edgar Tinjaca',  placa:'SXY206', camion:'c2', rol:'conductor'},
+  {pin:'Palmagrande', nombre:'Dirección',       placa:'ADMIN',  camion:null, rol:'admin'},
+];
+
+let _usuario = null;
+const SESSION_KEY = 'flotaPG_session';
+
+function verificarPin(){
+  const pinIngresado = document.getElementById('login-pin').value.trim();
+  const errBox = document.getElementById('login-error');
+
+  const usuario = USUARIOS_PIN.find(u => u.pin === pinIngresado);
+
+  if(usuario){
+    _usuario = usuario;
+    entrar();
+  } else {
+    errBox.style.display='block';
+    document.getElementById('login-pin').value='';
+    document.getElementById('login-pin').focus();
+    setTimeout(()=>errBox.style.display='none', 3000);
+  }
+}
+
+function entrar(){
+  document.getElementById('pg-login').style.display='none';
+  document.getElementById('app').style.display='block';
+  // Mostrar nombre en header
+  const saludo = document.getElementById('hdr-usuario');
+  if(saludo && _usuario) saludo.textContent = 'Hola, ' + _usuario.nombre;
+  try{ sessionStorage.setItem(SESSION_KEY, JSON.stringify(_usuario)); }catch{}
+}
+
+function cerrarSesion(){
+  _usuario=null;
+  try{ sessionStorage.removeItem(SESSION_KEY); }catch{}
+  document.getElementById('app').style.display='none';
+  document.getElementById('pg-login').style.display='flex';
+  document.getElementById('login-pin').value='';
+}
+
+// Revisar sesión al cargar
+window.addEventListener('load', ()=>{
+  try{
+    const s=sessionStorage.getItem(SESSION_KEY);
+    if(s){ _usuario=JSON.parse(s); entrar(); }
+  }catch{}
+});
+
 // ── Service Worker (funciona sin internet) ──────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -1093,5 +1145,6 @@ async function enviarRuta(){
   document.querySelectorAll('#pg-ruta input,#pg-ruta select,#pg-ruta textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
 }
 </script>
+</div>
 </body>
 </html>
