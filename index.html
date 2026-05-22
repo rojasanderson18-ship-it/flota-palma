@@ -646,6 +646,7 @@ function mostrarOfflineBadge(hay){
 // ── Plan de mantenimiento local ──────────────────────────────────
 const PLAN_KEY = 'flotaPG_plan';
 
+const KM_EXX568 = 481974;
 const PLAN_BASE = [
   {item:'Cambio Aceite Motor 15W40 Diesel', frec:12000, kmUltimo:478750},
   {item:'Cambio Filtro de Aceite', frec:12000, kmUltimo:478750},
@@ -695,7 +696,7 @@ async function cargarAlertas() {
   // Obtener ultimo km de registros guardados
   const registros = await dbGet(STORE);
   const ultimoKmEXX = registros.filter(r=>r.placa==='EXX568'&&(r.km||r.kmFin))
-    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 481974;
+    .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || KM_EXX568;
   const ultimoKmSXY = registros.filter(r=>r.placa==='SXY206'&&(r.km||r.kmFin))
     .map(r=>parseFloat(r.km||r.kmFin)).filter(k=>!isNaN(k)).sort((a,b)=>b-a)[0] || 0;
 
