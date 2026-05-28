@@ -18,6 +18,7 @@
 .doc-chip-row{display:flex;flex-wrap:wrap;gap:6px}
 .doc-chip{border-radius:999px;background:var(--bg);color:var(--muted);font-size:10px;font-weight:800;padding:6px 8px}
 .doc-chip.required{background:var(--gl);color:var(--g)}
+.doc-status{display:inline-block;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;background:var(--gl);color:var(--g)}
 .doc-empty{background:var(--aml);border:1.5px solid var(--am);border-radius:12px;padding:12px;margin:10px 0 12px;color:var(--am)}
 .doc-empty-title{font-size:13px;font-weight:900;margin-bottom:6px}
 .doc-empty ul{margin:0;padding-left:17px;font-size:12px;line-height:1.45}
@@ -66,7 +67,7 @@
       <div class="doc-unit">
         <div class="doc-unit-head">
           <div><div class="doc-unit-name">EXX568</div><div class="doc-unit-use">Rusbel Algarra - RFF, bascula y planta</div></div>
-          <span class="status-pill">RFF</span>
+          <span class="doc-status">RFF</span>
         </div>
         <div class="doc-chip-row">
           <span class="doc-chip required">SOAT</span><span class="doc-chip required">Tecnomecanica</span><span class="doc-chip required">Seguro</span><span class="doc-chip">Tarjeta propiedad</span><span class="doc-chip">Licencia Rusbel</span>
@@ -75,7 +76,7 @@
       <div class="doc-unit">
         <div class="doc-unit-head">
           <div><div class="doc-unit-name">SXY206</div><div class="doc-unit-use">Edgar Tinjaca - personal y encomiendas</div></div>
-          <span class="status-pill">Personal</span>
+          <span class="doc-status">Personal</span>
         </div>
         <div class="doc-chip-row">
           <span class="doc-chip required">SOAT</span><span class="doc-chip required">Tecnomecanica</span><span class="doc-chip required">Licencia Edgar</span><span class="doc-chip">Permiso interno</span><span class="doc-chip">Seguro pasajeros</span>
@@ -105,7 +106,6 @@
   }
 
   run();
-  document.addEventListener('click', () => setTimeout(run, 80), true);
   if (window.goPage && !window.goPage.__docsWrapped) {
     const originalGoPage = window.goPage;
     window.goPage = function () {
