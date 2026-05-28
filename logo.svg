@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 640" role="img" aria-labelledby="title desc">
+  <title id="title">PALMAGRANDE S.A.S</title>
+  <desc id="desc">Logo dorado con palma verde y texto blanco Palmagrande S.A.S</desc>
+  <rect width="720" height="640" rx="30" fill="#efbb42"/>
+
+  <g transform="translate(360 126) scale(.78)">
+    <path fill="#075f3a" d="M0 0C-31-60-84-101-160-120c77-12 139 10 183 67C20-31 12-12 0 0Z"/>
+    <path fill="#075f3a" d="M0 0C31-60 84-101 160-120 83-132 21-110-23-53-20-31-12-12 0 0Z"/>
+    <path fill="#075f3a" d="M-20 19c-71-19-133-8-187 32 47-74 108-107 184-91 21 18 22 39 3 59Z"/>
+    <path fill="#075f3a" d="M20 19c71-19 133-8 187 32-47-74-108-107-184-91-21 18-22 39-3 59Z"/>
+    <path fill="#075f3a" d="M-15 42c-51 28-88 67-111 117-4-70 25-119 88-148 25 2 33 14 23 31Z"/>
+    <path fill="#075f3a" d="M15 42c51 28 88 67 111 117 4-70-25-119-88-148 25 2 33 14 23 31Z"/>
+  </g>
+
+  <g fill="#fffdf5" transform="translate(360 244)">
+    <path d="M0 0c-12 18-18 31-18 43 0 13 8 22 18 22s18-9 18-22C18 31 12 18 0 0Z"/>
+    <path d="M0 77c-10 16-16 28-16 38 0 12 7 20 16 20s16-8 16-20c0-10-6-22-16-38Z"/>
+    <path d="M0 148c-9 14-14 24-14 33 0 10 6 17 14 17s14-7 14-17c0-9-5-19-14-33Z"/>
+  </g>
+
+  <text x="360" y="530" fill="#fffdf5" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="66" font-weight="900" letter-spacing="-1">PALMAGRANDE</text>
+  <text x="360" y="585" fill="#fffdf5" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="38" font-weight="900" letter-spacing="4">S.A.S</text>
+</svg>
