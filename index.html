@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#1B4332"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="Flota PG"/>
-<link rel="manifest" href="manifest.json"/>
 <title>Flota Palma Grande</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
@@ -14,6 +13,8 @@
 :root{
   --g:#1B4332;--gm:#2D6A4F;--gl:#D8F3DC;
   --o:#E05A00;--ol:#FFF0E6;
+  --blue:#1565C0;--bluel:#E3F2FD;
+  --purple:#6B21A8;--purplel:#F3E8FF;
   --red:#B91C1C;--redl:#FEE2E2;
   --am:#92400E;--aml:#FEF3C7;
   --ok:#166534;--okl:#DCFCE7;
@@ -31,20 +32,20 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .page{display:none}
 .page.active{display:block}
 .sec{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
-.btn-menu{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:18px 16px;width:100%;cursor:pointer;margin-bottom:10px;font-family:'Inter',sans-serif;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.btn-menu{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;width:100%;cursor:pointer;margin-bottom:10px;font-family:'Inter',sans-serif;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .btn-menu:active{background:#F5F5F5;transform:scale(.99)}
-.btn-menu .ico{font-size:30px;flex-shrink:0}
+.btn-menu .ico{font-size:28px;flex-shrink:0}
 .btn-menu strong{display:block;font-size:15px;font-weight:700;color:var(--text);text-align:left}
 .btn-menu span{font-size:12px;color:var(--muted);text-align:left;margin-top:2px;display:block}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;border:2px solid var(--border);border-radius:var(--rs);padding:12px 14px;font-size:16px;font-family:'Inter',sans-serif;color:var(--text);background:#fff;outline:none;transition:border-color .15s}
 .field input[type=number]{font-size:19px;font-weight:700}
-.field input:focus,.field select:focus{border-color:var(--gm)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gm)}
 .radio-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .radio-opt input{display:none}
 .radio-opt label{display:block;text-align:center;padding:11px;border:2px solid var(--border);border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;color:var(--muted);background:#fff;transition:all .12s}
-.radio-opt input:checked + label{border-color:var(--gm);background:var(--gl);color:var(--g)}
+.radio-opt input:checked+label{border-color:var(--gm);background:var(--gl);color:var(--g)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .chip{border:2px solid var(--border);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;background:#fff;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s}
 .chip.on{background:var(--gm);border-color:var(--gm);color:#fff}
@@ -57,33 +58,40 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .preop-bts{display:flex;gap:6px;flex-shrink:0}
 .preop-bts input{display:none}
 .preop-bts label{padding:7px 12px;border:2px solid var(--border);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:var(--muted);transition:all .12s;font-family:'Inter',sans-serif}
-.preop-bts input:checked + label{background:var(--okl);border-color:var(--gm);color:var(--ok)}
-.preop-bts input.bad:checked + label{background:var(--redl);border-color:var(--red);color:var(--red)}
+.preop-bts input:checked+label{background:var(--okl);border-color:var(--gm);color:var(--ok)}
+.preop-bts input.bad:checked+label{background:var(--redl);border-color:var(--red);color:var(--red)}
 .btn{width:100%;padding:15px;border:none;border-radius:var(--r);font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:8px;transition:all .15s}
-.btn:disabled{background:#D1D5DB;cursor:not-allowed}
-.btn-sec{background:#fff;color:var(--muted);border:2px solid var(--border)}
+.btn:disabled{background:#D1D5DB!important;cursor:not-allowed}
+.btn-sec{background:#fff!important;color:var(--text)!important;border:2px solid var(--border)!important}
+.btn-sm{padding:9px 14px!important;font-size:13px!important;border-radius:10px!important;width:auto!important;margin:0!important}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--border);display:flex;padding:6px 0;padding-bottom:calc(env(safe-area-inset-bottom,0px)+6px);z-index:100}
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;padding:5px;cursor:pointer}
 .nb-ico{font-size:22px}
 .nb-lbl{font-size:10px;font-weight:700;color:#CBD5E1}
 .nb.on .nb-lbl{color:var(--g)}
-.toast-el{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;z-index:9999;white-space:nowrap;display:none}
-.alert-card{border-radius:12px;padding:14px;margin-bottom:8px;border:2px solid}
-.alert-card.vencido{background:var(--redl);border-color:var(--red)}
-.alert-card.programar{background:var(--aml);border-color:var(--am)}
+.toast-el{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1A1A1A;color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;font-weight:600;z-index:9999;white-space:nowrap;display:none;max-width:90vw}
 .rec{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
 .rec:last-child{border-bottom:none}
 .rec-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:var(--gl)}
 .rec-info{flex:1;min-width:0}
-.rec-title{font-size:13px;font-weight:700;color:var(--g)}
+.rec-title{font-size:13px;font-weight:700}
 .rec-det{font-size:12px;color:var(--muted);margin-top:2px}
 .rend-box{border-radius:var(--rs);padding:12px;text-align:center;margin-bottom:12px;display:none}
 .km-hint{background:var(--aml);border:1.5px solid var(--am);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--am);margin-bottom:6px;cursor:pointer;display:none}
-.plan-tab{padding:7px 12px;border-radius:999px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s}
-.plan-tab.on{background:#37474F;border-color:#37474F;color:#fff}
-.plan-row{border-top:0.5px solid rgba(0,0,0,.06)}
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.tab-btn{padding:7px 13px;border-radius:999px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s;white-space:nowrap;flex-shrink:0}
+.tab-btn.on{background:#37474F;border-color:#37474F;color:#fff}
+.atab.on{background:var(--purple)!important;border-color:var(--purple)!important;color:#fff!important}
 .empty{text-align:center;padding:30px;color:var(--muted);font-size:14px}
 .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.item-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.item-row:last-child{border-bottom:none}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.form-box{background:var(--bg);border-radius:var(--r);padding:16px;margin-bottom:16px;border:2px solid var(--border)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-box{background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center}
+.stat-val{font-size:22px;font-weight:800}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
 </style>
 </head>
 <body>
@@ -103,7 +111,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <div id="login-err" style="display:none;background:var(--redl);border:1.5px solid var(--red);border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:600;color:var(--red);margin-bottom:12px">
-      ❌ PIN incorrecto
+      PIN incorrecto
     </div>
     <button onclick="doLogin()" style="width:100%;padding:15px;background:var(--gm);border:none;border-radius:12px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif">
       Entrar
@@ -119,21 +127,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-home" class="page active">
     <div class="hdr" style="background:var(--g)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div>
-          <h1>Flota Palma Grande</h1>
-          <p id="hdr-usuario"></p>
-        </div>
+        <div><h1>Flota Palma Grande</h1><p id="hdr-usuario"></p></div>
         <button onclick="doLogout()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">🔒 Salir</button>
       </div>
     </div>
-    <div class="scr" id="home-scr">
+    <div class="scr">
       <div class="sec">¿Qué vas a registrar?</div>
-      <button class="btn-menu" onclick="goPage('pg-preop')"><span class="ico">✅</span><div><strong>Preoperativo diario</strong><span>Antes de salir — 10 puntos</span></div></button>
-      <button class="btn-menu" onclick="goPage('pg-comb')"><span class="ico">⛽</span><div><strong>Combustible</strong><span>Tanqueo — galones y km</span></div></button>
-      <button class="btn-menu" onclick="goPage('pg-mtto')"><span class="ico">🔧</span><div><strong>Mantenimiento</strong><span>Servicio realizado</span></div></button>
-      <button class="btn-menu" onclick="goPage('pg-nov')"><span class="ico">⚠️</span><div><strong>Novedad</strong><span>Accidente, avería, multa</span></div></button>
-      <button class="btn-menu" onclick="goPage('pg-plan');loadPlan()"><span class="ico">📋</span><div><strong>Plan de mantenimiento</strong><span>Km restantes por servicio</span></div></button>
-      <div id="home-alertas"></div>
+      <button class="btn-menu" onclick="goPreop()"><span class="ico">✅</span><div><strong>Preoperativo diario</strong><span>Antes de salir — 10 puntos</span></div></button>
+      <button class="btn-menu" onclick="goComb()"><span class="ico">⛽</span><div><strong>Combustible</strong><span>Tanqueo — galones y km</span></div></button>
+      <button class="btn-menu" onclick="goMtto()"><span class="ico">🔧</span><div><strong>Mantenimiento</strong><span>Servicio realizado</span></div></button>
+      <button class="btn-menu" onclick="goNov()"><span class="ico">⚠️</span><div><strong>Novedad</strong><span>Accidente, avería, multa</span></div></button>
+      <button class="btn-menu" onclick="goPlan()"><span class="ico">📋</span><div><strong>Plan de mantenimiento</strong><span>Km restantes por servicio</span></div></button>
+      <button class="btn-menu" onclick="goDocs()"><span class="ico">📄</span><div><strong>Documentos</strong><span>SOAT, tecno-mec, licencias</span></div></button>
+      <div id="home-alertas" style="margin-top:4px"></div>
     </div>
   </div>
 
@@ -141,18 +147,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-hist" class="page">
     <div class="hdr" style="background:var(--g)"><h1>Historial</h1><p id="hist-count"></p></div>
     <div class="scr">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button class="plan-tab on" id="hf-todos" onclick="filterHist('todos')">Todos</button>
-        <button class="plan-tab" id="hf-c1" onclick="filterHist('EXX568')">🌴 EXX568</button>
-        <button class="plan-tab" id="hf-c2" onclick="filterHist('SXY206')">👥 SXY206</button>
-      </div>
+      <div class="tab-bar" id="hist-tabs"></div>
       <div class="card" id="hist-list"></div>
     </div>
   </div>
 
   <!-- RESUMEN -->
   <div id="pg-res" class="page">
-    <div class="hdr" style="background:var(--g)"><h1>Resumen</h1><p>Vista de dirección</p></div>
+    <div class="hdr" style="background:var(--g)"><h1>Resumen</h1><p>Vista general de la flota</p></div>
     <div class="scr" id="res-content"></div>
   </div>
 
@@ -160,19 +162,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-preop" class="page">
     <div class="hdr" style="background:var(--gm)">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
         <div><h1>Preoperativo</h1><p>Antes de salir</p></div>
       </div>
     </div>
     <div class="scr">
       <div class="card">
-        <div class="field">
-          <label>Placa *</label>
-          <div class="radio-row">
-            <div class="radio-opt"><input type="radio" name="pre-p" id="pre-exx" value="EXX568" onchange="onPlacaChange('pre')"><label for="pre-exx">🌴 EXX568</label></div>
-            <div class="radio-opt"><input type="radio" name="pre-p" id="pre-sxy" value="SXY206" onchange="onPlacaChange('pre')"><label for="pre-sxy">👥 SXY206</label></div>
-          </div>
-        </div>
+        <div class="field"><label>Camión *</label><div id="pre-trucks" class="radio-row"></div></div>
         <div class="field">
           <label>Km odómetro actual *</label>
           <div class="km-hint" id="pre-km-hint"></div>
@@ -197,32 +193,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
   <!-- COMBUSTIBLE -->
   <div id="pg-comb" class="page">
-    <div class="hdr" style="background:#1565C0">
+    <div class="hdr" style="background:var(--blue)">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
         <div><h1>Combustible</h1><p>Registro de tanqueo</p></div>
       </div>
     </div>
     <div class="scr">
       <div class="card">
-        <div class="field">
-          <label>Placa *</label>
-          <div class="radio-row">
-            <div class="radio-opt"><input type="radio" name="comb-p" id="comb-exx" value="EXX568" onchange="onPlacaChange('comb')"><label for="comb-exx">🌴 EXX568</label></div>
-            <div class="radio-opt"><input type="radio" name="comb-p" id="comb-sxy" value="SXY206" onchange="onPlacaChange('comb')"><label for="comb-sxy">👥 SXY206</label></div>
-          </div>
-        </div>
-        <div class="field"><label>Conductor *</label>
-          <select id="comb-cond"><option value="">Seleccione...</option><option>Rusbel Algarra</option><option>Edgar Tinjaca</option><option>Otro</option></select></div>
+        <div class="field"><label>Camión *</label><div id="comb-trucks" class="radio-row"></div></div>
+        <div class="field"><label>Conductor *</label><select id="comb-cond"><option value="">Seleccione...</option></select></div>
         <div class="field">
           <label>Km anterior (odómetro) *</label>
           <div class="km-hint" id="comb-km-ini-hint"></div>
           <input type="number" inputmode="numeric" id="comb-km-ini" placeholder="Km anterior" oninput="calcRendimiento()"/>
         </div>
-        <div class="field"><label>Km actual (odómetro) *</label>
-          <input type="number" inputmode="numeric" id="comb-km-fin" placeholder="Km actual" oninput="calcRendimiento()"/></div>
-        <div class="field"><label>Galones cargados *</label>
-          <input type="number" inputmode="decimal" id="comb-gal" placeholder="ej: 50" oninput="calcRendimiento()"/></div>
+        <div class="field"><label>Km actual (odómetro) *</label><input type="number" inputmode="numeric" id="comb-km-fin" placeholder="Km actual" oninput="calcRendimiento()"/></div>
+        <div class="field"><label>Galones cargados *</label><input type="number" inputmode="decimal" id="comb-gal" placeholder="ej: 50" oninput="calcRendimiento()"/></div>
         <div class="rend-box" id="rend-box">
           <div style="font-size:11px;font-weight:700;color:var(--muted)">RENDIMIENTO CALCULADO</div>
           <div id="rend-num" style="font-size:26px;font-weight:800;margin:4px 0"></div>
@@ -240,8 +227,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           <div id="precio-edit" style="display:none">
             <input type="number" inputmode="numeric" id="precio-input" value="11700" placeholder="ej: 11700" oninput="calcRendimiento()"/>
             <div style="display:flex;gap:8px;margin-top:6px">
-              <button onclick="savePrecio()" class="btn" style="background:var(--gm);margin:0;padding:10px;font-size:13px">✅ Guardar</button>
-              <button onclick="cancelPrecio()" class="btn btn-sec" style="margin:0;padding:10px;font-size:13px">Cancelar</button>
+              <button onclick="savePrecio()" class="btn btn-sm" style="background:var(--gm)">✅ Guardar</button>
+              <button onclick="cancelPrecio()" class="btn btn-sec btn-sm">Cancelar</button>
             </div>
           </div>
         </div>
@@ -252,7 +239,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <input type="hidden" id="comb-valor"/>
         <div class="field">
           <label>Ruta / Labor *</label>
-          <select id="comb-ruta-sel" onchange="toggleRutaOtra()">
+          <select id="comb-ruta-sel" onchange="toggleRutaOtra();updateSaveBtn('comb')">
             <option value="">Seleccione...</option>
             <option>Transporte de fruta de palma</option>
             <option>Transporte de personal</option>
@@ -261,7 +248,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <option>Diligencias administrativas</option>
             <option value="Otra">Otra...</option>
           </select>
-          <input type="text" id="comb-ruta-otra" placeholder="Escriba la ruta..." style="display:none;margin-top:8px"/>
+          <input type="text" id="comb-ruta-otra" placeholder="Escriba la ruta..." style="display:none;margin-top:8px" oninput="updateSaveBtn('comb')"/>
         </div>
         <div class="field"><label>Observaciones (opcional)</label><textarea id="comb-obs" rows="2" placeholder="Estación, novedades..."></textarea></div>
       </div>
@@ -274,19 +261,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-mtto" class="page">
     <div class="hdr" style="background:#E65100">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
         <div><h1>Mantenimiento</h1><p>Servicio realizado</p></div>
       </div>
     </div>
     <div class="scr">
       <div class="card">
-        <div class="field">
-          <label>Placa *</label>
-          <div class="radio-row">
-            <div class="radio-opt"><input type="radio" name="mtto-p" id="mtto-exx" value="EXX568" onchange="onPlacaChange('mtto')"><label for="mtto-exx">🌴 EXX568</label></div>
-            <div class="radio-opt"><input type="radio" name="mtto-p" id="mtto-sxy" value="SXY206" onchange="onPlacaChange('mtto')"><label for="mtto-sxy">👥 SXY206</label></div>
-          </div>
-        </div>
+        <div class="field"><label>Camión *</label><div id="mtto-trucks" class="radio-row"></div></div>
         <div class="field">
           <label>Km actual *</label>
           <div class="km-hint" id="mtto-km-hint"></div>
@@ -309,30 +290,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-nov" class="page">
     <div class="hdr" style="background:#B45309">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
         <div><h1>Novedad</h1><p>Accidente, avería, multa u otro</p></div>
       </div>
     </div>
     <div class="scr">
       <div class="card">
-        <div class="field">
-          <label>Placa *</label>
-          <div class="radio-row">
-            <div class="radio-opt"><input type="radio" name="nov-p" id="nov-exx" value="EXX568"><label for="nov-exx">🌴 EXX568</label></div>
-            <div class="radio-opt"><input type="radio" name="nov-p" id="nov-sxy" value="SXY206"><label for="nov-sxy">👥 SXY206</label></div>
-          </div>
-        </div>
-        <div class="field"><label>Conductor *</label>
-          <select id="nov-cond"><option value="">Seleccione...</option><option>Rusbel Algarra</option><option>Edgar Tinjaca</option><option>Otro</option></select></div>
+        <div class="field"><label>Camión *</label><div id="nov-trucks" class="radio-row"></div></div>
+        <div class="field"><label>Conductor *</label><select id="nov-cond"><option value="">Seleccione...</option></select></div>
         <div class="field"><label>Km odómetro</label><input type="number" inputmode="numeric" id="nov-km" placeholder="ej: 481974"/></div>
         <div class="field"><label>Tipo de novedad *</label>
           <div class="chips" id="nov-chips">
-            <button class="chip" onclick="selChip(this,'nov')">Accidente</button>
-            <button class="chip" onclick="selChip(this,'nov')">Avería mecánica</button>
-            <button class="chip" onclick="selChip(this,'nov')">Multa</button>
-            <button class="chip" onclick="selChip(this,'nov')">Retraso</button>
-            <button class="chip" onclick="selChip(this,'nov')">Robo</button>
-            <button class="chip" onclick="selChip(this,'nov')">Otro</button>
+            <button class="chip" onclick="selChip(this)">Accidente</button>
+            <button class="chip" onclick="selChip(this)">Avería mecánica</button>
+            <button class="chip" onclick="selChip(this)">Multa</button>
+            <button class="chip" onclick="selChip(this)">Retraso</button>
+            <button class="chip" onclick="selChip(this)">Robo</button>
+            <button class="chip" onclick="selChip(this)">Otro</button>
           </div>
         </div>
         <div class="field"><label>Descripción *</label><textarea id="nov-desc" rows="3" placeholder="Describa la novedad..." oninput="updateSaveBtn('nov')"></textarea></div>
@@ -342,21 +316,45 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
+  <!-- DOCUMENTOS -->
+  <div id="pg-docs" class="page">
+    <div class="hdr" style="background:var(--blue)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
+        <div><h1>Documentos</h1><p>Vencimientos y vigencias</p></div>
+      </div>
+    </div>
+    <div class="scr">
+      <div class="tab-bar">
+        <button class="tab-btn on" onclick="filterDocs('todos',this)">Todos</button>
+        <button class="tab-btn" onclick="filterDocs('vencido',this)">🔴 Vencidos</button>
+        <button class="tab-btn" onclick="filterDocs('critico',this)">🟠 Críticos</button>
+        <button class="tab-btn" onclick="filterDocs('vigente',this)">🟢 Vigentes</button>
+      </div>
+      <div id="docs-list"></div>
+      <div id="docs-add-wrap"></div>
+    </div>
+  </div>
+
   <!-- PLAN MANTENIMIENTO -->
   <div id="pg-plan" class="page">
     <div class="hdr" style="background:#37474F">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
-        <div><h1>Plan de Mantenimiento</h1><p id="plan-hdr-sub">EXX568 · Km: 481,974</p></div>
+        <button onclick="goHome()" class="btn btn-sec btn-sm">← Inicio</button>
+        <div><h1>Plan Mantenimiento</h1><p id="plan-hdr-sub">Seleccione camión</p></div>
       </div>
     </div>
     <div class="scr">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="plan-tabs">
-        <button class="plan-tab on" onclick="filterPlan('todos',this)">Todos</button>
-        <button class="plan-tab" onclick="filterPlan('vencido',this)">🔴 Vencidos</button>
-        <button class="plan-tab" onclick="filterPlan('urgente',this)">🟠 Urgente</button>
-        <button class="plan-tab" onclick="filterPlan('pronto',this)">🟡 Pronto</button>
-        <button class="plan-tab" onclick="filterPlan('vigente',this)">🟢 Vigente</button>
+      <div class="field" style="margin-bottom:12px">
+        <label>Camión</label>
+        <select id="plan-truck-sel" onchange="loadPlan()"></select>
+      </div>
+      <div class="tab-bar" id="plan-tabs">
+        <button class="tab-btn on" onclick="filterPlan('todos',this)">Todos</button>
+        <button class="tab-btn" onclick="filterPlan('vencido',this)">🔴 Vencidos</button>
+        <button class="tab-btn" onclick="filterPlan('urgente',this)">🟠 Urgente</button>
+        <button class="tab-btn" onclick="filterPlan('pronto',this)">🟡 Pronto</button>
+        <button class="tab-btn" onclick="filterPlan('vigente',this)">🟢 Vigente</button>
       </div>
       <div id="plan-table"></div>
     </div>
@@ -366,8 +364,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-alta" class="page">
     <div class="hdr" style="background:#E65100">
       <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="goHome()" class="btn-sec" style="border-radius:8px;padding:7px 12px;font-size:14px;font-weight:600;width:auto">← Inicio</button>
-        <div><h1>Dar de alta</h1><p>Registrar mantenimiento realizado</p></div>
+        <button onclick="goPlan()" class="btn btn-sec btn-sm">← Plan</button>
+        <div><h1>Dar de alta</h1><p>Registrar mantenimiento</p></div>
       </div>
     </div>
     <div class="scr">
@@ -376,7 +374,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           <div id="alta-item-name" style="font-size:14px;font-weight:800;color:var(--red)"></div>
           <div id="alta-item-status" style="font-size:12px;color:var(--red);margin-top:4px"></div>
         </div>
-        <div id="alta-auto-info" style="background:var(--gl);border:1.5px solid var(--gm);border-radius:10px;padding:12px;margin-bottom:16px">
+        <div style="background:var(--gl);border:1.5px solid var(--gm);border-radius:10px;padding:12px;margin-bottom:16px">
           <div style="font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.5px">Información automática</div>
           <div id="alta-auto-txt" style="font-size:14px;font-weight:600;color:var(--g);margin-top:4px"></div>
         </div>
@@ -387,7 +385,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class="field"><label>Observación (opcional)</label><input type="text" id="alta-obs" placeholder="Taller, detalles..."/></div>
       </div>
       <button class="btn" style="background:var(--gm)" onclick="saveAlta()">✅ Dar de alta</button>
-      <button class="btn btn-sec" onclick="goHome()">← Volver</button>
+      <button class="btn btn-sec" onclick="goPlan()">← Volver al plan</button>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="pg-admin" class="page">
+    <div class="hdr" style="background:var(--purple)">
+      <h1>Administración</h1><p>Gestión de flota y datos</p>
+    </div>
+    <div class="scr">
+      <div class="tab-bar">
+        <button class="tab-btn atab on" onclick="showAdminTab('camiones',this)">🚛 Camiones</button>
+        <button class="tab-btn atab" onclick="showAdminTab('conductores',this)">👤 Conductores</button>
+        <button class="tab-btn atab" onclick="showAdminTab('docs',this)">📄 Documentos</button>
+        <button class="tab-btn atab" onclick="showAdminTab('plan',this)">🔧 Plan km</button>
+        <button class="tab-btn atab" onclick="showAdminTab('export',this)">📊 Exportar</button>
+      </div>
+      <div id="admin-content"></div>
     </div>
   </div>
 
@@ -403,24 +418,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
   <!-- NAV -->
   <div class="nav">
-    <button class="nb on" id="nb-home" onclick="goPage('pg-home');loadHome()"><span class="nb-ico">🏠</span><span class="nb-lbl">Inicio</span></button>
+    <button class="nb on" id="nb-home" onclick="goHome()"><span class="nb-ico">🏠</span><span class="nb-lbl">Inicio</span></button>
     <button class="nb" id="nb-hist" onclick="goPage('pg-hist');loadHist()"><span class="nb-ico">📋</span><span class="nb-lbl">Historial</span></button>
     <button class="nb" id="nb-res" onclick="goPage('pg-res');loadResumen()"><span class="nb-ico">📊</span><span class="nb-lbl">Resumen</span></button>
+    <button class="nb" id="nb-admin" style="display:none" onclick="goPage('pg-admin');showAdminTab('camiones',document.querySelector('.atab'))"><span class="nb-ico">⚙️</span><span class="nb-lbl">Admin</span></button>
   </div>
 </div>
 
 <script>
-// ═══ CONFIG ═══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════════
 const API = 'https://script.google.com/macros/s/AKfycbzEIPiZXz_sR_ppt-Sp0_7btzB0TvIzCptkIdoj1gkpUqmMxoCsriXO6iOdN30owsCB9A/exec';
-const STORE = 'flotaPG_v4';
-const PRECIO_KEY = 'flotaPG_precio';
-const PLAN_KEY = 'flotaPG_plan';
-
-const USUARIOS = [
-  {pin:'2105', nombre:'Rusbel Algarra', placa:'EXX568', rol:'conductor'},
-  {pin:'2026', nombre:'Edgar Tinjaca',  placa:'SXY206', rol:'conductor'},
-  {pin:'Palmagrande', nombre:'Dirección', placa:'ADMIN', rol:'admin'},
-];
+const STORE       = 'flotaPG_v4';
+const PRECIO_KEY  = 'flotaPG_precio';
+const TRUCKS_KEY  = 'flotaPG_trucks';
+const DRIVERS_KEY = 'flotaPG_drivers';
+const DOCS_KEY    = 'flotaPG_docs';
+const PLANX_KEY   = 'flotaPG_planKms';
 
 const PREOP_ITEMS = [
   {id:'aceite',    lbl:'🛢️ Aceite motor'},
@@ -430,7 +445,7 @@ const PREOP_ITEMS = [
   {id:'llantas',   lbl:'⭕ Llantas'},
   {id:'fugas',     lbl:'⚠️ Fugas (aceite/agua/aire)'},
   {id:'docs',      lbl:'📄 Documentos del vehículo'},
-  {id:'direccion', lbl:'🔄 Dirección'},
+  {id:'dir',       lbl:'🔄 Dirección'},
   {id:'bateria',   lbl:'🔋 Batería'},
   {id:'grasa',     lbl:'⚙️ Grasa / Puntos críticos'},
 ];
@@ -443,61 +458,105 @@ const MTTO_SERVICIOS = [
 ];
 
 const PLAN_BASE = [
-  {item:'Cambio Aceite Motor 15W40 Diesel',    frec:12000, kmUltimo:478750},
-  {item:'Cambio Filtro de Aceite',              frec:12000, kmUltimo:478750},
-  {item:'Cambio Filtro de Combustible',         frec:50000, kmUltimo:478750},
-  {item:'Engrase General EP2',                  frec:2000,  kmUltimo:480044},
-  {item:'Cambio Filtro de Aire',                frec:12000, kmUltimo:478750},
-  {item:'Cambio de Llantas',                    frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite motor',                   frec:12000, kmUltimo:478750},
-  {item:'Correa Fanclouse',                     frec:50000, kmUltimo:478750},
-  {item:'Mangueras Refrigeracion',              frec:12000, kmUltimo:478750},
-  {item:'Bomba de Agua',                        frec:12000, kmUltimo:478750},
-  {item:'Lavado deposito combustible',          frec:12000, kmUltimo:478750},
-  {item:'Revisar nivel refrigerante',           frec:12000, kmUltimo:478750},
-  {item:'Fugas agua sistema refrigeracion',     frec:12000, kmUltimo:480857},
-  {item:'Correa de accesorios',                 frec:50000, kmUltimo:478750},
-  {item:'Kit Embrague',                         frec:50000, kmUltimo:478750},
-  {item:'Aceite transmision',                   frec:12000, kmUltimo:478750},
-  {item:'Fuga aceite transmision',              frec:500,   kmUltimo:480857},
-  {item:'Aceite engranada diferencial',         frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite ejes traseros',           frec:500,   kmUltimo:480857},
-  {item:'Mantenimiento de crucetas',            frec:12000, kmUltimo:478750},
-  {item:'Aceite direccion hidraulica',          frec:50000, kmUltimo:478750},
-  {item:'Fugas aceite direccion hidraulica',    frec:500,   kmUltimo:480857},
-  {item:'Manguera direccion hidraulica',        frec:500,   kmUltimo:480857},
-  {item:'Juego volante direccion',              frec:50000, kmUltimo:478750},
-  {item:'Potencia de frenos',                   frec:500,   kmUltimo:480857},
-  {item:'Efectividad freno estacionamiento',    frec:500,   kmUltimo:480857},
-  {item:'Sistema aire pisada',                  frec:10000, kmUltimo:478750},
-  {item:'Fugas aire manguera frenos',           frec:12000, kmUltimo:478750},
-  {item:'Bandas de los frenos',                 frec:12000, kmUltimo:478750},
-  {item:'Electricidad arranque y alternador',   frec:50000, kmUltimo:478750},
-  {item:'Cambio de Baterias',                   frec:50000, kmUltimo:478750},
-  {item:'Tuercas de las ruedas',                frec:500,   kmUltimo:480857},
-  {item:'Campanas de ruedas',                   frec:20000, kmUltimo:478750},
-  {item:'Presion de aire ruedas',               frec:500,   kmUltimo:480857},
-  {item:'Tornilleria de chasis',                frec:12000, kmUltimo:478750},
-  {item:'Amortiguadores',                       frec:50000, kmUltimo:478750},
-  {item:'Ajuste de suspension',                 frec:12000, kmUltimo:478750},
-  {item:'Alineacion y balanceo',                frec:12000, kmUltimo:478750},
-  {item:'Lavada general',                       frec:2000,  kmUltimo:480044},
-  {item:'Engrase crucetas y equipo',            frec:500,   kmUltimo:480857},
+  {item:'Cambio Aceite Motor 15W40 Diesel',        frec:12000},
+  {item:'Cambio Filtro de Aceite',                  frec:12000},
+  {item:'Cambio Filtro de Combustible',             frec:50000},
+  {item:'Engrase General EP2',                      frec:2000 },
+  {item:'Cambio Filtro de Aire',                    frec:12000},
+  {item:'Cambio de Llantas',                        frec:50000},
+  {item:'Fugas aceite motor',                       frec:12000},
+  {item:'Correa Fanclouse',                         frec:50000},
+  {item:'Mangueras Refrigeracion',                  frec:12000},
+  {item:'Bomba de Agua',                            frec:12000},
+  {item:'Lavado deposito combustible',              frec:12000},
+  {item:'Revisar nivel refrigerante',               frec:12000},
+  {item:'Fugas agua sistema refrigeracion',         frec:12000},
+  {item:'Correa de accesorios',                     frec:50000},
+  {item:'Kit Embrague',                             frec:50000},
+  {item:'Aceite transmision',                       frec:12000},
+  {item:'Fuga aceite transmision',                  frec:500  },
+  {item:'Aceite engranada diferencial',             frec:50000},
+  {item:'Fugas aceite ejes traseros',               frec:500  },
+  {item:'Mantenimiento de crucetas',                frec:12000},
+  {item:'Aceite direccion hidraulica',              frec:50000},
+  {item:'Fugas aceite direccion hidraulica',        frec:500  },
+  {item:'Manguera direccion hidraulica',            frec:500  },
+  {item:'Juego volante direccion',                  frec:50000},
+  {item:'Potencia de frenos',                       frec:500  },
+  {item:'Efectividad freno estacionamiento',        frec:500  },
+  {item:'Sistema aire pisada',                      frec:10000},
+  {item:'Fugas aire manguera frenos',               frec:12000},
+  {item:'Bandas de los frenos',                     frec:12000},
+  {item:'Electricidad arranque y alternador',       frec:50000},
+  {item:'Cambio de Baterias',                       frec:50000},
+  {item:'Tuercas de las ruedas',                    frec:500  },
+  {item:'Campanas de ruedas',                       frec:20000},
+  {item:'Presion de aire ruedas',                   frec:500  },
+  {item:'Tornilleria de chasis',                    frec:12000},
+  {item:'Amortiguadores',                           frec:50000},
+  {item:'Ajuste de suspension',                     frec:12000},
+  {item:'Alineacion y balanceo',                    frec:12000},
+  {item:'Lavada general',                           frec:2000 },
+  {item:'Engrase crucetas y equipo',                frec:500  },
 ];
 
-// ═══ STATE ════════════════════════════════════════════════════════
-let currentUser = null;
-let records = [];
-let preoPrecio = 11700;
-let planKmEXX = 481974;
-let planItems = [];
-let altaData = {};
-let sending = false;
-let preop = {}; // {id: 'ok'|'no'}
-let novTipo = '';
-let novedad_resuelta_id = null;
+// Km del último mantenimiento EXX568 (datos históricos)
+const EXX_KMS_DEFAULT = {
+  'Cambio Aceite Motor 15W40 Diesel':478750,'Cambio Filtro de Aceite':478750,
+  'Cambio Filtro de Combustible':478750,'Engrase General EP2':480044,
+  'Cambio Filtro de Aire':478750,'Cambio de Llantas':478750,
+  'Fugas aceite motor':478750,'Correa Fanclouse':478750,
+  'Mangueras Refrigeracion':478750,'Bomba de Agua':478750,
+  'Lavado deposito combustible':478750,'Revisar nivel refrigerante':478750,
+  'Fugas agua sistema refrigeracion':480857,'Correa de accesorios':478750,
+  'Kit Embrague':478750,'Aceite transmision':478750,
+  'Fuga aceite transmision':480857,'Aceite engranada diferencial':478750,
+  'Fugas aceite ejes traseros':480857,'Mantenimiento de crucetas':478750,
+  'Aceite direccion hidraulica':478750,'Fugas aceite direccion hidraulica':480857,
+  'Manguera direccion hidraulica':480857,'Juego volante direccion':478750,
+  'Potencia de frenos':480857,'Efectividad freno estacionamiento':480857,
+  'Sistema aire pisada':478750,'Fugas aire manguera frenos':478750,
+  'Bandas de los frenos':478750,'Electricidad arranque y alternador':478750,
+  'Cambio de Baterias':478750,'Tuercas de las ruedas':480857,
+  'Campanas de ruedas':478750,'Presion de aire ruedas':480857,
+  'Tornilleria de chasis':478750,'Amortiguadores':478750,
+  'Ajuste de suspension':478750,'Alineacion y balanceo':478750,
+  'Lavada general':480044,'Engrase crucetas y equipo':480857,
+};
 
-// ═══ STORAGE (IndexedDB + localStorage fallback) ══════════════════
+const DEFAULT_TRUCKS = [
+  {placa:'EXX568', nombre:'🌴 EXX568', modelo:'', ano:'', kmActual:481974},
+  {placa:'SXY206', nombre:'👥 SXY206', modelo:'', ano:'', kmActual:0},
+];
+
+const DEFAULT_DRIVERS = [
+  {id:'d1', nombre:'Rusbel Algarra',  pin:'2105',        rol:'conductor', placaAsignada:'EXX568'},
+  {id:'d2', nombre:'Edgar Tinjaca',   pin:'2026',        rol:'conductor', placaAsignada:'SXY206'},
+  {id:'d3', nombre:'Dirección',       pin:'Palmagrande', rol:'admin',     placaAsignada:'ADMIN'},
+];
+
+const DOC_TIPOS_V = ['SOAT','Técnico-mecánica','Tarjeta de operación','Seguro RC'];
+const DOC_TIPOS_C = ['Licencia de conducción','Examen médico','Curso manejo defensivo'];
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let currentUser = null;
+let trucks   = [];
+let drivers  = [];
+let records  = [];
+let documents = [];
+let planKms  = {};   // {placa: {itemName: kmUltimo}}
+let precio   = 11700;
+let sending  = false;
+let preop    = {};
+let novTipo  = '';
+let altaData = {};
+let adminTab = 'camiones';
+
+// ══════════════════════════════════════════════════════════════════
+// STORAGE (IndexedDB + localStorage fallback)
+// ══════════════════════════════════════════════════════════════════
 let _db = null;
 function openDB() {
   return new Promise(res => {
@@ -505,7 +564,7 @@ function openDB() {
     const r = indexedDB.open('flotaPG', 2);
     r.onupgradeneeded = e => { try { e.target.result.createObjectStore('data'); } catch(e2){} };
     r.onsuccess = e => { _db = e.target.result; res(_db); };
-    r.onerror = () => res(null);
+    r.onerror   = () => res(null);
   });
 }
 async function dbGet(k) {
@@ -516,7 +575,7 @@ async function dbGet(k) {
       const tx = db.transaction('data','readonly');
       const req = tx.objectStore('data').get(k);
       req.onsuccess = () => res(req.result);
-      req.onerror = () => res(null);
+      req.onerror   = () => res(null);
     });
   } catch(e) {
     try { const d = localStorage.getItem(k); return d ? JSON.parse(d) : null; } catch(e2) { return null; }
@@ -529,43 +588,65 @@ async function dbSet(k, v) {
     await new Promise(res => {
       const tx = db.transaction('data','readwrite');
       tx.objectStore('data').put(v, k);
-      tx.oncomplete = res;
-      tx.onerror = res;
+      tx.oncomplete = res; tx.onerror = res;
     });
   } catch(e) {}
   try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
 }
 
-// ═══ HELPERS ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════
 const today = () => new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
-const nowt = () => new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+const nowt  = () => new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+const val   = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+const uid   = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 
-let toastTimer = null;
+let _toast;
 function showToast(msg) {
-  clearTimeout(toastTimer);
+  clearTimeout(_toast);
   const el = document.getElementById('toast-el');
   el.textContent = msg; el.style.display = 'block';
-  toastTimer = setTimeout(() => el.style.display = 'none', 2500);
+  _toast = setTimeout(() => el.style.display = 'none', 2500);
+}
+
+function getLastKm(placa) {
+  const kms = records
+    .filter(r => r.placa === placa && (r.km || r.kmFin))
+    .map(r => parseFloat(r.km || r.kmFin))
+    .filter(k => !isNaN(k) && k > 0)
+    .sort((a,b) => b-a);
+  if (kms[0]) return kms[0];
+  const t = trucks.find(t => t.placa === placa);
+  return t?.kmActual || null;
 }
 
 function getPlaca(form) {
   const el = document.querySelector(`input[name="${form}-p"]:checked`);
   return el ? el.value : '';
 }
-function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
-function getLastKm(placa) {
-  const kms = records
-    .filter(r => r.placa === placa && (r.km || r.kmFin))
-    .map(r => parseFloat(r.km || r.kmFin))
-    .filter(k => !isNaN(k) && k > 100000)
-    .sort((a,b) => b-a);
-  return kms[0] || null;
+
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr + 'T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
 }
 
-// ═══ LOGIN ════════════════════════════════════════════════════════
+function docStatus(days) {
+  if (days === null) return {color:'#6B7280',bg:'#F3F4F6',ico:'❓',lbl:'Sin fecha'};
+  if (days < 0)  return {color:'#B91C1C',bg:'#FEE2E2',ico:'🔴',lbl:'Vencido hace '+Math.abs(days)+' días'};
+  if (days <= 30) return {color:'#92400E',bg:'#FEF3C7',ico:'🟠',lbl:'Vence en '+days+' días'};
+  if (days <= 60) return {color:'#854D0E',bg:'#FEF9C3',ico:'🟡',lbl:'Vence en '+days+' días'};
+  return {color:'#166534',bg:'#DCFCE7',ico:'🟢',lbl:'Vigente — '+days+' días'};
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════════════════════════════
 function doLogin() {
-  const pin = val('login-pin');
-  const user = USUARIOS.find(u => u.pin === pin);
+  const pin  = val('login-pin');
+  const user = drivers.find(u => u.pin === pin);
   if (!user) {
     document.getElementById('login-err').style.display = 'block';
     document.getElementById('login-pin').value = '';
@@ -577,6 +658,7 @@ function doLogin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
   document.getElementById('hdr-usuario').textContent = 'Hola, ' + user.nombre;
+  document.getElementById('nb-admin').style.display = user.rol === 'admin' ? '' : 'none';
   loadHome();
 }
 function doLogout() {
@@ -586,153 +668,54 @@ function doLogout() {
   document.getElementById('login-pin').value = '';
 }
 
-// ═══ NAVIGATION ═══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
 function goPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
-  if (id === 'pg-home') document.getElementById('nb-home').classList.add('on');
-  else if (id === 'pg-hist') document.getElementById('nb-hist').classList.add('on');
-  else if (id === 'pg-res') document.getElementById('nb-res').classList.add('on');
+  const map = {'pg-home':'nb-home','pg-hist':'nb-hist','pg-res':'nb-res','pg-admin':'nb-admin'};
+  if (map[id]) document.getElementById(map[id])?.classList.add('on');
   window.scrollTo(0,0);
 }
 function goHome() { goPage('pg-home'); loadHome(); }
 
-// ═══ HOME ══════════════════════════════════════════════════════════
-function loadHome() {
-  const td = today();
-  const hoy = records.filter(r => r.fecha === td).length;
-  loadAlertas();
+function goPreop()  { buildTruckSelectors('pre'); buildPreop(); goPage('pg-preop'); }
+function goComb()   { buildTruckSelectors('comb'); buildDriverSelect('comb-cond'); goPage('pg-comb'); }
+function goMtto()   { buildTruckSelectors('mtto'); buildSrvGrid(); goPage('pg-mtto'); }
+function goNov()    { buildTruckSelectors('nov');  buildDriverSelect('nov-cond');  goPage('pg-nov'); }
+function goPlan()   { buildPlanTruckSel(); goPage('pg-plan'); loadPlan(); }
+function goDocs()   { goPage('pg-docs'); loadDocs('todos'); }
+
+// ══════════════════════════════════════════════════════════════════
+// DYNAMIC FORM BUILDERS
+// ══════════════════════════════════════════════════════════════════
+function buildTruckSelectors(form) {
+  const cont = document.getElementById(form+'-trucks');
+  if (!cont) return;
+  const defPlaca = currentUser?.rol === 'conductor' ? currentUser.placaAsignada : '';
+  cont.innerHTML = trucks.map(t => `
+    <div class="radio-opt">
+      <input type="radio" name="${form}-p" id="${form}-${t.placa}" value="${t.placa}"
+             onchange="onPlacaChange('${form}')" ${t.placa===defPlaca?'checked':''}>
+      <label for="${form}-${t.placa}">${t.nombre||t.placa}</label>
+    </div>`).join('');
+  if (defPlaca) setTimeout(() => onPlacaChange(form), 0);
 }
 
-function loadAlertas() {
-  const box = document.getElementById('home-alertas');
-  if (!box) return;
-  const km = getLastKm('EXX568') || 481974;
-  planKmEXX = km;
-  const plan = getPlan();
-  const alertas = plan
-    .map(p => ({...p, kmV: (p.kmUltimo + p.frec) - km}))
-    .filter(p => p.kmV < 3000)
-    .sort((a,b) => a.kmV - b.kmV)
-    .slice(0, 6);
-
-  if (!alertas.length) {
-    box.innerHTML = '<div style="background:var(--okl);border:1.5px solid var(--gm);border-radius:12px;padding:14px;text-align:center;color:var(--ok);font-weight:700;margin-top:8px">✅ Todo el mantenimiento al día</div>';
-    return;
-  }
-
-  const cols = alertas.slice(0,3);
-  const cols2 = alertas.slice(3,6);
-  function card(p) {
-    const isV = p.kmV < 0;
-    const isU = p.kmV >= 0 && p.kmV <= 500;
-    const bg = isV?'var(--redl)':isU?'#FFF9C4':'#FFF7ED';
-    const fc = isV?'var(--red)':isU?'#B45309':'#C2410C';
-    const lbl = isV?'🔴 VENCIDO':isU?'🟠 URGENTE':'🟡 PRONTO';
-    const kmTxt = isV?`hace ${Math.abs(p.kmV)} km`:`${p.kmV} km`;
-    return `<div style="background:${bg};border:1.5px solid ${fc};border-radius:10px;padding:10px;margin-bottom:8px">
-      <div style="font-size:12px;font-weight:700;color:${fc};margin-bottom:2px">${p.item}</div>
-      <div style="font-size:11px;color:${fc};margin-bottom:6px">${lbl} — ${kmTxt}</div>
-      <button onclick="openAlta('${p.item.replace(/'/g,"\'")}',${p.kmV})" style="background:${fc};color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;width:100%">🔧 Dar de alta</button>
-    </div>`;
-  }
-
-  box.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px">⚠️ ALERTAS MANTENIMIENTO EXX568</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div>${alertas.filter((p,i)=>i%2===0).map(card).join('')}</div>
-    <div>${alertas.filter((p,i)=>i%2===1).map(card).join('')}</div>
-  </div>`;
+function buildDriverSelect(selId) {
+  const sel = document.getElementById(selId);
+  if (!sel) return;
+  const conds = drivers.filter(d => d.rol === 'conductor');
+  sel.innerHTML = '<option value="">Seleccione...</option>' +
+    conds.map(d => `<option value="${d.nombre}">${d.nombre}</option>`).join('');
+  if (currentUser?.rol === 'conductor') sel.value = currentUser.nombre;
 }
 
-// ═══ PLAN ══════════════════════════════════════════════════════════
-function getPlan() {
-  // Always use PLAN_BASE as reference, update kmUltimo from saved alta records
-  return PLAN_BASE.map(base => {
-    const altaRec = records
-      .filter(r => r.tipo === 'mtto' && r.placa === 'EXX568' && r.servicio && r.servicio.toLowerCase().includes(base.item.substring(0,8).toLowerCase()) && r.km)
-      .map(r => parseFloat(r.km))
-      .filter(k => !isNaN(k) && k > 100000)
-      .sort((a,b) => b-a);
-    const kmU = altaRec[0] || base.kmUltimo;
-    return {...base, kmUltimo: kmU};
-  });
-}
-
-function loadPlan() {
-  const km = getLastKm('EXX568') || 481974;
-  planKmEXX = km;
-  document.getElementById('plan-hdr-sub').textContent = `EXX568 · Km: ${km.toLocaleString()}`;
-  planItems = getPlan().map(p => {
-    const kmV = (p.kmUltimo + p.frec) - km;
-    const est = kmV < 0 ? 'vencido' : kmV <= 500 ? 'urgente' : kmV <= 3000 ? 'pronto' : 'vigente';
-    return {...p, kmV, est};
-  }).sort((a,b) => a.kmV - b.kmV);
-  filterPlan('todos', document.querySelector('#plan-tabs .plan-tab'));
-}
-
-function filterPlan(filtro, btn) {
-  document.querySelectorAll('.plan-tab').forEach(b => b.classList.remove('on'));
-  if (btn) btn.classList.add('on');
-  const items = filtro === 'todos' ? planItems : planItems.filter(p => p.est === filtro);
-  const tbl = document.getElementById('plan-table');
-  if (!items.length) { tbl.innerHTML = '<div class="empty">Sin ítems en esta categoría</div>'; return; }
-  let h = '<div class="card" style="padding:0;overflow:hidden"><table style="width:100%;border-collapse:collapse">' +
-    '<tr style="background:#F5F5F5"><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--muted)">SERVICIO</th>' +
-    '<th style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);width:80px">KM FALTAN</th>' +
-    '<th style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);width:40px">EST.</th></tr>';
-  items.forEach(p => {
-    const bg = p.est==='vencido'?'#FEE2E2':p.est==='urgente'?'#FFF9C4':p.est==='pronto'?'#FFF7ED':'#fff';
-    const fc = p.est==='vencido'?'#B91C1C':p.est==='urgente'?'#B45309':p.est==='pronto'?'#C2410C':'#1B5E20';
-    const ico = p.est==='vencido'?'🔴':p.est==='urgente'?'🟠':p.est==='pronto'?'🟡':'🟢';
-    const kmTxt = p.kmV<0?`-${Math.abs(p.kmV).toLocaleString()}`:p.kmV.toLocaleString();
-    h += `<tr style="background:${bg};border-top:0.5px solid rgba(0,0,0,.06)">
-      <td style="padding:9px 10px;font-size:12px;font-weight:500">${p.item}</td>
-      <td style="padding:9px 8px;text-align:center;font-size:12px;font-weight:700;color:${fc}">${kmTxt}</td>
-      <td style="padding:9px 8px;text-align:center;font-size:14px">${ico}</td>
-    </tr>`;
-  });
-  tbl.innerHTML = h + '</table></div>';
-}
-
-// ═══ DAR DE ALTA ══════════════════════════════════════════════════
-function openAlta(item, kmV) {
-  altaData = {item, kmV, placa:'EXX568', conductor:'Rusbel Algarra', kmActual: planKmEXX};
-  document.getElementById('alta-item-name').textContent = item;
-  const isV = kmV < 0;
-  document.getElementById('alta-item-status').textContent = (isV ? '🔴 VENCIDO — hace ' + Math.abs(kmV) : '🟠 Faltan ' + kmV) + ' km';
-  document.getElementById('alta-auto-txt').textContent = 'EXX568 · Rusbel Algarra · Km actual: ' + planKmEXX.toLocaleString();
-  document.getElementById('alta-km').value = '';
-  document.getElementById('alta-obs').value = '';
-  goPage('pg-alta');
-}
-
-async function saveAlta() {
-  if (sending) return;
-  const km = val('alta-km');
-  if (!km) { alert('Ingrese el km en que se realizó'); return; }
-  sending = true;
-  const btn = document.querySelector('#pg-alta .btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
-  const rec = {
-    tipo:'mtto', fecha:today(), hora:nowt(),
-    placa: altaData.placa, conductor: altaData.conductor,
-    km, servicio: altaData.item, servicios:[altaData.item],
-    taller:'', costo:'', obs: val('alta-obs') || 'Alta desde alerta: '+altaData.item
-  };
-  records.unshift(rec);
-  await dbSet(STORE, records);
-  sendToSheets(rec);
-  sending = false;
-  document.getElementById('ok-ico').textContent = '✅';
-  document.getElementById('ok-title').textContent = 'Dado de alta';
-  document.getElementById('ok-msg').textContent = altaData.item + ' — EXX568 · ' + km + ' km';
-  goPage('pg-ok');
-}
-
-// ═══ PREOPERATIVO ══════════════════════════════════════════════════
 function buildPreop() {
   const cont = document.getElementById('preop-items');
+  preop = {};
   cont.innerHTML = PREOP_ITEMS.map(p => `
     <div class="preop-item" id="prow-${p.id}">
       <div class="preop-lbl">${p.lbl}</div>
@@ -743,76 +726,170 @@ function buildPreop() {
         <label for="pre-${p.id}-no">❌ Falla</label>
       </div>
     </div>`).join('');
-}
-function onPreop(id, val) {
-  preop[id] = val;
-  const row = document.getElementById('prow-'+id);
-  if (row) row.style.background = val === 'no' ? 'var(--redl)' : '';
-  const ok = Object.values(preop).filter(v=>v==='ok').length;
-  const fail = Object.values(preop).filter(v=>v==='no').length;
-  document.getElementById('pre-ok-badge').textContent = '✅ OK: ' + ok;
-  document.getElementById('pre-fail-badge').textContent = '❌ Falla: ' + fail;
-  const fallas = PREOP_ITEMS.filter(p=>preop[p.id]==='no').map(p=>p.lbl.replace(/^[^ ]+ /,''));
-  const alertBox = document.getElementById('pre-alert');
-  if (fallas.length) {
-    alertBox.style.display = 'block';
-    document.getElementById('pre-alert-txt').textContent = fallas.join(', ');
-  } else { alertBox.style.display = 'none'; }
+  document.getElementById('pre-ok-badge').textContent   = '✅ OK: 0';
+  document.getElementById('pre-fail-badge').textContent = '❌ Falla: 0';
+  document.getElementById('pre-alert').style.display    = 'none';
+  document.getElementById('pre-km').value = '';
+  document.getElementById('pre-km-hint').style.display  = 'none';
   updateSaveBtn('pre');
 }
+
+function buildSrvGrid() {
+  const grid = document.getElementById('srv-grid');
+  grid.innerHTML = MTTO_SERVICIOS.map(s =>
+    `<button class="srv-btn" onclick="toggleSrv(this)" data-srv="${s}">${s}</button>`).join('');
+}
+
+function buildPlanTruckSel() {
+  const sel = document.getElementById('plan-truck-sel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = trucks.map(t => `<option value="${t.placa}">${t.nombre||t.placa}</option>`).join('');
+  if (prev && trucks.find(t => t.placa === prev)) sel.value = prev;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════════════════════════════
+function loadHome() {
+  loadAlertas();
+}
+
+function loadAlertas() {
+  const box = document.getElementById('home-alertas');
+  if (!box) return;
+  let html = '';
+
+  // Alertas de documentos
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const docAlerts = documents
+    .map(d => ({...d, days: daysUntil(d.vencimiento)}))
+    .filter(d => d.days !== null && d.days <= 30)
+    .sort((a,b) => a.days - b.days);
+
+  if (docAlerts.length) {
+    html += `<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px">📄 ALERTAS DOCUMENTOS</div>`;
+    docAlerts.slice(0,3).forEach(d => {
+      const st = docStatus(d.days);
+      const entName = d.entityType === 'vehiculo'
+        ? trucks.find(t=>t.placa===d.entityId)?.nombre||d.entityId
+        : drivers.find(dr=>dr.id===d.entityId)?.nombre||d.entityId;
+      html += `<div style="background:${st.bg};border:1.5px solid ${st.color};border-radius:10px;padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:20px">${st.ico}</div>
+        <div><div style="font-size:13px;font-weight:700;color:${st.color}">${d.tipo} — ${entName}</div>
+        <div style="font-size:12px;color:${st.color};margin-top:2px">${st.lbl}</div></div>
+      </div>`;
+    });
+  }
+
+  // Alertas de mantenimiento (todos los camiones)
+  const planAlerts = [];
+  trucks.forEach(t => {
+    const km = getLastKm(t.placa);
+    if (!km) return;
+    PLAN_BASE.forEach(p => {
+      const kmU = (planKms[t.placa]?.[p.item]) ?? null;
+      if (kmU === null) return;
+      const kmV = (kmU + p.frec) - km;
+      if (kmV < 3000) planAlerts.push({...p, placa:t.placa, nombre:t.nombre||t.placa, km, kmV});
+    });
+  });
+  planAlerts.sort((a,b) => a.kmV - b.kmV);
+
+  if (planAlerts.length) {
+    html += `<div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px">⚠️ ALERTAS MANTENIMIENTO</div>`;
+    planAlerts.slice(0,6).forEach(p => {
+      const isV = p.kmV < 0, isU = p.kmV >= 0 && p.kmV <= 500;
+      const bg = isV?'var(--redl)':isU?'#FFF9C4':'#FFF7ED';
+      const fc = isV?'var(--red)':isU?'#B45309':'#C2410C';
+      const lbl = isV?'🔴 VENCIDO':isU?'🟠 URGENTE':'🟡 PRONTO';
+      const kmTxt = isV?`hace ${Math.abs(p.kmV).toLocaleString()} km`:`${p.kmV.toLocaleString()} km`;
+      html += `<div style="background:${bg};border:1.5px solid ${fc};border-radius:10px;padding:10px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:${fc}">${p.item} — ${p.nombre}</div>
+        <div style="font-size:11px;color:${fc};margin-bottom:6px">${lbl} — ${kmTxt}</div>
+        <button onclick="openAlta('${p.item.replace(/'/g,"\\'")}',${p.kmV},'${p.placa}')"
+          style="background:${fc};color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;width:100%">
+          🔧 Dar de alta
+        </button>
+      </div>`;
+    });
+  }
+
+  if (!html) html = '<div style="background:var(--okl);border:1.5px solid var(--gm);border-radius:12px;padding:14px;text-align:center;color:var(--ok);font-weight:700;margin-top:8px">✅ Todo al día</div>';
+  box.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PREOPERATIVO
+// ══════════════════════════════════════════════════════════════════
+function onPreop(id, v) {
+  preop[id] = v;
+  const row = document.getElementById('prow-'+id);
+  if (row) row.style.background = v==='no'?'var(--redl)':'';
+  const ok   = Object.values(preop).filter(x=>x==='ok').length;
+  const fail = Object.values(preop).filter(x=>x==='no').length;
+  document.getElementById('pre-ok-badge').textContent   = '✅ OK: '+ok;
+  document.getElementById('pre-fail-badge').textContent = '❌ Falla: '+fail;
+  const fallas = PREOP_ITEMS.filter(p=>preop[p.id]==='no').map(p=>p.lbl.replace(/^\S+\s/,''));
+  const alertBox = document.getElementById('pre-alert');
+  if (fallas.length) { alertBox.style.display='block'; document.getElementById('pre-alert-txt').textContent=fallas.join(', '); }
+  else alertBox.style.display='none';
+  updateSaveBtn('pre');
+}
+
 function onPlacaChange(form) {
   const placa = getPlaca(form);
   if (!placa) return;
   const km = getLastKm(placa);
-  const hintId = form === 'pre' ? 'pre-km-hint' : form === 'comb' ? 'comb-km-ini-hint' : 'mtto-km-hint';
-  const hint = document.getElementById(hintId);
-  if (hint && km) {
-    hint.style.display = 'block';
-    hint.textContent = '📍 Último km: ' + km.toLocaleString() + ' — Toque para usar';
-    const inputId = form === 'pre' ? 'pre-km' : form === 'comb' ? 'comb-km-ini' : 'mtto-km';
-    hint.onclick = () => {
-      const inp = document.getElementById(inputId);
-      if (inp) { inp.value = km; }
-      if (form === 'comb') calcRendimiento();
+  const hints = {pre:'pre-km-hint', comb:'comb-km-ini-hint', mtto:'mtto-km-hint'};
+  const inputs = {pre:'pre-km', comb:'comb-km-ini', mtto:'mtto-km'};
+  const hintEl = document.getElementById(hints[form]);
+  if (hintEl && km) {
+    hintEl.style.display = 'block';
+    hintEl.textContent   = '📍 Último km: '+km.toLocaleString()+' — Toque para usar';
+    hintEl.onclick = () => {
+      const inp = document.getElementById(inputs[form]);
+      if (inp) inp.value = km;
+      if (form==='comb') calcRendimiento();
       updateSaveBtn(form);
     };
   }
-  // Auto-fill conductor
-  if (form === 'comb') {
-    const cond = {'EXX568':'Rusbel Algarra','SXY206':'Edgar Tinjaca'}[placa];
+  if (form==='comb') {
+    const cond = drivers.find(d=>d.placaAsignada===placa && d.rol==='conductor');
     const sel = document.getElementById('comb-cond');
-    if (sel && cond) sel.value = cond;
+    if (sel && cond) sel.value = cond.nombre;
+    calcRendimiento();
   }
 }
+
 function updateSaveBtn(form) {
-  if (form === 'pre') {
-    const km = val('pre-km');
+  if (form==='pre') {
+    const km   = val('pre-km');
     const done = Object.keys(preop).length >= PREOP_ITEMS.length;
-    const ok = km && done;
     const hasFail = Object.values(preop).some(v=>v==='no');
-    const btn = document.getElementById('pre-save-btn');
+    const ok   = km && done;
+    const btn  = document.getElementById('pre-save-btn');
     btn.disabled = !ok;
-    btn.style.background = ok ? (hasFail ? '#B45309' : 'var(--gm)') : '#D1D5DB';
-    btn.textContent = !ok ? 'Complete todos los puntos' : hasFail ? '⚠️ Guardar — Asumo responsabilidad' : '✅ Guardar preoperativo';
-  } else if (form === 'comb') {
-    const ok = getPlaca('comb') && val('comb-km-fin') && val('comb-gal');
+    btn.style.background = ok?(hasFail?'#B45309':'var(--gm)'):'#D1D5DB';
+    btn.textContent = !ok?'Complete todos los puntos':(hasFail?'⚠️ Guardar — Asumo responsabilidad':'✅ Guardar preoperativo');
+  } else if (form==='comb') {
+    const ruta = document.getElementById('comb-ruta-sel')?.value;
+    const rutaOk = ruta && (ruta!=='Otra' || val('comb-ruta-otra'));
+    const ok = getPlaca('comb') && val('comb-km-fin') && val('comb-gal') && rutaOk;
     const btn = document.getElementById('comb-save-btn');
-    btn.disabled = !ok;
-    btn.style.background = ok ? '#1565C0' : '#D1D5DB';
-    btn.textContent = ok ? '✅ Enviar registro' : 'Complete los campos requeridos';
-  } else if (form === 'mtto') {
+    btn.disabled = !ok; btn.style.background = ok?'var(--blue)':'#D1D5DB';
+    btn.textContent = ok?'✅ Enviar registro':'Complete los campos requeridos';
+  } else if (form==='mtto') {
     const srvs = document.querySelectorAll('.srv-btn.on');
-    const ok = getPlaca('mtto') && val('mtto-km') && srvs.length > 0;
+    const ok = getPlaca('mtto') && val('mtto-km') && srvs.length>0;
     const btn = document.getElementById('mtto-save-btn');
-    btn.disabled = !ok;
-    btn.style.background = ok ? '#E65100' : '#D1D5DB';
-    btn.textContent = ok ? '✅ Enviar registro' : 'Complete los campos requeridos';
-  } else if (form === 'nov') {
+    btn.disabled = !ok; btn.style.background = ok?'#E65100':'#D1D5DB';
+    btn.textContent = ok?'✅ Enviar registro':'Complete los campos requeridos';
+  } else if (form==='nov') {
     const ok = getPlaca('nov') && novTipo && val('nov-desc');
     const btn = document.getElementById('nov-save-btn');
-    btn.disabled = !ok;
-    btn.style.background = ok ? '#B45309' : '#D1D5DB';
-    btn.textContent = ok ? '✅ Enviar novedad' : 'Complete los campos requeridos';
+    btn.disabled = !ok; btn.style.background = ok?'#B45309':'#D1D5DB';
+    btn.textContent = ok?'✅ Enviar novedad':'Complete los campos requeridos';
   }
 }
 
@@ -822,244 +899,428 @@ async function savePreop() {
   if (!placa || !km) return;
   sending = true;
   const btn = document.getElementById('pre-save-btn');
-  btn.disabled = true; btn.textContent = 'Guardando...';
-  const fallas = PREOP_ITEMS.filter(p=>preop[p.id]==='no').map(p=>p.lbl.replace(/^[^ ]+ /,''));
+  btn.disabled=true; btn.textContent='Guardando...';
+  const fallas = PREOP_ITEMS.filter(p=>preop[p.id]==='no').map(p=>p.lbl.replace(/^\S+\s/,''));
   const oks = PREOP_ITEMS.filter(p=>preop[p.id]==='ok').length;
-  const rec = {tipo:'preop',fecha:today(),hora:nowt(),placa,conductor:currentUser?.nombre||'',km,oks,fallas,operoConFallas:fallas.length>0};
+  const rec = {id:uid(),tipo:'preop',fecha:today(),hora:nowt(),placa,conductor:currentUser?.nombre||'',km,oks,fallas,operoConFallas:fallas.length>0};
   records.unshift(rec);
   await dbSet(STORE, records);
   sendToSheets(rec);
-  sending = false;
-  // Reset
-  preop = {};
-  document.querySelectorAll('[name^="pre-"]').forEach(r=>r.checked=false);
-  document.getElementById('pre-km').value='';
-  document.getElementById('pre-alert').style.display='none';
-  document.getElementById('pre-ok-badge').textContent='✅ OK: 0';
-  document.getElementById('pre-fail-badge').textContent='❌ Falla: 0';
-  document.querySelectorAll('[id^="prow-"]').forEach(r=>r.style.background='');
-  document.getElementById('ok-ico').textContent = fallas.length ? '⚠️' : '✅';
-  document.getElementById('ok-title').textContent = fallas.length ? 'Registrado con fallas' : 'Preoperativo OK';
-  document.getElementById('ok-msg').textContent = placa + ' · ' + oks + '/10 OK' + (fallas.length ? ' · Fallas: '+fallas.join(', ') : '');
-  const _savePreop_btn=document.getElementById('pre-save-btn');if(_savePreop_btn){_savePreop_btn.disabled=false;_savePreop_btn.style.background='var(--gm)';_savePreop_btn.textContent='✅ Guardar preoperativo';}
+  sending=false;
+  document.getElementById('ok-ico').textContent   = fallas.length?'⚠️':'✅';
+  document.getElementById('ok-title').textContent = fallas.length?'Registrado con fallas':'Preoperativo OK';
+  document.getElementById('ok-msg').textContent   = placa+' · '+oks+'/10 OK'+(fallas.length?' · Fallas: '+fallas.join(', '):'');
   goPage('pg-ok');
 }
 
-// ═══ COMBUSTIBLE ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// COMBUSTIBLE
+// ══════════════════════════════════════════════════════════════════
 function calcRendimiento() {
   const a = parseFloat(document.getElementById('comb-km-ini')?.value||0);
   const b = parseFloat(document.getElementById('comb-km-fin')?.value||0);
   const g = parseFloat(document.getElementById('comb-gal')?.value||0);
-  const precio = parseFloat(document.getElementById('precio-input')?.value||preoPrecio);
-  const box = document.getElementById('rend-box');
+  const p = parseFloat(document.getElementById('precio-input')?.value||precio);
   const tbox = document.getElementById('total-box');
-  if (g > 0 && precio > 0) {
-    const total = Math.round(g * precio);
-    document.getElementById('total-num').textContent = '$' + total.toLocaleString('es-CO');
-    document.getElementById('comb-valor').value = total;
-    if (tbox) tbox.style.display = 'block';
-  } else { if (tbox) tbox.style.display = 'none'; }
-  if (!a || !b || !g || b <= a) { if (box) box.style.display = 'none'; updateSaveBtn('comb'); return; }
-  const rend = (b-a)/g;
-  const color = rend<5?'var(--red)':rend<5.5?'var(--am)':'var(--ok)';
-  const bg = rend<5?'var(--redl)':rend<5.5?'var(--aml)':'var(--okl)';
-  box.style.cssText = `display:block;background:${bg};border-radius:var(--rs);padding:12px;text-align:center;margin-bottom:12px`;
-  document.getElementById('rend-num').style.color = color;
-  document.getElementById('rend-num').textContent = rend.toFixed(2) + ' km/gal';
-  document.getElementById('rend-msg').style.color = color;
-  document.getElementById('rend-msg').textContent = rend<5?'⚠️ BAJO — revisar mecánico':rend<5.5?'Rendimiento bajo':'✅ Normal';
+  const box  = document.getElementById('rend-box');
+  if (g>0 && p>0) {
+    const total = Math.round(g*p);
+    document.getElementById('total-num').textContent='$'+total.toLocaleString('es-CO');
+    document.getElementById('comb-valor').value=total;
+    if (tbox) tbox.style.display='block';
+  } else { if(tbox) tbox.style.display='none'; }
+  if (!a||!b||!g||b<=a) { if(box) box.style.display='none'; updateSaveBtn('comb'); return; }
+  const rend=(b-a)/g;
+  const color=rend<5?'var(--red)':rend<5.5?'var(--am)':'var(--ok)';
+  const bg=rend<5?'var(--redl)':rend<5.5?'var(--aml)':'var(--okl)';
+  box.style.cssText=`display:block;background:${bg};border-radius:var(--rs);padding:12px;text-align:center;margin-bottom:12px`;
+  document.getElementById('rend-num').style.color=color;
+  document.getElementById('rend-num').textContent=rend.toFixed(2)+' km/gal';
+  document.getElementById('rend-msg').style.color=color;
+  document.getElementById('rend-msg').textContent=rend<5?'⚠️ BAJO — revisar mecánico':rend<5.5?'Rendimiento bajo':'✅ Normal';
   updateSaveBtn('comb');
 }
-function editPrecio() {
-  document.getElementById('precio-edit').style.display = 'block';
-  document.getElementById('precio-input').value = preoPrecio;
-}
-function cancelPrecio() { document.getElementById('precio-edit').style.display = 'none'; }
+function editPrecio() { document.getElementById('precio-edit').style.display='block'; document.getElementById('precio-input').value=precio; }
+function cancelPrecio() { document.getElementById('precio-edit').style.display='none'; }
 async function savePrecio() {
-  const v = parseFloat(val('precio-input'));
-  if (!v || v < 1000) { alert('Precio inválido'); return; }
-  preoPrecio = v;
-  await dbSet(PRECIO_KEY, v);
-  document.getElementById('precio-display').textContent = '$' + v.toLocaleString('es-CO');
-  document.getElementById('precio-edit').style.display = 'none';
+  const v=parseFloat(val('precio-input'));
+  if(!v||v<1000){alert('Precio inválido');return;}
+  precio=v; await dbSet(PRECIO_KEY,v);
+  document.getElementById('precio-display').textContent='$'+v.toLocaleString('es-CO');
+  document.getElementById('precio-edit').style.display='none';
   calcRendimiento();
 }
 function toggleRutaOtra() {
-  const sel = document.getElementById('comb-ruta-sel');
-  const otra = document.getElementById('comb-ruta-otra');
-  if (sel.value === 'Otra') { otra.style.display = 'block'; otra.focus(); }
-  else { otra.style.display = 'none'; }
-  updateSaveBtn('comb');
+  const sel=document.getElementById('comb-ruta-sel'), otra=document.getElementById('comb-ruta-otra');
+  if(sel.value==='Otra'){otra.style.display='block';otra.focus();}else otra.style.display='none';
 }
 async function saveComb() {
-  if (sending) return;
-  const placa = getPlaca('comb'), kmFin = val('comb-km-fin'), gal = val('comb-gal');
-  if (!placa || !kmFin || !gal) return;
-  sending = true;
-  const btn = document.getElementById('comb-save-btn');
-  btn.disabled = true; btn.textContent = 'Enviando...';
-  const kmIni = val('comb-km-ini');
-  const rend = kmIni && parseFloat(gal) > 0 ? ((parseFloat(kmFin)-parseFloat(kmIni))/parseFloat(gal)).toFixed(2) : null;
-  const alerta = rend ? parseFloat(rend)<5?'ROJO':parseFloat(rend)<5.5?'AMARILLO':'OK' : '—';
-  const rutaSel = document.getElementById('comb-ruta-sel');
-  const ruta = rutaSel.value === 'Otra' ? val('comb-ruta-otra') : rutaSel.value;
-  const rec = {tipo:'comb',fecha:today(),hora:nowt(),placa,conductor:val('comb-cond'),km:kmFin,kmIni,gal,rend,alerta,valor:val('comb-valor'),precio:preoPrecio,ruta,obs:val('comb-obs')};
+  if(sending) return;
+  const placa=getPlaca('comb'), kmFin=val('comb-km-fin'), gal=val('comb-gal');
+  if(!placa||!kmFin||!gal) return;
+  sending=true;
+  const btn=document.getElementById('comb-save-btn');
+  btn.disabled=true; btn.textContent='Enviando...';
+  const kmIni=val('comb-km-ini');
+  const rend=kmIni&&parseFloat(gal)>0?((parseFloat(kmFin)-parseFloat(kmIni))/parseFloat(gal)).toFixed(2):null;
+  const alerta=rend?(parseFloat(rend)<5?'ROJO':parseFloat(rend)<5.5?'AMARILLO':'OK'):'—';
+  const rutaSel=document.getElementById('comb-ruta-sel');
+  const ruta=rutaSel.value==='Otra'?val('comb-ruta-otra'):rutaSel.value;
+  const rec={id:uid(),tipo:'comb',fecha:today(),hora:nowt(),placa,conductor:val('comb-cond'),km:kmFin,kmIni,gal,rend,alerta,valor:val('comb-valor'),precio,ruta,obs:val('comb-obs')};
   records.unshift(rec);
-  await dbSet(STORE, records);
+  await dbSet(STORE,records);
   sendToSheets(rec);
-  sending = false;
-  document.querySelectorAll('#pg-comb input,#pg-comb select,#pg-comb textarea').forEach(el=>{ if(el.type!=='radio') el.value=''; else el.checked=false; });
-  document.getElementById('rend-box').style.display='none';
-  document.getElementById('total-box').style.display='none';
-  document.getElementById('comb-ruta-otra').style.display='none';
-  const cbtn=document.getElementById('comb-save-btn');if(cbtn){cbtn.disabled=false;cbtn.style.background='#1565C0';cbtn.textContent='✅ Enviar registro';}
-  document.getElementById('ok-ico').textContent = alerta==='ROJO'?'🔴':'✅';
-  document.getElementById('ok-title').textContent = 'Combustible registrado';
-  document.getElementById('ok-msg').textContent = placa+' · '+gal+' gal'+(rend?' · '+rend+' km/gal':'')+(alerta==='ROJO'?' ⚠️ Rendimiento BAJO':'');
+  sending=false;
+  document.getElementById('ok-ico').textContent=alerta==='ROJO'?'🔴':'✅';
+  document.getElementById('ok-title').textContent='Combustible registrado';
+  document.getElementById('ok-msg').textContent=placa+' · '+gal+' gal'+(rend?' · '+rend+' km/gal':'')+(alerta==='ROJO'?' ⚠️ Rendimiento BAJO':'');
   goPage('pg-ok');
 }
 
-// ═══ MANTENIMIENTO ════════════════════════════════════════════════
-function buildSrvGrid() {
-  const grid = document.getElementById('srv-grid');
-  grid.innerHTML = MTTO_SERVICIOS.map(s => `<button class="srv-btn" onclick="toggleSrv(this)" data-srv="${s}">${s}</button>`).join('');
-}
+// ══════════════════════════════════════════════════════════════════
+// MANTENIMIENTO
+// ══════════════════════════════════════════════════════════════════
 function toggleSrv(btn) { btn.classList.toggle('on'); updateSaveBtn('mtto'); }
 async function saveMtto() {
-  if (sending) return;
-  const placa = getPlaca('mtto'), km = val('mtto-km');
-  const srvBtns = document.querySelectorAll('.srv-btn.on');
-  if (!placa || !km || !srvBtns.length) return;
-  sending = true;
-  const btn = document.getElementById('mtto-save-btn');
-  btn.disabled = true; btn.textContent = 'Enviando...';
-  const servicios = Array.from(srvBtns).map(b => b.dataset.srv);
-  const rec = {tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor:currentUser?.nombre||'',km,servicios,servicio:servicios.join(', '),taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
+  if(sending) return;
+  const placa=getPlaca('mtto'), km=val('mtto-km');
+  const srvBtns=document.querySelectorAll('.srv-btn.on');
+  if(!placa||!km||!srvBtns.length) return;
+  sending=true;
+  const btn=document.getElementById('mtto-save-btn');
+  btn.disabled=true; btn.textContent='Enviando...';
+  const servicios=Array.from(srvBtns).map(b=>b.dataset.srv);
+  const rec={id:uid(),tipo:'mtto',fecha:today(),hora:nowt(),placa,conductor:currentUser?.nombre||'',km,servicios,servicio:servicios.join(', '),taller:val('mtto-taller'),costo:val('mtto-costo'),obs:val('mtto-obs')};
   records.unshift(rec);
-  await dbSet(STORE, records);
+  await dbSet(STORE,records);
   sendToSheets(rec);
-  sending = false;
-  document.querySelectorAll('#pg-mtto input,#pg-mtto textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
-  document.querySelectorAll('.srv-btn').forEach(b=>b.classList.remove('on'));
+  sending=false;
   document.getElementById('ok-ico').textContent='🔧';
   document.getElementById('ok-title').textContent='Mantenimiento registrado';
   document.getElementById('ok-msg').textContent=servicios.join(', ')+' — '+placa+' · '+km+' km';
-  const _saveMtto_btn=document.getElementById('mtto-save-btn');if(_saveMtto_btn){_saveMtto_btn.disabled=false;_saveMtto_btn.style.background='#E65100';_saveMtto_btn.textContent='✅ Enviar registro';}
   goPage('pg-ok');
 }
 
-// ═══ NOVEDAD ══════════════════════════════════════════════════════
-function selChip(btn, form) {
+// ══════════════════════════════════════════════════════════════════
+// NOVEDAD
+// ══════════════════════════════════════════════════════════════════
+function selChip(btn) {
   document.querySelectorAll('#nov-chips .chip').forEach(c=>c.classList.remove('on'));
-  btn.classList.add('on');
-  novTipo = btn.textContent;
-  updateSaveBtn('nov');
+  btn.classList.add('on'); novTipo=btn.textContent; updateSaveBtn('nov');
 }
 async function saveNov() {
-  if (sending) return;
-  const placa = getPlaca('nov'), desc = val('nov-desc');
-  if (!placa || !novTipo || !desc) return;
-  sending = true;
-  const btn = document.getElementById('nov-save-btn');
-  btn.disabled = true; btn.textContent = 'Enviando...';
-  const rec = {tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor:val('nov-cond'),km:val('nov-km'),tipoNov:novTipo,desc};
+  if(sending) return;
+  const placa=getPlaca('nov'), desc=val('nov-desc');
+  if(!placa||!novTipo||!desc) return;
+  sending=true;
+  const btn=document.getElementById('nov-save-btn');
+  btn.disabled=true; btn.textContent='Enviando...';
+  const rec={id:uid(),tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor:val('nov-cond'),km:val('nov-km'),tipoNov:novTipo,desc};
   records.unshift(rec);
-  await dbSet(STORE, records);
+  await dbSet(STORE,records);
   sendToSheets(rec);
-  sending = false;
-  document.querySelectorAll('#pg-nov input,#pg-nov select,#pg-nov textarea').forEach(el=>{if(el.type!=='radio')el.value='';else el.checked=false;});
-  document.querySelectorAll('#nov-chips .chip').forEach(c=>c.classList.remove('on'));
-  novTipo='';
+  sending=false;
   document.getElementById('ok-ico').textContent='⚠️';
   document.getElementById('ok-title').textContent='Novedad registrada';
-  document.getElementById('ok-msg').textContent=novTipo||'Novedad'+' — '+placa;
-  const _saveNov_btn=document.getElementById('nov-save-btn');if(_saveNov_btn){_saveNov_btn.disabled=false;_saveNov_btn.style.background='#B45309';_saveNov_btn.textContent='✅ Enviar novedad';}
+  document.getElementById('ok-msg').textContent=novTipo+' — '+placa;
+  novTipo='';
   goPage('pg-ok');
 }
 
-// ═══ HISTORIAL ════════════════════════════════════════════════════
-function loadHist() {
-  document.getElementById('hist-count').textContent = records.length + ' registros';
-  filterHist('todos');
+// ══════════════════════════════════════════════════════════════════
+// DOCUMENTOS
+// ══════════════════════════════════════════════════════════════════
+let _docsFilter = 'todos';
+function goDocs() { goPage('pg-docs'); loadDocs(_docsFilter); }
+function filterDocs(f, btn) {
+  _docsFilter = f;
+  document.querySelectorAll('#pg-docs .tab-btn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  loadDocs(f);
 }
-function filterHist(f) {
-  ['todos','c1','c2'].forEach(id=>{
-    const btn = document.getElementById('hf-'+id);
-    if(btn) btn.classList.toggle('on', id===f||(f==='EXX568'&&id==='c1')||(f==='SXY206'&&id==='c2')||(f==='todos'&&id==='todos'));
+
+function loadDocs(filter) {
+  const list = document.getElementById('docs-list');
+  const addWrap = document.getElementById('docs-add-wrap');
+  let docs = documents.map(d => ({...d, days: daysUntil(d.vencimiento)}));
+  if (filter==='vencido') docs = docs.filter(d=>d.days!==null && d.days<0);
+  else if (filter==='critico') docs = docs.filter(d=>d.days!==null && d.days>=0 && d.days<=30);
+  else if (filter==='vigente') docs = docs.filter(d=>d.days!==null && d.days>30);
+  docs.sort((a,b) => (a.days??9999)-(b.days??9999));
+
+  if (!docs.length) { list.innerHTML='<div class="empty">Sin documentos</div>'; }
+  else {
+    list.innerHTML = docs.map(d => {
+      const st = docStatus(d.days);
+      const entName = d.entityType==='vehiculo'
+        ? trucks.find(t=>t.placa===d.entityId)?.nombre||d.entityId
+        : drivers.find(dr=>dr.id===d.entityId)?.nombre||d.entityId;
+      const isAdmin = currentUser?.rol==='admin';
+      return `<div class="card" style="background:${st.bg};border-color:${st.color};padding:14px;margin-bottom:8px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:700;color:${st.color}">${st.ico} ${d.tipo}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">${entName}${d.numero?' · No. '+d.numero:''}</div>
+            <div style="font-size:12px;font-weight:600;color:${st.color};margin-top:4px">${st.lbl}</div>
+            ${d.obs?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${d.obs}</div>`:''}
+          </div>
+          ${isAdmin?`<button onclick="deleteDoc('${d.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;padding:4px;color:var(--muted)">🗑</button>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (currentUser?.rol==='admin') {
+    addWrap.innerHTML = `<button class="btn" style="background:var(--blue)" onclick="showDocForm()">+ Agregar documento</button>`;
+  } else { addWrap.innerHTML=''; }
+}
+
+function showDocForm() {
+  const wrap = document.getElementById('docs-add-wrap');
+  const truckOpts = trucks.map(t=>`<option value="${t.placa}">${t.nombre||t.placa}</option>`).join('');
+  const driverOpts = drivers.filter(d=>d.rol==='conductor').map(d=>`<option value="${d.id}">${d.nombre}</option>`).join('');
+  wrap.innerHTML = `
+  <div class="form-box">
+    <div class="sec">Nuevo documento</div>
+    <div class="field"><label>Tipo de entidad *</label>
+      <select id="df-etype" onchange="updateDocTypes()">
+        <option value="vehiculo">Vehículo</option>
+        <option value="conductor">Conductor</option>
+      </select>
+    </div>
+    <div class="field"><label>Entidad *</label>
+      <select id="df-eid">${truckOpts}</select>
+    </div>
+    <div class="field"><label>Tipo de documento *</label>
+      <select id="df-tipo"></select>
+    </div>
+    <div class="field"><label>Número (opcional)</label><input type="text" id="df-num" placeholder="Ej: ABC-123456"/></div>
+    <div class="field"><label>Fecha de vencimiento *</label><input type="date" id="df-venc"/></div>
+    <div class="field"><label>Observaciones</label><input type="text" id="df-obs" placeholder="Notas..."/></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" style="background:var(--blue);flex:1" onclick="saveDoc()">✅ Guardar</button>
+      <button class="btn btn-sec btn-sm" style="flex:1" onclick="loadDocs('todos')">Cancelar</button>
+    </div>
+  </div>`;
+  updateDocTypes();
+}
+
+function updateDocTypes() {
+  const etype = document.getElementById('df-etype')?.value;
+  const eidSel = document.getElementById('df-eid');
+  const tipoSel = document.getElementById('df-tipo');
+  if (!etype||!eidSel||!tipoSel) return;
+  if (etype==='vehiculo') {
+    eidSel.innerHTML = trucks.map(t=>`<option value="${t.placa}">${t.nombre||t.placa}</option>`).join('');
+    tipoSel.innerHTML = DOC_TIPOS_V.map(t=>`<option>${t}</option>`).join('');
+  } else {
+    eidSel.innerHTML = drivers.filter(d=>d.rol==='conductor').map(d=>`<option value="${d.id}">${d.nombre}</option>`).join('');
+    tipoSel.innerHTML = DOC_TIPOS_C.map(t=>`<option>${t}</option>`).join('');
+  }
+}
+
+async function saveDoc() {
+  const etype=val('df-etype'), eid=val('df-eid'), tipo=val('df-tipo'), venc=val('df-venc');
+  if(!etype||!eid||!tipo||!venc){alert('Complete los campos requeridos');return;}
+  const doc = {id:uid(),entityType:etype,entityId:eid,tipo,numero:val('df-num'),vencimiento:venc,obs:val('df-obs')};
+  documents.push(doc);
+  await dbSet(DOCS_KEY, documents);
+  showToast('✅ Documento guardado');
+  loadDocs('todos');
+}
+
+async function deleteDoc(id) {
+  if(!confirm('¿Eliminar este documento?')) return;
+  documents = documents.filter(d=>d.id!==id);
+  await dbSet(DOCS_KEY, documents);
+  loadDocs(_docsFilter);
+  showToast('Documento eliminado');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PLAN DE MANTENIMIENTO
+// ══════════════════════════════════════════════════════════════════
+let _planItems = [];
+
+function loadPlan() {
+  const sel = document.getElementById('plan-truck-sel');
+  const placa = sel?.value || trucks[0]?.placa;
+  if (!placa) return;
+  const km = getLastKm(placa) || 0;
+  const truck = trucks.find(t=>t.placa===placa);
+  document.getElementById('plan-hdr-sub').textContent = `${truck?.nombre||placa} · Km: ${km.toLocaleString()}`;
+
+  _planItems = PLAN_BASE.map(p => {
+    const kmU = planKms[placa]?.[p.item] ?? null;
+    if (kmU === null) return {...p, placa, km, kmV:null, est:'sindatos'};
+    const kmV = (kmU + p.frec) - km;
+    const est = kmV<0?'vencido':kmV<=500?'urgente':kmV<=3000?'pronto':'vigente';
+    return {...p, placa, km, kmV, kmU, est};
+  }).sort((a,b) => {
+    const order = {vencido:0,urgente:1,pronto:2,vigente:3,sinatos:4};
+    if (a.est===b.est) return (a.kmV??9999)-(b.kmV??9999);
+    return (order[a.est]??5)-(order[b.est]??5);
   });
+
+  filterPlan('todos', document.querySelector('#plan-tabs .tab-btn'));
+}
+
+function filterPlan(filtro, btn) {
+  document.querySelectorAll('#plan-tabs .tab-btn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const items = filtro==='todos' ? _planItems : _planItems.filter(p=>p.est===filtro);
+  const tbl = document.getElementById('plan-table');
+  if(!items.length){tbl.innerHTML='<div class="empty">Sin ítems en esta categoría</div>';return;}
+  let h = '<div class="card" style="padding:0;overflow:hidden"><table style="width:100%;border-collapse:collapse">' +
+    '<tr style="background:#F5F5F5"><th style="padding:8px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--muted)">SERVICIO</th>' +
+    '<th style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);width:80px">FALTAN</th>' +
+    '<th style="padding:8px 8px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);width:40px"></th></tr>';
+  items.forEach(p => {
+    const map = {vencido:['#FEE2E2','#B91C1C','🔴'],urgente:['#FFF9C4','#B45309','🟠'],pronto:['#FFF7ED','#C2410C','🟡'],vigente:['#fff','#1B5E20','🟢'],sinatos:['#F3F4F6','#6B7280','❓']};
+    const [bg,fc,ico] = map[p.est]||map['sinatos'];
+    const kmTxt = p.kmV===null?'Sin datos':p.kmV<0?`-${Math.abs(p.kmV).toLocaleString()}`:p.kmV.toLocaleString();
+    const canAlta = p.kmV !== null;
+    h += `<tr style="background:${bg};border-top:0.5px solid rgba(0,0,0,.06)">
+      <td style="padding:9px 10px;font-size:12px;font-weight:500">${p.item}
+        ${canAlta?`<br><button onclick="openAlta('${p.item.replace(/'/g,"\\'")}',${p.kmV??0},'${p.placa}')" style="background:${fc};color:#fff;border:none;border-radius:4px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;margin-top:4px;font-family:Inter,sans-serif">🔧 Alta</button>`:'<br><span style="font-size:10px;color:var(--muted)">Sin km configurado</span>'}
+      </td>
+      <td style="padding:9px 8px;text-align:center;font-size:12px;font-weight:700;color:${fc}">${kmTxt}</td>
+      <td style="padding:9px 8px;text-align:center;font-size:14px">${ico}</td>
+    </tr>`;
+  });
+  tbl.innerHTML = h+'</table></div>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// DAR DE ALTA
+// ══════════════════════════════════════════════════════════════════
+function openAlta(item, kmV, placa) {
+  const km = getLastKm(placa)||0;
+  altaData = {item, kmV, placa, km};
+  document.getElementById('alta-item-name').textContent = item;
+  const isV = kmV<0;
+  document.getElementById('alta-item-status').textContent = (isV?'🔴 VENCIDO — hace '+Math.abs(kmV):'🟠 Faltan '+kmV)+' km';
+  const truck = trucks.find(t=>t.placa===placa);
+  document.getElementById('alta-auto-txt').textContent = (truck?.nombre||placa)+' · Km actual: '+km.toLocaleString();
+  document.getElementById('alta-km').value='';
+  document.getElementById('alta-obs').value='';
+  goPage('pg-alta');
+}
+
+async function saveAlta() {
+  if(sending) return;
+  const km = val('alta-km');
+  if(!km){alert('Ingrese el km en que se realizó');return;}
+  sending=true;
+  const btn=document.querySelector('#pg-alta .btn');
+  if(btn){btn.disabled=true;btn.textContent='Guardando...';}
+  // Actualizar planKms
+  if(!planKms[altaData.placa]) planKms[altaData.placa]={};
+  planKms[altaData.placa][altaData.item]=parseFloat(km);
+  await dbSet(PLANX_KEY, planKms);
+  // Guardar registro
+  const rec={id:uid(),tipo:'mtto',fecha:today(),hora:nowt(),placa:altaData.placa,conductor:currentUser?.nombre||'',km,servicios:[altaData.item],servicio:altaData.item,taller:'',costo:'',obs:val('alta-obs')||'Alta: '+altaData.item};
+  records.unshift(rec);
+  await dbSet(STORE,records);
+  sendToSheets(rec);
+  sending=false;
+  document.getElementById('ok-ico').textContent='✅';
+  document.getElementById('ok-title').textContent='Dado de alta';
+  document.getElementById('ok-msg').textContent=altaData.item+' — '+(trucks.find(t=>t.placa===altaData.placa)?.nombre||altaData.placa)+' · '+km+' km';
+  goPage('pg-ok');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// HISTORIAL
+// ══════════════════════════════════════════════════════════════════
+function loadHist() {
+  const tabs = document.getElementById('hist-tabs');
+  tabs.innerHTML = `<button class="tab-btn on" onclick="filterHist('todos',this)">Todos</button>` +
+    trucks.map(t=>`<button class="tab-btn" onclick="filterHist('${t.placa}',this)">${t.nombre||t.placa}</button>`).join('');
+  document.getElementById('hist-count').textContent = records.length+' registros';
+  filterHist('todos', tabs.querySelector('.tab-btn'));
+}
+
+function filterHist(f, btn) {
+  document.querySelectorAll('#hist-tabs .tab-btn').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
   const list = f==='todos'?records:records.filter(r=>r.placa===f);
   const box = document.getElementById('hist-list');
   if(!list.length){box.innerHTML='<div class="empty">Sin registros</div>';return;}
   const icons={comb:'⛽',mtto:'🔧',preop:'✅',novedad:'⚠️'};
   const lbls={comb:'Combustible',mtto:'Mantenimiento',preop:'Preoperativo',novedad:'Novedad'};
-  box.innerHTML = list.slice(0,50).map(r=>{
+  box.innerHTML = list.slice(0,60).map(r=>{
     let det='';
     if(r.tipo==='comb') det=(r.gal||'')+' gal · '+(r.km||'')+' km'+(r.rend?' · '+r.rend+' km/gal':'');
-    if(r.tipo==='mtto') det=(r.servicio||'')+' · '+(r.km||'')+' km';
+    if(r.tipo==='mtto') det=(r.servicio||'').substring(0,50)+' · '+(r.km||'')+' km';
     if(r.tipo==='preop') det=(r.km||'')+' km · '+(r.oks||0)+'/10 OK'+(r.fallas?.length?' ⚠️':'');
     if(r.tipo==='novedad') det=(r.tipoNov||'')+' — '+(r.desc||'').substring(0,40);
-    return `<div class="rec"><div class="rec-ico" style="background:${r.placa==='EXX568'?'var(--gl)':'var(--ol)'}">${icons[r.tipo]||'📋'}</div>
-    <div class="rec-info"><div class="rec-title" style="color:${r.placa==='EXX568'?'var(--g)':'var(--o)'}">${lbls[r.tipo]||r.tipo} · ${r.placa}</div>
-    <div class="rec-det">${det}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${r.fecha} ${r.hora}</div></div></div>`;
+    const truck = trucks.find(t=>t.placa===r.placa);
+    const color = truck ? (trucks.indexOf(truck)===0?'var(--g)':'var(--o)') : 'var(--g)';
+    return `<div class="rec">
+      <div class="rec-ico" style="background:${color==='var(--g)'?'var(--gl)':'var(--ol)'}">${icons[r.tipo]||'📋'}</div>
+      <div class="rec-info">
+        <div class="rec-title" style="color:${color}">${lbls[r.tipo]||r.tipo} · ${truck?.nombre||r.placa}</div>
+        <div class="rec-det">${det}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${r.fecha} ${r.hora}</div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ═══ RESUMEN ══════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// RESUMEN
+// ══════════════════════════════════════════════════════════════════
 function loadResumen() {
-  const td = today();
-  const c1 = records.filter(r=>r.placa==='EXX568');
-  const c2 = records.filter(r=>r.placa==='SXY206');
-  const km1 = getLastKm('EXX568');
-  const km2 = getLastKm('SXY206');
-  const rends1 = c1.filter(r=>r.rend).map(r=>parseFloat(r.rend));
-  const rends2 = c2.filter(r=>r.rend).map(r=>parseFloat(r.rend));
-  const avg = arr => arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2):'—';
-  const plan = getPlan();
-  const km = km1||481974;
-  const nV = plan.filter(p=>(p.kmUltimo+p.frec-km)<0).length;
-  const nU = plan.filter(p=>{const k=p.kmUltimo+p.frec-km;return k>=0&&k<=500;}).length;
+  const colors = ['var(--g)','var(--o)','var(--blue)','var(--purple)'];
   const novsAbiertas = records.filter(r=>r.tipo==='novedad'&&!r.resuelta);
+  let html = '';
 
-  function statCard(label, val, color) {
-    return `<div style="background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:${color}">${val}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${label}</div></div>`;
-  }
+  trucks.forEach((t,i) => {
+    const c = records.filter(r=>r.placa===t.placa);
+    const km = getLastKm(t.placa);
+    const rends = c.filter(r=>r.rend).map(r=>parseFloat(r.rend));
+    const avg = rends.length?(rends.reduce((a,b)=>a+b,0)/rends.length).toFixed(2):'—';
+    const col = colors[i%colors.length];
+    html += `<div class="card">
+      <div class="sec" style="color:${col}">${t.nombre||t.placa}</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${km?km.toLocaleString():'—'}</div><div class="stat-lbl">Último km</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${c.filter(r=>r.tipo==='comb').length}</div><div class="stat-lbl">Tanqueos</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${avg} km/gal</div><div class="stat-lbl">Rend. prom.</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${c.filter(r=>r.tipo==='preop').length}</div><div class="stat-lbl">Preoperativos</div></div>
+      </div>
+    </div>`;
+  });
 
-  let html = `
-  <div class="card">
-    <div class="sec" style="color:var(--g)">🌴 EXX568 — Rusbel Algarra</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0">
-      ${statCard('Último km', km1?km1.toLocaleString():'—', 'var(--g)')}
-      ${statCard('Tanqueos', c1.filter(r=>r.tipo==='comb').length, 'var(--g)')}
-      ${statCard('Rend. prom.', avg(rends1)+' km/gal', 'var(--g)')}
-      ${statCard('Preoperativos', c1.filter(r=>r.tipo==='preop').length, 'var(--g)')}
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec" style="color:var(--o)">👥 SXY206 — Edgar Tinjacá</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      ${statCard('Último km', km2?km2.toLocaleString():'Sin datos', 'var(--o)')}
-      ${statCard('Tanqueos', c2.filter(r=>r.tipo==='comb').length, 'var(--o)')}
-      ${statCard('Rend. prom.', avg(rends2)+' km/gal', 'var(--o)')}
-      ${statCard('Preoperativos', c2.filter(r=>r.tipo==='preop').length, 'var(--o)')}
-    </div>
-  </div>
-  <div class="card">
-    <div class="sec">🔧 Alertas mantenimiento EXX568</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      ${statCard('🔴 Vencidos', nV, '#B91C1C')}
-      ${statCard('🟠 Urgentes', nU, '#B45309')}
+  // Alertas plan
+  let nV=0, nU=0;
+  trucks.forEach(t => {
+    const km = getLastKm(t.placa)||0;
+    PLAN_BASE.forEach(p => {
+      const kmU = planKms[t.placa]?.[p.item] ?? null;
+      if(kmU===null) return;
+      const kmV=(kmU+p.frec)-km;
+      if(kmV<0) nV++; else if(kmV<=500) nU++;
+    });
+  });
+  html += `<div class="card"><div class="sec">🔧 Estado mantenimiento</div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-val" style="color:var(--red)">${nV}</div><div class="stat-lbl">🔴 Vencidos</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--am)">${nU}</div><div class="stat-lbl">🟠 Urgentes</div></div>
     </div>
   </div>`;
 
-  if (novsAbiertas.length) {
-    html += `<div class="card"><div class="sec" style="color:var(--am)">⚠️ Novedades pendientes (${novsAbiertas.length})</div>`;
-    html += novsAbiertas.slice(0,5).map(n=>`
-      <div style="background:var(--aml);border:1.5px solid var(--am);border-radius:10px;padding:12px;margin-bottom:8px">
+  if(novsAbiertas.length) {
+    html += `<div class="card"><div class="sec" style="color:var(--am)">⚠️ Novedades abiertas (${novsAbiertas.length})</div>`;
+    novsAbiertas.slice(0,5).forEach(n=>{
+      html += `<div style="background:var(--aml);border:1.5px solid var(--am);border-radius:10px;padding:12px;margin-bottom:8px">
         <div style="font-size:13px;font-weight:700;color:var(--am)">${n.tipoNov}</div>
         <div style="font-size:12px;color:var(--am);margin-top:2px">${n.placa} · ${n.fecha}</div>
         <div style="font-size:12px;color:var(--text);margin-top:4px">${n.desc||''}</div>
-        <button onclick="resolverNov(${n.id})" style="margin-top:8px;width:100%;background:var(--am);color:#fff;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">✅ Marcar como resuelta</button>
-      </div>`).join('');
+        <button onclick="resolverNov('${n.id}')" style="margin-top:8px;width:100%;background:var(--am);color:#fff;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">✅ Marcar resuelta</button>
+      </div>`;
+    });
     html += '</div>';
   }
 
@@ -1068,67 +1329,318 @@ function loadResumen() {
 
 async function resolverNov(id) {
   const idx = records.findIndex(r=>r.id===id);
-  if (idx>=0) { records[idx].resuelta=true; records[idx].fechaResolucion=today(); await dbSet(STORE,records); }
-  showToast('✅ Novedad resuelta');
-  loadResumen();
+  if(idx>=0){records[idx].resuelta=true;records[idx].fechaResolucion=today();await dbSet(STORE,records);}
+  showToast('✅ Novedad resuelta'); loadResumen();
 }
 
-// ═══ SEND TO SHEETS ═══════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════════════════════════
+function showAdminTab(tab, btn) {
+  adminTab = tab;
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const cont = document.getElementById('admin-content');
+  if(tab==='camiones')    renderAdminCamiones(cont);
+  else if(tab==='conductores') renderAdminConductores(cont);
+  else if(tab==='docs')   renderAdminDocs(cont);
+  else if(tab==='plan')   renderAdminPlan(cont);
+  else if(tab==='export') renderAdminExport(cont);
+}
+
+// — Camiones —
+function renderAdminCamiones(cont) {
+  let h = `<div class="sec">Camiones registrados</div>`;
+  if(!trucks.length) h+='<div class="empty">Sin camiones</div>';
+  trucks.forEach(t=>{
+    h += `<div class="card" style="padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:15px;font-weight:700">${t.nombre||t.placa}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Placa: ${t.placa}${t.modelo?' · '+t.modelo:''}${t.ano?' · '+t.ano:''}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:1px">Km actual: ${(t.kmActual||0).toLocaleString()}</div>
+        </div>
+        <button onclick="editTruck('${t.placa}')" style="background:var(--purplel);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;color:var(--purple);font-family:Inter,sans-serif">✏️</button>
+      </div>
+    </div>`;
+  });
+  h += `<button class="btn" style="background:var(--purple)" onclick="showTruckForm()">+ Agregar camión</button>`;
+  cont.innerHTML = h;
+}
+
+function showTruckForm(placa) {
+  const t = placa ? trucks.find(t=>t.placa===placa) : {};
+  const cont = document.getElementById('admin-content');
+  cont.innerHTML = `
+  <div class="form-box">
+    <div class="sec">${t?.placa?'Editar camión':'Nuevo camión'}</div>
+    <div class="field"><label>Placa *</label><input type="text" id="tf-placa" value="${t?.placa||''}" placeholder="EJ: XYZ123" ${t?.placa?'readonly':''}
+      style="text-transform:uppercase"/></div>
+    <div class="field"><label>Nombre / Alias</label><input type="text" id="tf-nombre" value="${t?.nombre||''}" placeholder="ej: 🌴 EXX568"/></div>
+    <div class="field"><label>Modelo</label><input type="text" id="tf-modelo" value="${t?.modelo||''}" placeholder="ej: Chevrolet NPR"/></div>
+    <div class="field"><label>Año</label><input type="number" inputmode="numeric" id="tf-ano" value="${t?.ano||''}" placeholder="ej: 2018"/></div>
+    <div class="field"><label>Km actual *</label><input type="number" inputmode="numeric" id="tf-km" value="${t?.kmActual||0}"/></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" style="background:var(--purple);flex:1" onclick="saveTruck('${t?.placa||''}')">✅ Guardar</button>
+      <button class="btn btn-sec btn-sm" style="flex:1" onclick="showAdminTab('camiones',document.querySelector('.atab'))">Cancelar</button>
+    </div>
+  </div>`;
+}
+
+function editTruck(placa) { showTruckForm(placa); }
+
+async function saveTruck(oldPlaca) {
+  const placa = (val('tf-placa')||'').toUpperCase().trim();
+  if(!placa){alert('Ingrese la placa');return;}
+  const km = parseFloat(val('tf-km'))||0;
+  const t = {placa, nombre:val('tf-nombre')||placa, modelo:val('tf-modelo'), ano:val('tf-ano'), kmActual:km};
+  if(oldPlaca && oldPlaca!==placa) {
+    trucks = trucks.filter(x=>x.placa!==oldPlaca);
+  }
+  const idx = trucks.findIndex(x=>x.placa===placa);
+  if(idx>=0) trucks[idx]=t; else trucks.push(t);
+  await dbSet(TRUCKS_KEY, trucks);
+  showToast('✅ Camión guardado');
+  showAdminTab('camiones', document.querySelector('.atab'));
+}
+
+// — Conductores —
+function renderAdminConductores(cont) {
+  let h = `<div class="sec">Conductores y usuarios</div>`;
+  drivers.forEach(d=>{
+    const truck = trucks.find(t=>t.placa===d.placaAsignada);
+    h += `<div class="card" style="padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:15px;font-weight:700">${d.nombre}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Rol: ${d.rol}${truck?' · '+truck.nombre:''}  · PIN: ${'•'.repeat(d.pin.length)}</div>
+        </div>
+        <button onclick="editDriver('${d.id}')" style="background:var(--purplel);border:none;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;color:var(--purple);font-family:Inter,sans-serif">✏️</button>
+      </div>
+    </div>`;
+  });
+  h += `<button class="btn" style="background:var(--purple)" onclick="showDriverForm()">+ Agregar conductor</button>`;
+  cont.innerHTML = h;
+}
+
+function showDriverForm(id) {
+  const d = id ? drivers.find(x=>x.id===id) : {};
+  const truckOpts = [
+    `<option value="ADMIN">— Administrador —</option>`,
+    ...trucks.map(t=>`<option value="${t.placa}" ${d?.placaAsignada===t.placa?'selected':''}>${t.nombre||t.placa}</option>`)
+  ].join('');
+  const cont = document.getElementById('admin-content');
+  cont.innerHTML = `
+  <div class="form-box">
+    <div class="sec">${d?.id?'Editar conductor':'Nuevo conductor'}</div>
+    <div class="field"><label>Nombre completo *</label><input type="text" id="drf-nombre" value="${d?.nombre||''}" placeholder="ej: Juan Pérez"/></div>
+    <div class="field"><label>PIN de acceso *</label><input type="text" id="drf-pin" value="${d?.pin||''}" placeholder="mín. 4 caracteres"/></div>
+    <div class="field"><label>Rol</label>
+      <select id="drf-rol">
+        <option value="conductor" ${d?.rol==='conductor'?'selected':''}>Conductor</option>
+        <option value="admin" ${d?.rol==='admin'?'selected':''}>Administrador</option>
+      </select>
+    </div>
+    <div class="field"><label>Camión asignado</label><select id="drf-placa">${truckOpts}</select></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" style="background:var(--purple);flex:1" onclick="saveDriver('${d?.id||''}')">✅ Guardar</button>
+      <button class="btn btn-sec btn-sm" style="flex:1" onclick="showAdminTab('conductores',document.querySelector('.atab'))">Cancelar</button>
+    </div>
+  </div>`;
+}
+
+function editDriver(id) { showDriverForm(id); }
+
+async function saveDriver(oldId) {
+  const nombre=val('drf-nombre').trim(), pin=val('drf-pin').trim();
+  if(!nombre||!pin){alert('Ingrese nombre y PIN');return;}
+  if(pin.length<4){alert('PIN debe tener mínimo 4 caracteres');return;}
+  const dup = drivers.find(d=>d.pin===pin && d.id!==oldId);
+  if(dup){alert('Ese PIN ya está en uso por '+dup.nombre);return;}
+  const d = {id:oldId||uid(), nombre, pin, rol:val('drf-rol'), placaAsignada:val('drf-placa')};
+  const idx = drivers.findIndex(x=>x.id===d.id);
+  if(idx>=0) drivers[idx]=d; else drivers.push(d);
+  await dbSet(DRIVERS_KEY, drivers);
+  showToast('✅ Conductor guardado');
+  showAdminTab('conductores', document.querySelector('.atab'));
+}
+
+// — Documentos (desde admin) —
+function renderAdminDocs(cont) {
+  cont.innerHTML = `<div class="sec">Gestión de documentos</div>
+    <button class="btn" style="background:var(--blue);margin-bottom:16px" onclick="goDocs()">📄 Ver y gestionar documentos</button>
+    <div style="background:var(--bluel);border:1.5px solid var(--blue);border-radius:12px;padding:14px;font-size:13px;color:var(--blue);font-weight:600">
+      Desde la página de Documentos puedes agregar SOAT, tecno-mecánica, licencias y más — con alertas de vencimiento automáticas.
+    </div>`;
+}
+
+// — Plan km —
+function renderAdminPlan(cont) {
+  const truckOpts = trucks.map(t=>`<option value="${t.placa}">${t.nombre||t.placa}</option>`).join('');
+  cont.innerHTML = `
+    <div class="sec">Configurar km del último mantenimiento</div>
+    <div class="field"><label>Camión</label>
+      <select id="ap-truck" onchange="renderPlanEditor()">${truckOpts}</select>
+    </div>
+    <div id="plan-editor"></div>`;
+  renderPlanEditor();
+}
+
+function renderPlanEditor() {
+  const placa = val('ap-truck');
+  const editor = document.getElementById('plan-editor');
+  let h = '';
+  PLAN_BASE.forEach((p,i)=>{
+    const kmU = planKms[placa]?.[p.item] ?? '';
+    h += `<div class="item-row">
+      <div style="flex:1;font-size:13px;font-weight:500">${p.item}<br><span style="font-size:11px;color:var(--muted)">Cada ${p.frec.toLocaleString()} km</span></div>
+      <input type="number" inputmode="numeric" data-item="${p.item}" value="${kmU}"
+        style="width:110px;border:1.5px solid var(--border);border-radius:8px;padding:8px;font-size:13px;font-weight:700;text-align:center;font-family:Inter,sans-serif"
+        placeholder="Km"/>
+    </div>`;
+  });
+  h += `<button class="btn" style="background:var(--purple);margin-top:16px" onclick="savePlanKms()">✅ Guardar todos los km</button>`;
+  editor.innerHTML = h;
+}
+
+async function savePlanKms() {
+  const placa = val('ap-truck');
+  if(!planKms[placa]) planKms[placa]={};
+  document.querySelectorAll('#plan-editor input[data-item]').forEach(inp=>{
+    const v = parseFloat(inp.value);
+    if(!isNaN(v) && v>0) planKms[placa][inp.dataset.item] = v;
+  });
+  await dbSet(PLANX_KEY, planKms);
+  showToast('✅ Plan km guardado para '+(trucks.find(t=>t.placa===placa)?.nombre||placa));
+}
+
+// — Exportar —
+function renderAdminExport(cont) {
+  cont.innerHTML = `
+    <div class="sec">Exportar datos</div>
+    <button class="btn" style="background:var(--gm)" onclick="exportCSV('todos')">📊 Exportar todo (CSV)</button>
+    <button class="btn" style="background:var(--blue)" onclick="exportCSV('comb')">⛽ Solo combustible (CSV)</button>
+    <button class="btn" style="background:#E65100" onclick="exportCSV('mtto')">🔧 Solo mantenimiento (CSV)</button>
+    <button class="btn" style="background:var(--gm)" onclick="exportCSV('preop')">✅ Solo preoperativos (CSV)</button>
+    <button class="btn btn-sec" onclick="exportJSON()">💾 Respaldo completo (JSON)</button>
+    <div class="field" style="margin-top:16px">
+      <label>Restaurar desde respaldo JSON</label>
+      <input type="file" id="import-file" accept=".json" onchange="importJSON(this)"/>
+    </div>`;
+}
+
+function exportCSV(tipo) {
+  let rows = tipo==='todos' ? records : records.filter(r=>r.tipo===tipo);
+  if(!rows.length){showToast('Sin registros para exportar');return;}
+  const cols = ['id','tipo','fecha','hora','placa','conductor','km','kmIni','gal','rend','alerta','valor','precio','ruta','oks','fallas','operoConFallas','tipoNov','desc','servicio','taller','costo','obs'];
+  let csv = cols.join(',') + '\n';
+  rows.forEach(r=>{
+    csv += cols.map(c=>{
+      let v = r[c]??'';
+      if(Array.isArray(v)) v=v.join(' | ');
+      v=String(v).replace(/"/g,'""');
+      return `"${v}"`;
+    }).join(',') + '\n';
+  });
+  download(csv,'flota_'+tipo+'_'+today().replace(/\//g,'-')+'.csv','text/csv');
+}
+
+function exportJSON() {
+  const data = {records, trucks, drivers, documents, planKms, exportedAt: new Date().toISOString()};
+  download(JSON.stringify(data,null,2),'flota_respaldo_'+today().replace(/\//g,'-')+'.json','application/json');
+}
+
+async function importJSON(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const text = await file.text();
+  try {
+    const data = JSON.parse(text);
+    if(!confirm('¿Restaurar datos? Los datos actuales se sobreescribirán.')) return;
+    if(data.records)   { records=data.records;   await dbSet(STORE,records); }
+    if(data.trucks)    { trucks=data.trucks;      await dbSet(TRUCKS_KEY,trucks); }
+    if(data.drivers)   { drivers=data.drivers;    await dbSet(DRIVERS_KEY,drivers); }
+    if(data.documents) { documents=data.documents;await dbSet(DOCS_KEY,documents); }
+    if(data.planKms)   { planKms=data.planKms;    await dbSet(PLANX_KEY,planKms); }
+    showToast('✅ Datos restaurados');
+  } catch(e){ alert('Archivo inválido'); }
+}
+
+function download(content, filename, type) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type}));
+  a.download = filename; a.click();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SHEETS SYNC
+// ══════════════════════════════════════════════════════════════════
 async function sendToSheets(rec) {
   try {
-    await fetch(API, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});
+    await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});
   } catch(e) {
-    // Guardar en cola offline
     try {
-      const cola = (await dbGet('flotaPG_cola'))||[];
-      cola.push(rec);
-      await dbSet('flotaPG_cola', cola);
+      const cola=(await dbGet('flotaPG_cola'))||[];
+      cola.push(rec); await dbSet('flotaPG_cola',cola);
     } catch(e2){}
   }
 }
 
-// Sincronizar cola offline cuando vuelve internet
 window.addEventListener('online', async () => {
   try {
-    const cola = (await dbGet('flotaPG_cola'))||[];
-    if (!cola.length) return;
-    const enviados = [];
-    for (const rec of cola) {
-      try { await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)}); enviados.push(rec); } catch(e){}
-    }
-    if (enviados.length) {
-      const nuevaCola = cola.filter(r=>!enviados.find(e=>e.id===r.id));
-      await dbSet('flotaPG_cola', nuevaCola);
-      showToast('✅ '+enviados.length+' registro(s) sincronizados');
+    const cola=(await dbGet('flotaPG_cola'))||[];
+    if(!cola.length) return;
+    const ok=[];
+    for(const rec of cola){try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});ok.push(rec);}catch(e){}}
+    if(ok.length){
+      const rest=cola.filter(r=>!ok.find(e=>e.id===r.id));
+      await dbSet('flotaPG_cola',rest);
+      showToast('✅ '+ok.length+' registro(s) sincronizados');
     }
   } catch(e){}
 });
 
-// ═══ INIT ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
 async function init() {
-  // Build dynamic elements
-  buildPreop();
-  buildSrvGrid();
+  // Cargar camiones
+  const savedTrucks = await dbGet(TRUCKS_KEY);
+  trucks = Array.isArray(savedTrucks) && savedTrucks.length ? savedTrucks : [...DEFAULT_TRUCKS];
 
-  // Load records
+  // Cargar conductores
+  const savedDrivers = await dbGet(DRIVERS_KEY);
+  drivers = Array.isArray(savedDrivers) && savedDrivers.length ? savedDrivers : [...DEFAULT_DRIVERS];
+
+  // Cargar registros
   const saved = await dbGet(STORE);
   records = Array.isArray(saved) ? saved : [];
+  records.forEach((r,i)=>{ if(!r.id) r.id=Date.now()-i; });
 
-  // Load precio
-  const p = await dbGet(PRECIO_KEY);
-  if (p && !isNaN(parseFloat(p))) {
-    preoPrecio = parseFloat(p);
-    const disp = document.getElementById('precio-display');
-    if (disp) disp.textContent = '$' + preoPrecio.toLocaleString('es-CO');
+  // Cargar documentos
+  const savedDocs = await dbGet(DOCS_KEY);
+  documents = Array.isArray(savedDocs) ? savedDocs : [];
+
+  // Cargar plan kms
+  const savedPlan = await dbGet(PLANX_KEY);
+  planKms = (savedPlan && typeof savedPlan==='object') ? savedPlan : {};
+  // Si EXX568 no tiene datos, cargar valores por defecto
+  if(!planKms['EXX568'] || Object.keys(planKms['EXX568']).length===0) {
+    planKms['EXX568'] = {...EXX_KMS_DEFAULT};
+    await dbSet(PLANX_KEY, planKms);
   }
 
-  // Add IDs to records that don't have them
-  records.forEach((r,i) => { if(!r.id) r.id = Date.now() - i; });
+  // Cargar precio
+  const p = await dbGet(PRECIO_KEY);
+  if(p && !isNaN(parseFloat(p))) {
+    precio=parseFloat(p);
+    const el=document.getElementById('precio-display');
+    if(el) el.textContent='$'+precio.toLocaleString('es-CO');
+  }
 }
 
 init();
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
