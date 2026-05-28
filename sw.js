@@ -1,4 +1,4 @@
-const CACHE = 'flotaPG-v11';
+const CACHE = 'flotaPG-v12';
 const CORE_ASSETS = ['./', './index.html', './control.js', './docs-enhance.js', './logo.svg', './logo-mark.svg'];
 
 self.addEventListener('install', e => {
