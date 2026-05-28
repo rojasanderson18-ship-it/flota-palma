@@ -691,11 +691,50 @@ function goPage(id) {
 function goHome() { goPage('pg-home'); loadHome(); }
 
 function goPreop()  { buildTruckSelectors('pre'); buildPreop(); goPage('pg-preop'); }
-function goComb()   { buildTruckSelectors('comb'); buildDriverSelect('comb-cond'); goPage('pg-comb'); }
-function goMtto()   { buildTruckSelectors('mtto'); buildSrvGrid(); goPage('pg-mtto'); }
-function goNov()    { nov_photos=[]; renderPhotoPreview(); buildTruckSelectors('nov'); buildDriverSelect('nov-cond'); goPage('pg-nov'); }
+
+function goComb() {
+  buildTruckSelectors('comb');
+  buildDriverSelect('comb-cond');
+  ['comb-km-ini','comb-km-fin','comb-gal','comb-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const rutaSel=document.getElementById('comb-ruta-sel'); if(rutaSel) rutaSel.value='';
+  document.getElementById('comb-ruta-otra').style.display='none';
+  document.getElementById('rend-box').style.display='none';
+  document.getElementById('total-box').style.display='none';
+  document.getElementById('comb-km-ini-hint').style.display='none';
+  const sb=document.getElementById('comb-save-btn');
+  if(sb){sb.disabled=true;sb.style.background='#D1D5DB';sb.textContent='Complete los campos requeridos';}
+  goPage('pg-comb');
+}
+
+function goMtto() {
+  buildTruckSelectors('mtto');
+  buildSrvGrid();
+  ['mtto-km','mtto-taller','mtto-costo','mtto-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('mtto-km-hint').style.display='none';
+  const sb=document.getElementById('mtto-save-btn');
+  if(sb){sb.disabled=true;sb.style.background='#D1D5DB';sb.textContent='Complete los campos requeridos';}
+  goPage('pg-mtto');
+}
+
+function goNov() {
+  nov_photos=[]; renderPhotoPreview();
+  buildTruckSelectors('nov'); buildDriverSelect('nov-cond');
+  document.querySelectorAll('#nov-chips .chip').forEach(c=>c.classList.remove('on'));
+  novTipo='';
+  ['nov-km','nov-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const sb=document.getElementById('nov-save-btn');
+  if(sb){sb.disabled=true;sb.style.background='#D1D5DB';sb.textContent='Complete los campos requeridos';}
+  goPage('pg-nov');
+}
+
 function goPlan()   { buildPlanTruckSel(); goPage('pg-plan'); loadPlan(); }
-function goDocs()   { goPage('pg-docs'); loadDocs('todos'); }
+
+function goDocs() {
+  _docsFilter='todos';
+  goPage('pg-docs');
+  document.querySelectorAll('#pg-docs .tab-btn').forEach((b,i)=>b.classList.toggle('on',i===0));
+  loadDocs('todos');
+}
 
 // ══════════════════════════════════════════════════════════════════
 // DYNAMIC FORM BUILDERS
@@ -739,6 +778,7 @@ function buildPreop() {
   document.getElementById('pre-fail-badge').textContent = '❌ Falla: 0';
   document.getElementById('pre-alert').style.display    = 'none';
   document.getElementById('pre-km').value = '';
+  document.getElementById('pre-obs').value = '';
   document.getElementById('pre-km-hint').style.display  = 'none';
   updateSaveBtn('pre');
 }
@@ -1212,7 +1252,7 @@ function loadPlan() {
 
   _planItems = PLAN_BASE.map(p => {
     const kmU = planKms[placa]?.[p.item] ?? null;
-    if (kmU === null) return {...p, placa, km, kmV:null, est:'sindatos'};
+    if (kmU === null) return {...p, placa, km, kmV:null, est:'sinatos'};
     const kmV = (kmU + p.frec) - km;
     const est = kmV<0?'vencido':kmV<=500?'urgente':kmV<=3000?'pronto':'vigente';
     return {...p, placa, km, kmV, kmU, est};
@@ -1264,6 +1304,8 @@ function openAlta(item, kmV, placa) {
   document.getElementById('alta-auto-txt').textContent = (truck?.nombre||placa)+' · Km actual: '+km.toLocaleString();
   document.getElementById('alta-km').value='';
   document.getElementById('alta-obs').value='';
+  const altaBtn=document.querySelector('#pg-alta .btn');
+  if(altaBtn){altaBtn.disabled=false;altaBtn.textContent='✅ Dar de alta';}
   goPage('pg-alta');
 }
 
@@ -1316,7 +1358,7 @@ function filterHist(f, btn) {
     if(r.tipo==='preop') det=(r.km||'')+' km · '+(r.oks||0)+'/10 OK'+(r.fallas?.length?' ⚠️':'');
     if(r.tipo==='novedad') det=(r.tipoNov||'')+' — '+(r.desc||'').substring(0,40);
     const fotosHtml = (r.fotos?.length)
-      ? `<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${r.fotos.map(f=>`<img src="${f}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid var(--border)">`).join('')}</div>`
+      ? `<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${r.fotos.map(ph=>`<img src="${ph}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid var(--border)">`).join('')}</div>`
       : '';
     const truck = trucks.find(t=>t.placa===r.placa);
     const color = truck ? (trucks.indexOf(truck)===0?'var(--g)':'var(--o)') : 'var(--g)';
