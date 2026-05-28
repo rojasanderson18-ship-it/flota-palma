@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Flota PG"/>
 <title>Flota Palma Grande</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -310,6 +311,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
         </div>
         <div class="field"><label>Descripción *</label><textarea id="nov-desc" rows="3" placeholder="Describa la novedad..." oninput="updateSaveBtn('nov')"></textarea></div>
+        <div class="field">
+          <label>Fotos (opcional)</label>
+          <div id="nov-photos-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"></div>
+          <label for="nov-photo-input" style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:2px dashed var(--border);border-radius:var(--rs);padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer">
+            📷 Agregar foto
+          </label>
+          <input type="file" id="nov-photo-input" accept="image/*" capture="environment" multiple style="display:none" onchange="addPhotos(this)"/>
+        </div>
       </div>
       <button class="btn" id="nov-save-btn" onclick="saveNov()" disabled style="background:#D1D5DB">Complete los campos requeridos</button>
       <button class="btn btn-sec" onclick="goHome()">← Volver</button>
@@ -684,7 +693,7 @@ function goHome() { goPage('pg-home'); loadHome(); }
 function goPreop()  { buildTruckSelectors('pre'); buildPreop(); goPage('pg-preop'); }
 function goComb()   { buildTruckSelectors('comb'); buildDriverSelect('comb-cond'); goPage('pg-comb'); }
 function goMtto()   { buildTruckSelectors('mtto'); buildSrvGrid(); goPage('pg-mtto'); }
-function goNov()    { buildTruckSelectors('nov');  buildDriverSelect('nov-cond');  goPage('pg-nov'); }
+function goNov()    { nov_photos=[]; renderPhotoPreview(); buildTruckSelectors('nov'); buildDriverSelect('nov-cond'); goPage('pg-nov'); }
 function goPlan()   { buildPlanTruckSel(); goPage('pg-plan'); loadPlan(); }
 function goDocs()   { goPage('pg-docs'); loadDocs('todos'); }
 
@@ -1002,12 +1011,61 @@ async function saveMtto() {
 }
 
 // ══════════════════════════════════════════════════════════════════
-// NOVEDAD
+// NOVEDAD + FOTOS
 // ══════════════════════════════════════════════════════════════════
+let nov_photos = [];
+
 function selChip(btn) {
   document.querySelectorAll('#nov-chips .chip').forEach(c=>c.classList.remove('on'));
   btn.classList.add('on'); novTipo=btn.textContent; updateSaveBtn('nov');
 }
+
+function addPhotos(input) {
+  const files = Array.from(input.files);
+  files.forEach(file => {
+    if(nov_photos.length >= 4) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      compressImage(e.target.result, 800, 0.65, b64 => {
+        nov_photos.push(b64);
+        renderPhotoPreview();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function compressImage(src, maxW, quality, cb) {
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.min(1, maxW / img.width);
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.src = src;
+}
+
+function renderPhotoPreview() {
+  const box = document.getElementById('nov-photos-preview');
+  if(!box) return;
+  box.innerHTML = nov_photos.map((b64, i) =>
+    `<div style="position:relative">
+      <img src="${b64}" style="width:72px;height:72px;border-radius:8px;object-fit:cover;border:2px solid var(--border)"/>
+      <button onclick="removePhoto(${i})" style="position:absolute;top:-6px;right:-6px;background:var(--red);border:none;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;line-height:1">✕</button>
+    </div>`
+  ).join('');
+}
+
+function removePhoto(i) {
+  nov_photos.splice(i, 1);
+  renderPhotoPreview();
+}
+
 async function saveNov() {
   if(sending) return;
   const placa=getPlaca('nov'), desc=val('nov-desc');
@@ -1015,14 +1073,16 @@ async function saveNov() {
   sending=true;
   const btn=document.getElementById('nov-save-btn');
   btn.disabled=true; btn.textContent='Enviando...';
-  const rec={id:uid(),tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor:val('nov-cond'),km:val('nov-km'),tipoNov:novTipo,desc};
+  const rec={id:uid(),tipo:'novedad',fecha:today(),hora:nowt(),placa,conductor:val('nov-cond'),km:val('nov-km'),tipoNov:novTipo,desc,fotos:[...nov_photos]};
   records.unshift(rec);
   await dbSet(STORE,records);
-  sendToSheets(rec);
+  sendToSheets({...rec, fotos: rec.fotos.length ? ['['+rec.fotos.length+' foto(s)]'] : []});
   sending=false;
   document.getElementById('ok-ico').textContent='⚠️';
   document.getElementById('ok-title').textContent='Novedad registrada';
-  document.getElementById('ok-msg').textContent=novTipo+' — '+placa;
+  document.getElementById('ok-msg').textContent=novTipo+' — '+placa+(nov_photos.length?' · '+nov_photos.length+' foto(s)':'');
+  nov_photos=[];
+  renderPhotoPreview();
   novTipo='';
   goPage('pg-ok');
 }
@@ -1255,6 +1315,9 @@ function filterHist(f, btn) {
     if(r.tipo==='mtto') det=(r.servicio||'').substring(0,50)+' · '+(r.km||'')+' km';
     if(r.tipo==='preop') det=(r.km||'')+' km · '+(r.oks||0)+'/10 OK'+(r.fallas?.length?' ⚠️':'');
     if(r.tipo==='novedad') det=(r.tipoNov||'')+' — '+(r.desc||'').substring(0,40);
+    const fotosHtml = (r.fotos?.length)
+      ? `<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${r.fotos.map(f=>`<img src="${f}" style="width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid var(--border)">`).join('')}</div>`
+      : '';
     const truck = trucks.find(t=>t.placa===r.placa);
     const color = truck ? (trucks.indexOf(truck)===0?'var(--g)':'var(--o)') : 'var(--g)';
     return `<div class="rec">
@@ -1262,6 +1325,7 @@ function filterHist(f, btn) {
       <div class="rec-info">
         <div class="rec-title" style="color:${color}">${lbls[r.tipo]||r.tipo} · ${truck?.nombre||r.placa}</div>
         <div class="rec-det">${det}</div>
+        ${fotosHtml}
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${r.fecha} ${r.hora}</div>
       </div>
     </div>`;
@@ -1324,7 +1388,126 @@ function loadResumen() {
     html += '</div>';
   }
 
+  // Sección gráficas
+  html += `<div class="card">
+    <div class="sec">📈 Reportes gráficos</div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Rendimiento combustible (km/gal)</div>
+      <canvas id="chart-rend" style="max-height:160px"></canvas>
+    </div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Galones por mes</div>
+      <canvas id="chart-comb" style="max-height:160px"></canvas>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Costos mantenimiento ($) por mes</div>
+      <canvas id="chart-mtto" style="max-height:160px"></canvas>
+    </div>
+  </div>`;
+
   document.getElementById('res-content').innerHTML = html;
+  setTimeout(initCharts, 50);
+}
+
+function parseDate(ds) {
+  if(!ds) return null;
+  const p=ds.split('/');
+  if(p.length===3) return new Date(p[2],p[1]-1,p[0]);
+  return new Date(ds);
+}
+function monthKey(ds) {
+  const d=parseDate(ds); if(!d||isNaN(d)) return null;
+  return d.getFullYear()+'-'+(String(d.getMonth()+1).padStart(2,'0'));
+}
+function monthLabel(k) {
+  const [y,m]=k.split('-');
+  const ms=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return ms[parseInt(m)-1]+' '+y.slice(2);
+}
+
+let _charts = {};
+function destroyChart(id) { if(_charts[id]){_charts[id].destroy();delete _charts[id];} }
+
+function initCharts() {
+  if(typeof Chart==='undefined') return;
+
+  const COLORS = ['#2D6A4F','#E05A00','#1565C0','#6B21A8'];
+  const truckColors = {};
+  trucks.forEach((t,i)=>{ truckColors[t.placa]=COLORS[i%COLORS.length]; });
+
+  // — Chart 1: Rendimiento por tanqueo (línea por camión) —
+  destroyChart('rend');
+  const rendCtx = document.getElementById('chart-rend');
+  if(rendCtx) {
+    const combRecs = records.filter(r=>r.tipo==='comb'&&r.rend).sort((a,b)=>{
+      const da=parseDate(a.fecha), db=parseDate(b.fecha);
+      return (da?.getTime()||0)-(db?.getTime()||0);
+    });
+    const datasets = trucks.map(t=>{
+      const pts = combRecs.filter(r=>r.placa===t.placa).map(r=>({
+        x: parseDate(r.fecha)?.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit'})||r.fecha,
+        y: parseFloat(r.rend)
+      }));
+      return {label:t.nombre||t.placa, data:pts, borderColor:truckColors[t.placa],
+        backgroundColor:truckColors[t.placa]+'33', tension:0.3, fill:false,
+        pointRadius:3, borderWidth:2};
+    }).filter(d=>d.data.length>0);
+    const allX = [...new Set(combRecs.map(r=>parseDate(r.fecha)?.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit'})||r.fecha))];
+    if(datasets.length) {
+      _charts['rend'] = new Chart(rendCtx, {type:'line',
+        data:{labels:allX, datasets},
+        options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},
+          scales:{y:{beginAtZero:false,title:{display:true,text:'km/gal',font:{size:10}},
+            grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:9},maxRotation:45}}}}});
+    } else { rendCtx.parentElement.innerHTML += '<div class="empty" style="padding:12px">Sin datos de combustible aún</div>'; }
+  }
+
+  // — Chart 2: Galones por mes (barras agrupadas) —
+  destroyChart('comb');
+  const combCtx = document.getElementById('chart-comb');
+  if(combCtx) {
+    const byMonth = {};
+    records.filter(r=>r.tipo==='comb'&&r.gal).forEach(r=>{
+      const mk=monthKey(r.fecha); if(!mk) return;
+      if(!byMonth[mk]) byMonth[mk]={};
+      byMonth[mk][r.placa]=(byMonth[mk][r.placa]||0)+parseFloat(r.gal);
+    });
+    const months=Object.keys(byMonth).sort().slice(-8);
+    if(months.length) {
+      _charts['comb'] = new Chart(combCtx, {type:'bar',
+        data:{labels:months.map(monthLabel),
+          datasets:trucks.map(t=>({label:t.nombre||t.placa,
+            data:months.map(m=>byMonth[m]?.[t.placa]||0),
+            backgroundColor:truckColors[t.placa]+'BB', borderColor:truckColors[t.placa], borderWidth:1, borderRadius:4}))},
+        options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},
+          scales:{y:{beginAtZero:true,title:{display:true,text:'Galones',font:{size:10}},
+            grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}}}}}});
+    } else { combCtx.parentElement.innerHTML += '<div class="empty" style="padding:12px">Sin datos de tanqueo aún</div>'; }
+  }
+
+  // — Chart 3: Costos mantenimiento por mes —
+  destroyChart('mtto');
+  const mttoCtx = document.getElementById('chart-mtto');
+  if(mttoCtx) {
+    const byMonth = {};
+    records.filter(r=>r.tipo==='mtto'&&r.costo&&parseFloat(r.costo)>0).forEach(r=>{
+      const mk=monthKey(r.fecha); if(!mk) return;
+      if(!byMonth[mk]) byMonth[mk]={};
+      byMonth[mk][r.placa]=(byMonth[mk][r.placa]||0)+parseFloat(r.costo);
+    });
+    const months=Object.keys(byMonth).sort().slice(-8);
+    if(months.length) {
+      _charts['mtto'] = new Chart(mttoCtx, {type:'bar',
+        data:{labels:months.map(monthLabel),
+          datasets:trucks.map(t=>({label:t.nombre||t.placa,
+            data:months.map(m=>byMonth[m]?.[t.placa]||0),
+            backgroundColor:truckColors[t.placa]+'BB', borderColor:truckColors[t.placa], borderWidth:1, borderRadius:4}))},
+        options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}},
+          tooltip:{callbacks:{label:ctx=>(ctx.dataset.label||'')+': $'+ctx.parsed.y.toLocaleString('es-CO')}}},
+          scales:{y:{beginAtZero:true,ticks:{callback:v=>'$'+v.toLocaleString('es-CO')},
+            grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:10}}}}}});
+    } else { mttoCtx.parentElement.innerHTML += '<div class="empty" style="padding:12px">Sin costos registrados aún</div>'; }
+  }
 }
 
 async function resolverNov(id) {
