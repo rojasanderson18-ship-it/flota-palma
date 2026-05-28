@@ -101,8 +101,35 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <div id="login-screen">
   <div style="background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:340px;border:1px solid var(--border)">
     <div style="text-align:center;margin-bottom:24px">
-      <div style="font-size:48px;margin-bottom:8px">🚛</div>
-      <h1 style="font-size:20px;font-weight:800;color:var(--g)">Flota Palma Grande</h1>
+      <div style="margin-bottom:12px">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="110" height="110" style="border-radius:18px">
+          <rect width="200" height="200" fill="#E5A500" rx="22"/>
+          <!-- Fronds -->
+          <g fill="#1B5E20">
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(0 100 68)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(45 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-45 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(90 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-90 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(135 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-135 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(160 100 80)"/>
+            <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-160 100 80)"/>
+          </g>
+          <!-- Trunk center cover -->
+          <circle cx="100" cy="80" r="10" fill="#1B5E20"/>
+          <!-- Oil drops -->
+          <g fill="#fff" opacity="0.95">
+            <ellipse cx="100" cy="100" rx="5" ry="7"/>
+            <ellipse cx="100" cy="114" rx="4.5" ry="6.5"/>
+            <ellipse cx="100" cy="127" rx="4" ry="6"/>
+            <ellipse cx="100" cy="139" rx="3.5" ry="5.5"/>
+          </g>
+          <!-- Text -->
+          <text x="100" y="164" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="18" fill="#fff" letter-spacing="0.5">PALMAGRANDE</text>
+          <text x="100" y="180" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="13" fill="#fff" letter-spacing="2">S.A.S</text>
+        </svg>
+      </div>
       <p style="font-size:13px;color:var(--muted);margin-top:4px">Ingrese su PIN para continuar</p>
     </div>
     <div class="field">
@@ -128,7 +155,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div id="pg-home" class="page active">
     <div class="hdr" style="background:var(--g)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div><h1>Flota Palma Grande</h1><p id="hdr-usuario"></p></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="36" height="36" style="border-radius:8px;flex-shrink:0">
+            <rect width="200" height="200" fill="#E5A500" rx="22"/>
+            <g fill="#1B5E20">
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(0 100 68)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(45 100 80)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-45 100 80)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(90 100 80)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-90 100 80)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(135 100 80)"/>
+              <ellipse cx="100" cy="68" rx="8" ry="34" transform="rotate(-135 100 80)"/>
+            </g>
+            <circle cx="100" cy="80" r="10" fill="#1B5E20"/>
+            <g fill="#fff" opacity="0.95">
+              <ellipse cx="100" cy="100" rx="5" ry="7"/>
+              <ellipse cx="100" cy="114" rx="4.5" ry="6.5"/>
+              <ellipse cx="100" cy="127" rx="4" ry="6"/>
+              <ellipse cx="100" cy="139" rx="3.5" ry="5.5"/>
+            </g>
+            <text x="100" y="164" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="18" fill="#fff">PALMAGRANDE</text>
+            <text x="100" y="180" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="13" fill="#fff" letter-spacing="2">S.A.S</text>
+          </svg>
+          <div><h1>Flota Palma Grande</h1><p id="hdr-usuario"></p></div>
+        </div>
         <button onclick="doLogout()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">🔒 Salir</button>
       </div>
     </div>
