@@ -1,5 +1,5 @@
-const CACHE = 'flotaPG-v8';
-const CORE_ASSETS = ['./', './index.html', './control.js', './docs-enhance.js', './logo.svg', './logo-mark.svg'];
+const CACHE = 'flotaPG-v9';
+const CORE_ASSETS = ['./', './index.html', './control.js', './logo.svg', './logo-mark.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -28,8 +28,7 @@ self.addEventListener('fetch', e => {
     e.respondWith(
       fetch(e.request).then(async response => {
         const text = await response.clone().text();
-        let body = text.includes('control.js') ? text : text.replace('</body>', '<script src="./control.js"></script></body>');
-        body = body.includes('docs-enhance.js') ? body : body.replace('</body>', '<script src="./docs-enhance.js"></script></body>');
+        const body = text.includes('control.js') ? text : text.replace('</body>', '<script src="./control.js"></script></body>');
         const injected = new Response(body, { headers: { 'Content-Type': 'text/html; charset=UTF-8' } });
         caches.open(CACHE).then(cache => cache.put(e.request, injected.clone()));
         return injected;
