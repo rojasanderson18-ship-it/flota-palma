@@ -1,7 +1,6 @@
 (function () {
   const camiones = [
-    { placa: 'EXX568', conductor: 'Rusbel Algarra', uso: 'RFF y apoyo agricola', color: 'var(--g)' },
-    { placa: 'SXY206', conductor: 'Edgar Tinjaca', uso: 'Personal y encomiendas', color: 'var(--o)' }
+    { placa: 'EXX568', conductor: 'Rusbel Algarra', uso: 'RFF y apoyo agricola', color: 'var(--g)' }
   ];
 
   const acciones = {
@@ -9,13 +8,6 @@
       ['rff-bascula', 'RFF a bascula', 'En labor', 'Transporte de RFF a bascula', 'Bascula'],
       ['cargando-rff', 'Cargando RFF', 'Cargando', 'Recoleccion de RFF', 'Lote'],
       ['rff-planta', 'RFF a planta', 'En labor', 'Transporte de RFF a planta', 'Planta'],
-      ['disponible', 'Disponible', 'Disponible', 'Disponible en plantacion', 'Patio'],
-      ['taller', 'Taller', 'En mantenimiento', 'Taller / mantenimiento', 'Taller'],
-      ['varado', 'Varado', 'Varado', 'Novedad operativa', 'Plantacion']
-    ],
-    SXY206: [
-      ['personal', 'Personal', 'En labor', 'Transporte de personal', 'Plantacion'],
-      ['encomiendas', 'Encomiendas', 'En labor', 'Transporte de encomiendas', 'Oficina / bodega'],
       ['disponible', 'Disponible', 'Disponible', 'Disponible en plantacion', 'Patio'],
       ['taller', 'Taller', 'En mantenimiento', 'Taller / mantenimiento', 'Taller'],
       ['varado', 'Varado', 'Varado', 'Novedad operativa', 'Plantacion']
@@ -129,7 +121,7 @@
     btn.id = 'btn-control-plantacion';
     btn.className = 'btn-menu';
     btn.onclick = () => { goPage('pg-control'); loadControl(); };
-    btn.innerHTML = '<span class="ico">CP</span><div><strong>Control plantacion</strong><span>RFF, personal, encomiendas y estado de camiones</span></div>';
+    btn.innerHTML = '<span class="ico">CP</span><div><strong>Control plantacion</strong><span>RFF y estado del camion</span></div>';
     const before = Array.from(home.querySelectorAll('.btn-menu')).find(b => b.textContent.includes('Mantenimiento'));
     home.insertBefore(btn, before || document.getElementById('home-alertas'));
     const panel = document.createElement('div');
@@ -169,25 +161,24 @@
     const rff = hoy.filter(x => (x.control && x.control.labor || '').includes('RFF'));
     const viajes = rff.reduce((s, x) => s + (+x.control.viajes || 0), 0);
     const ton = rff.reduce((s, x) => s + (+x.control.toneladas || 0), 0);
+    const cam = hoy[0];
+    const ctrl = cam.control;
+    const estado = ctrl ? ctrl.estado : 'Sin control hoy';
+    const bg = ctrl ? (ctrl.estado === 'Varado' ? 'var(--redl)' : ctrl.estado === 'Disponible' ? 'var(--okl)' : 'var(--gl)') : '#F9FAFB';
     box.innerHTML = `
       <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px">Control de hoy</div>
       <div class="control-mini">
         <div><strong>${viajes || '-'}</strong><span>Viajes RFF</span></div>
         <div><strong>${ton ? ton.toFixed(1) : '-'}</strong><span>Toneladas aprox.</span></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        ${hoy.map(x => {
-          const ctrl = x.control;
-          const estado = ctrl ? ctrl.estado : 'Sin control hoy';
-          const bg = ctrl ? (ctrl.estado === 'Varado' ? 'var(--redl)' : ctrl.estado === 'Disponible' ? 'var(--okl)' : 'var(--gl)') : '#F9FAFB';
-          return `<div style="background:${bg};border:1.5px solid ${x.color};border-radius:10px;padding:10px">
-            <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
-              <div style="font-size:13px;font-weight:800;color:${x.color}">${x.placa}</div>
-              <div style="font-size:10px;font-weight:800;color:${x.color}">${estado}</div>
-            </div>
-            <div style="font-size:11px;color:${x.color};margin-top:4px">${resumenTexto(ctrl)}</div>
-          </div>`;
-        }).join('')}
+      <div style="margin-bottom:12px">
+        <div style="background:${bg};border:1.5px solid ${cam.color};border-radius:10px;padding:10px">
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+            <div style="font-size:13px;font-weight:800;color:${cam.color}">${cam.placa}</div>
+            <div style="font-size:10px;font-weight:800;color:${cam.color}">${estado}</div>
+          </div>
+          <div style="font-size:11px;color:${cam.color};margin-top:4px">${resumenTexto(ctrl)}</div>
+        </div>
       </div>`;
   };
 
@@ -217,10 +208,10 @@
         <div class="quick-grid">
           ${acciones[x.placa].map(a => `<button class="quick-btn" id="ctrl-${x.placa}-${a[0]}" onclick="selectQuickControl('${x.placa}','${a[0]}')" type="button">${a[1]}<small>${a[2]}</small></button>`).join('')}
         </div>
-        ${x.placa === 'EXX568' ? `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div class="field"><label>Viajes RFF</label><input type="number" inputmode="numeric" id="ctrl-${x.placa}-viajes" placeholder="0"></div>
           <div class="field"><label>Toneladas aprox.</label><input type="number" inputmode="decimal" id="ctrl-${x.placa}-ton" placeholder="0"></div>
-        </div>` : ''}
+        </div>
         <button class="btn btn-sec" onclick="toggleControlDetails('${x.placa}')" type="button">Detalles opcionales</button>
         <div class="optional-panel" id="ctrl-${x.placa}-details">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -334,7 +325,7 @@
       <div class="control-mini">
         <div><strong>${viajes || '-'}</strong><span>Viajes RFF</span></div>
         <div><strong>${ton ? ton.toFixed(1) : '-'}</strong><span>Toneladas RFF</span></div>
-        <div><strong>${hoy.filter(x => x.control).length}/2</strong><span>Reportados</span></div>
+        <div><strong>${hoy.filter(x => x.control).length}/1</strong><span>Reportados</span></div>
         <div><strong>${varados || '0'}</strong><span>Varados</span></div>
       </div>
       ${hoy.map(x => `<div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px">
